@@ -85,8 +85,33 @@ fun BoxContent(){
             fontSize = dimensionResource(R.dimen.title).value.sp,
             fontWeight = FontWeight.ExtraBold)
 
-        RoundButton(stringResource(R.string.login), (print("test")))
+        TextFieldColumn()
 
+        RoundButton(stringResource(R.string.login), (print("test")))
+    }
+}
+
+@Composable
+fun TextFieldColumn() {
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.padding(bottom = 20.dp, top = 20.dp)
+    ){
+        TextField(email, stringResource(R.string.email))
+
+        TextField(password, stringResource(R.string.password))
+
+        Text(text = stringResource(R.string.forgot_password),
+            color = MaterialTheme.colors.primary,
+            textAlign = TextAlign.End,
+            fontSize = dimensionResource(R.dimen.small).value.sp,
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .align(Alignment.End)
+                .clickable { /*TODO*/ })
     }
 }
 
