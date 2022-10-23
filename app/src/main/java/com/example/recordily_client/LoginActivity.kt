@@ -46,17 +46,17 @@ class MainActivity : ComponentActivity() {
 fun LoginPage() {
     Box(
         modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colors.background)
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
     ){
         Box(
             modifier = Modifier
-            .fillMaxHeight(.65f)
-            .fillMaxWidth(.9f)
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colors.onSurface)
-            .align(Alignment.Center)
-            .padding(20.dp)
+                .fillMaxHeight(.65f)
+                .fillMaxWidth(.9f)
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colors.onSurface)
+                .align(Alignment.Center)
+                .padding(dimensionResource(R.dimen.padding_large))
         ){
             BoxContent()
         }
@@ -74,20 +74,22 @@ fun BoxContent(){
         verticalArrangement = Arrangement.Center
     ) {
 
-        Image(painter = logo,
+        Image(
+            painter = logo,
             contentDescription = "",
             modifier = Modifier
-            .width(165.dp)
-            .height(100.dp))
+                .width(165.dp)
+                .height(100.dp))
 
-        Text(text=stringResource(R.string.login),
+        Text(
+            text=stringResource(R.string.login),
             color=MaterialTheme.colors.onPrimary,
-            fontSize = dimensionResource(R.dimen.title).value.sp,
+            fontSize = dimensionResource(R.dimen.font_title).value.sp,
             fontWeight = FontWeight.ExtraBold)
 
         TextFieldColumn()
 
-        RoundButton(stringResource(R.string.login), (print("test")))
+        RoundButton(text = stringResource(R.string.login), onClick = (print("test")))
 
         CreateAccountRow()
     }
@@ -100,7 +102,7 @@ fun TextFieldColumn() {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.padding(bottom = 20.dp, top = 20.dp)
+        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_large), top = dimensionResource(R.dimen.padding_large))
     ){
         TextField(email, stringResource(R.string.email))
 
@@ -109,9 +111,9 @@ fun TextFieldColumn() {
         Text(text = stringResource(R.string.forgot_password),
             color = MaterialTheme.colors.primary,
             textAlign = TextAlign.End,
-            fontSize = dimensionResource(R.dimen.small).value.sp,
+            fontSize = dimensionResource(R.dimen.font_small).value.sp,
             modifier = Modifier
-                .padding(top = 2.dp)
+                .padding(top = dimensionResource(R.dimen.padding_very_small))
                 .align(Alignment.End)
                 .clickable { /*TODO*/ })
     }
@@ -120,20 +122,19 @@ fun TextFieldColumn() {
 @Composable
 fun CreateAccountRow() {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
     ){
         Text(
             text = stringResource(R.string.create_account) + " ",
             color = MaterialTheme.colors.onPrimary,
-            fontSize = dimensionResource(R.dimen.small).value.sp
+            fontSize = dimensionResource(R.dimen.font_small).value.sp
         )
 
         Text(
             text = stringResource(R.string.signup),
             color = MaterialTheme.colors.primary,
-            fontSize = dimensionResource(R.dimen.small).value.sp,
+            fontSize = dimensionResource(R.dimen.font_small).value.sp,
             modifier = Modifier.clickable { /*TODO*/ }
         )
     }
