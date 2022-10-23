@@ -88,6 +88,8 @@ fun BoxContent(){
         TextFieldColumn()
 
         RoundButton(stringResource(R.string.login), (print("test")))
+
+        CreateAccountRow()
     }
 }
 
@@ -115,4 +117,25 @@ fun TextFieldColumn() {
     }
 }
 
+@Composable
+fun CreateAccountRow() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(10.dp)
+    ){
+        Text(
+            text = stringResource(R.string.create_account) + " ",
+            color = MaterialTheme.colors.onPrimary,
+            fontSize = dimensionResource(R.dimen.small).value.sp
+        )
+
+        Text(
+            text = stringResource(R.string.signup),
+            color = MaterialTheme.colors.primary,
+            fontSize = dimensionResource(R.dimen.small).value.sp,
+            modifier = Modifier.clickable { /*TODO*/ }
+        )
+    }
+}
 
