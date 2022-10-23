@@ -44,6 +44,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoginPage() {
+    Box(
+        modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colors.background)
+    ){
+        Box(
+            modifier = Modifier
+            .fillMaxHeight(.65f)
+            .fillMaxWidth(.9f)
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colors.onSurface)
+            .align(Alignment.Center)
+            .padding(20.dp)
+        ){
 
+        }
+    }
 }
+
+
 
