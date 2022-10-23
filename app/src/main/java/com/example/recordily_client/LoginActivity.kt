@@ -58,10 +58,36 @@ fun LoginPage() {
             .align(Alignment.Center)
             .padding(20.dp)
         ){
-
+            BoxContent()
         }
     }
 }
 
+@Composable
+fun BoxContent(){
+    val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
+    val logo: Painter = painterResource(id = image)
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+
+        Image(painter = logo,
+            contentDescription = "",
+            modifier = Modifier
+            .width(165.dp)
+            .height(100.dp))
+
+        Text(text=stringResource(R.string.login),
+            color=MaterialTheme.colors.onPrimary,
+            fontSize = dimensionResource(R.dimen.title).value.sp,
+            fontWeight = FontWeight.ExtraBold)
+
+        RoundButton(stringResource(R.string.login), (print("test")))
+
+    }
+}
 
 
