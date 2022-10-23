@@ -23,16 +23,17 @@ services:
             - web
 
     mysql:
-        image: 'mysql/mysql-server:8.0'
+        image: 'mysql:8.0.31'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
+            MYSQL_ROOT_PASSWORD: 'spookie'
+            MYSQL_DATABASE: 'recordily_db'
+            MYSQL_USER: 'recordily'
+            MYSQL_PASSWORD: 'moopie'
         volumes:
             - 'mysql:/var/lib/mysql'
+
     redis:
         image: 'redis:alpine'
         ports:
