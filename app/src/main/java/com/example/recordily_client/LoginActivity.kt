@@ -31,7 +31,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +45,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LoginPage() {
 
-
-    Surface(modifier = Modifier.fillMaxSize()){
-
-    }
 }
+
