@@ -5,7 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -41,8 +44,15 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function getName(): string
+    public static function createUser($email, $password, $type): User
     {
-        return $this->name . $this->lastP;
+        //Create salt and hash the password
+        $hashed = Hash::make($password);
+
+        return User::create([
+            'email' => $email,
+            'password' => $hashed,
+            'user_type_id' => $type
+        ]);
     }
 }
