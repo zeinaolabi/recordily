@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name')->default("");
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('salt',5);
             $table->string('biography', 150)->default("");
             $table->string('profile_picture')->default("");
             $table->string('user_type_id');
