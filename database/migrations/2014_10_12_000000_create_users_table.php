@@ -13,9 +13,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('salt');
             $table->string('biography');
             $table->string('profile_picture');
-            $table->string("user_type_id");
+            $table->string('user_type_id');
             $table->timestamps();
         });
     }

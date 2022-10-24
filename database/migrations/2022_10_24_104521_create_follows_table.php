@@ -8,15 +8,16 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('user_types', function (Blueprint $table) {
+        Schema::create('follows', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->foreignId("follower_id");
+            $table->foreignId("followed_id");
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('user_types');
+        Schema::dropIfExists('follows');
     }
 };
