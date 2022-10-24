@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Guard;
@@ -8,6 +9,7 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -28,27 +30,14 @@ class AuthController extends Controller
         return $this->createNewToken($isAuthorized);
     }
 
-    public function register(Request $request) {
-        //Validate all input
-//        $validator = Validator::make($request->all(), [
-//            'name' => 'required|string|between:2,100',
-//            'email' => 'required|string|email|max:100|unique:users',
-//            'password' => 'required|string|min:6',
-//        ]);
+    public function register(RegisterRequest $request) {
+        $email = $request->email;
+        $password = $request->password;
+        $type = $request->user_type_id;
 
-        //If validation failed, display an error
-//        if($validator->fails()){
-//            return response()->json($validator->errors()->toJson(), 400);
-//        }
+        $user = User::createUser($email,$password, $type);
 
-        $hashed = Hash::make($request->password);
-        //Create a new user with a hashed password
-        $user = User::create(['email' => $request->email,
-            'password' => $hashed,
-            'salt' => $request->salt,
-            'user_type_id' => $request->user_type_id]);
-
-//        $user->token = auth()->login($user);
+        $user->token = $this->auth->login($user);
 
         return response()->json([
             'message' => 'User successfully registered',
