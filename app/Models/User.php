@@ -45,16 +45,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public static function createUser($email, $password, $type): JsonResponse
+    public static function createUser($email, $password, $type): User
     {
         //Create salt and hash the password
-        $salt = Str::random(5);
-        $hashed = Hash::make($password . $salt);
+        $hashed = Hash::make($password);
 
         return User::create([
             'email' => $email,
             'password' => $hashed,
-            'salt' => $salt,
             'user_type_id' => $type
         ]);
     }

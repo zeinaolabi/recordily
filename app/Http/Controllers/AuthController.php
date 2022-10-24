@@ -3,13 +3,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\StatefulGuard;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+
 
 class AuthController extends Controller
 {
@@ -31,18 +26,15 @@ class AuthController extends Controller
     }
 
     public function register(RegisterRequest $request) {
-        $email = $request->email;
-        $password = $request->password;
-        $type = $request->user_type_id;
-
-        $user = User::createUser($email,$password, $type);
+        $user = User::createUser(
+            $request->get('email'),
+            $request->get('password'),
+            $request->get('user_type_id')
+        );
 
         $user->token = $this->auth->login($user);
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+        return response()->json($user,201);
     }
 
     protected function createNewToken($token){
