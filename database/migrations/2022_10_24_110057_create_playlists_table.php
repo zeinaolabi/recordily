@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('likes', function (Blueprint $table) {
+        Schema::create('playlists', function (Blueprint $table) {
             $table->id();
+            $table->string("name");
+            $table->string("picture");
             $table->foreignId("user_id");
-            $table->foreignId("song_id");
             $table->timestamps();
-            $table->unique( array('user_id','song_id') );
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('likes');
+        Schema::dropIfExists('playlists');
     }
 };
