@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('password');
-            $table->string('salt');
-            $table->string('biography');
+            $table->string('password', 50);
+            $table->string('salt',5);
+            $table->string('biography', 150);
             $table->string('profile_picture');
             $table->string('user_type_id');
             $table->timestamps();

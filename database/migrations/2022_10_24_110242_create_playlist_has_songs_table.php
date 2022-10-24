@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('playlist_has_songs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("playlist_id");
-            $table->foreignId("song_id");
+            $table->foreignId('playlist_id');
+            $table->foreignId('song_id');
             $table->timestamps();
             $table->unique( array('playlist_id','song_id') );
         });

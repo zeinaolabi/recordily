@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('live_events_has_messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("live_event_id");
-            $table->foreignId("message_id");
+            $table->foreignId('live_event_id');
+            $table->foreignId('message_id');
             $table->timestamps();
         });
     }

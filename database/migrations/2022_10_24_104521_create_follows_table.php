@@ -10,9 +10,10 @@ return new class extends Migration
     {
         Schema::create('follows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("follower_id");
-            $table->foreignId("followed_id");
+            $table->foreignId('follower_id');
+            $table->foreignId('followed_id');
             $table->timestamps();
+            $table->unique( array('follower_id','followed_id') );
         });
     }
 
