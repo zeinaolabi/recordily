@@ -1,52 +1,54 @@
 <?php
 namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Validator;
 
 class AuthController extends Controller
 {
-    public function __construct(private readonly StatefulGuard $guard)
+    public function __construct(private readonly AuthManager $auth)
     {
     }
 
     public function login(LoginRequest $request){
+        //Check if the user is authenticated
+        $isAuthorized = $this->auth->attempt($request->all(['email', 'password']));
 
-        dd(get_class(auth()));
-        $token = auth()->attempt($request->all(['email, password']));
         //If authorization failed, display an error
-        if (! $token) {
+        if (!$isAuthorized) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         //Send back a token
-        return $this->createNewToken($token);
+        return $this->createNewToken($isAuthorized);
     }
 
     public function register(Request $request) {
         //Validate all input
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
+//        $validator = Validator::make($request->all(), [
+//            'name' => 'required|string|between:2,100',
+//            'email' => 'required|string|email|max:100|unique:users',
+//            'password' => 'required|string|min:6',
+//        ]);
 
         //If validation failed, display an error
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
+//        if($validator->fails()){
+//            return response()->json($validator->errors()->toJson(), 400);
+//        }
 
+        $hashed = Hash::make($request->password);
         //Create a new user with a hashed password
-        $user = User::create(array_merge(
-            $validator->validated(),
-            ['password' => Hash::make($request->get('password'))]
-        ));
+        $user = User::create(['email' => $request->email,
+            'password' => $hashed,
+            'salt' => $request->salt,
+            'user_type_id' => $request->user_type_id]);
 
-        $user->token = auth()->login($user);
+//        $user->token = auth()->login($user);
 
         return response()->json([
             'message' => 'User successfully registered',
