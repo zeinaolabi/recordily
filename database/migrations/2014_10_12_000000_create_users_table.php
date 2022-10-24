@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('biography');
             $table->string('profile_picture');
+            $table->string("user_type_id");
             $table->timestamps();
         });
     }
