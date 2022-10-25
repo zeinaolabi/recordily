@@ -1,4 +1,4 @@
-package com.example.recordily_client.activites
+package com.example.recordily_client
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
