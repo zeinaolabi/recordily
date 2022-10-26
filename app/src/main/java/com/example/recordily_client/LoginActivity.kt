@@ -1,13 +1,10 @@
-package com.example.recordily_client.activites
+package com.example.recordily_client
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -18,7 +15,9 @@ import androidx.compose.ui.Alignment
 import com.example.recordily_client.ui.theme.Recordily_clientTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,16 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
-import com.example.recordily_client.R
-import com.example.recordily_client.viewModels.SharedViewModel
+import com.example.recordily_client.viewModels.UserViewModel
 import com.example.recordily_client.components.RoundButton
 import com.example.recordily_client.requests.LoginRequest
 
 class LoginActivity : ComponentActivity() {
 
-    val viewModel: SharedViewModel by lazy {
-        ViewModelProvider(this).get(SharedViewModel::class.java)
+    private val viewModel: UserViewModel by lazy {
+        ViewModelProvider(this).get(UserViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,18 +49,28 @@ class LoginActivity : ComponentActivity() {
     @Composable
     fun LoginPage() {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.background)
+            modifier = Modifier.fillMaxSize()
         ) {
+
+            Image(
+                painter = painterResource(R.drawable.background),
+                contentDescription = "",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(-1f)
+            )
+
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(.65f)
+                    .fillMaxHeight(.75f)
                     .fillMaxWidth(.9f)
+                    .border(0.1.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp))
                     .clip(RoundedCornerShape(20.dp))
                     .background(MaterialTheme.colors.onSurface)
                     .align(Alignment.Center)
                     .padding(dimensionResource(R.dimen.padding_large))
+                    .zIndex(1f),
             ) {
                 BoxContent()
             }
@@ -114,9 +123,9 @@ class LoginActivity : ComponentActivity() {
             )
         ) {
 
-            com.example.recordily_client.TextField(email, stringResource(R.string.email))
+            TextField(email, stringResource(R.string.email))
 
-            com.example.recordily_client.TextField(password, stringResource(R.string.password))
+            TextField(password, stringResource(R.string.password))
 
             Text(text = stringResource(R.string.forgot_password),
                 color = MaterialTheme.colors.primary,
@@ -141,7 +150,7 @@ class LoginActivity : ComponentActivity() {
         ) {
             Text(
                 text = stringResource(R.string.create_account) + " ",
-                color = MaterialTheme.colors.onPrimary,
+                color = Color.White,
                 fontSize = dimensionResource(R.dimen.font_small).value.sp
             )
 
