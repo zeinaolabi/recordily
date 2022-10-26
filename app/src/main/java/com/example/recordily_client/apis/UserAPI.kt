@@ -1,12 +1,11 @@
 package com.example.recordily_client.apis
 
-import com.example.recordily_client.data.UserData
-import retrofit2.Call
+import com.example.recordily_client.responses.LoginResponse
+import com.example.recordily_client.requests.LoginRequest
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface UserAPI {
-    @GET("/login")
-    fun login(@Query("email") email: String, @Query("password") password: String): Call<UserData>
+    @POST("login")
+    suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 }
