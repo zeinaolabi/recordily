@@ -1,6 +1,7 @@
-package com.example.recordily_client
+package com.example.recordily_client.activites
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -25,10 +26,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import com.example.recordily_client.R
+import com.example.recordily_client.viewModels.SharedViewModel
 import com.example.recordily_client.components.RoundButton
+import com.example.recordily_client.requests.LoginRequest
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
+
+    val viewModel: SharedViewModel by lazy {
+        ViewModelProvider(this).get(SharedViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,103 +46,133 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun LoginPage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-    ){
+    @Composable
+    fun LoginPage() {
         Box(
             modifier = Modifier
-                .fillMaxHeight(.65f)
-                .fillMaxWidth(.9f)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colors.onSurface)
-                .align(Alignment.Center)
-                .padding(dimensionResource(R.dimen.padding_large))
-        ){
-            BoxContent()
+                .fillMaxSize()
+                .background(MaterialTheme.colors.background)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(.65f)
+                    .fillMaxWidth(.9f)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colors.onSurface)
+                    .align(Alignment.Center)
+                    .padding(dimensionResource(R.dimen.padding_large))
+            ) {
+                BoxContent()
+            }
         }
     }
-}
 
-@Composable
-fun BoxContent(){
-    val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
-    val logo: Painter = painterResource(id = image)
+    @Composable
+    fun BoxContent() {
+        val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
+        val logo: Painter = painterResource(id = image)
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
 
-        Image(
-            painter = logo,
-            contentDescription = "",
-            modifier = Modifier
-                .width(165.dp)
-                .height(100.dp))
+            Image(
+                painter = logo,
+                contentDescription = "",
+                modifier = Modifier
+                    .width(165.dp)
+                    .height(100.dp)
+            )
 
-        Text(
-            text=stringResource(R.string.login),
-            color=MaterialTheme.colors.onPrimary,
-            fontSize = dimensionResource(R.dimen.font_title).value.sp,
-            fontWeight = FontWeight.ExtraBold)
+            Text(
+                text = stringResource(R.string.login),
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = dimensionResource(R.dimen.font_title).value.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
 
-        TextFieldColumn()
+            TextFieldColumn()
 
-        RoundButton(text = stringResource(R.string.login), onClick = (print("test")))
-
-        CreateAccountRow()
+            CreateAccountRow()
+        }
     }
-}
 
-@Composable
-fun TextFieldColumn() {
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    @Composable
+    fun TextFieldColumn() {
+        val email = remember { mutableStateOf("") }
+        val password = remember { mutableStateOf("") }
 
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_large), top = dimensionResource(R.dimen.padding_large))
-    ){
-        TextField(email, stringResource(R.string.email))
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(
+                bottom = dimensionResource(R.dimen.padding_large),
+                top = dimensionResource(R.dimen.padding_large)
+            )
+        ) {
 
-        TextField(password, stringResource(R.string.password))
+            com.example.recordily_client.TextField(email, stringResource(R.string.email))
 
-        Text(text = stringResource(R.string.forgot_password),
-            color = MaterialTheme.colors.primary,
-            textAlign = TextAlign.End,
-            fontSize = dimensionResource(R.dimen.font_small).value.sp,
-            modifier = Modifier
-                .padding(top = dimensionResource(R.dimen.padding_very_small))
-                .align(Alignment.End)
-                .clickable { /*TODO*/ })
+            com.example.recordily_client.TextField(password, stringResource(R.string.password))
+
+            Text(text = stringResource(R.string.forgot_password),
+                color = MaterialTheme.colors.primary,
+                textAlign = TextAlign.End,
+                fontSize = dimensionResource(R.dimen.font_small).value.sp,
+                modifier = Modifier
+                    .padding(top = dimensionResource(R.dimen.padding_very_small))
+                    .align(Alignment.End)
+                    .clickable { })
+
+            RoundButton(text = stringResource(R.string.login), onClick = {
+                handleLogin(LoginRequest(email.value, password.value))
+            })
+        }
     }
-}
 
-@Composable
-fun CreateAccountRow() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-    ){
-        Text(
-            text = stringResource(R.string.create_account) + " ",
-            color = MaterialTheme.colors.onPrimary,
-            fontSize = dimensionResource(R.dimen.font_small).value.sp
-        )
+    @Composable
+    fun CreateAccountRow() {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+        ) {
+            Text(
+                text = stringResource(R.string.create_account) + " ",
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = dimensionResource(R.dimen.font_small).value.sp
+            )
 
-        Text(
-            text = stringResource(R.string.signup),
-            color = MaterialTheme.colors.primary,
-            fontSize = dimensionResource(R.dimen.font_small).value.sp,
-            modifier = Modifier.clickable { /*TODO*/ }
-        )
+            Text(
+                text = stringResource(R.string.signup),
+                color = MaterialTheme.colors.primary,
+                fontSize = dimensionResource(R.dimen.font_small).value.sp,
+                modifier = Modifier.clickable { /*TODO*/ }
+            )
+        }
     }
+
+    private fun handleLogin(loginRequest: LoginRequest){
+        loginRequest.email = loginRequest.email.lowercase().trim()
+        loginRequest.password = loginRequest.password.trim()
+
+        viewModel.login(loginRequest)
+        viewModel.loginLiveData.observe(this@LoginActivity){ response ->
+            if(response == null){
+                Toast.makeText(
+                    this@LoginActivity,
+                    "Unsuccessful Network Call!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@observe
+            }
+
+
+        }
+    }
+
 }
+
 
