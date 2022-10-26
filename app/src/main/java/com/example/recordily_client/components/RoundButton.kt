@@ -13,13 +13,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RoundButton(text:String, onClick:(Unit)){
+fun RoundButton(text:String, onClick: () -> Unit){
     Button(modifier = Modifier
         .height(48.dp)
         .width(120.dp)
         .clip(MaterialTheme.shapes.large)
         .background(MaterialTheme.colors.primary),
-        onClick = { onClick }) {
+        onClick = { onClick() }) {
         Text(text = text)
     }
 }
