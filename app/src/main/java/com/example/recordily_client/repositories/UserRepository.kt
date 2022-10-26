@@ -8,10 +8,14 @@ class UserRepository {
     suspend fun login(loginRequest: LoginRequest): LoginResponse? {
         val request = RetrofitInstance.apiClient.login(loginRequest)
 
-        if(request.isSuccessful){
-            return request.body()!!
+        if(request.failed){
+            return null
         }
 
-        return null
+        if(!request.isSuccessful){
+            return null
+        }
+
+        return request.body
     }
 }

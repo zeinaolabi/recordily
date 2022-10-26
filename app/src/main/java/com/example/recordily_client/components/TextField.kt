@@ -28,6 +28,7 @@ fun TextField(input: MutableState<String>, text: String) {
             unfocusedLabelColor = colorResource(R.color.darker_gray),
             cursorColor = MaterialTheme.colors.secondary,
             unfocusedBorderColor = MaterialTheme.colors.secondary,
+            textColor = Color.White,
             )
     )
 }

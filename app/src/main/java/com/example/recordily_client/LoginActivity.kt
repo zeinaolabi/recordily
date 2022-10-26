@@ -37,6 +37,8 @@ class LoginActivity : ComponentActivity() {
         ViewModelProvider(this).get(UserViewModel::class.java)
     }
 
+    private var errorMessage = mutableStateOf("")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -65,7 +67,7 @@ class LoginActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxHeight(.75f)
                     .fillMaxWidth(.9f)
-                    .border(0.1.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp))
+                    .border(0.5.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp))
                     .clip(RoundedCornerShape(20.dp))
                     .background(MaterialTheme.colors.onSurface)
                     .align(Alignment.Center)
@@ -106,6 +108,11 @@ class LoginActivity : ComponentActivity() {
             TextFieldColumn()
 
             CreateAccountRow()
+
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colors.primary
+            )
         }
     }
 
