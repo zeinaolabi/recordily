@@ -8,7 +8,7 @@ import com.example.recordily_client.requests.LoginRequest
 import retrofit2.Response
 import java.lang.Exception
 
-class UserService( private val userAPI: UserAPI) {
+class UserService{
     suspend fun login(loginRequest: LoginRequest): SimpleResponse<LoginResponse>{
         return safeApiCall { RetrofitInstance.userAPI.login(loginRequest) }
     }
