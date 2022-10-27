@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.HTTP
 
 object RetrofitInstance {
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
@@ -32,7 +31,4 @@ object RetrofitInstance {
 
         return client.build()
     }
-
-
-
 }
