@@ -1,12 +1,12 @@
 package com.example.recordily_client.viewModels
 
 import androidx.lifecycle.ViewModel
-import com.example.recordily_client.repositories.UserRepository
+import com.example.recordily_client.repositories.LoginRepository
 import com.example.recordily_client.requests.LoginRequest
 
-class UserViewModel: ViewModel() {
+class LoginViewModel: ViewModel() {
 
-    private val repository = UserRepository()
+    private val repository = LoginRepository()
 
     suspend fun login(loginRequest: LoginRequest): Boolean {
         return try {
@@ -16,6 +16,4 @@ class UserViewModel: ViewModel() {
             false
         }
     }
-
-
 }

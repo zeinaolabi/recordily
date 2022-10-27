@@ -28,7 +28,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
-import com.example.recordily_client.viewModels.UserViewModel
+import com.example.recordily_client.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 
 private val errorMessage = mutableStateOf("")
@@ -120,7 +120,7 @@ fun TextFieldColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    val userViewModel : UserViewModel = viewModel()
+    val userViewModel : LoginViewModel = viewModel()
 //    val loginResponse = userViewModel.loginResultLiveData.observeAsState()
 //    if (loginResponse.value?.token !== "") {
 //        navController.navigate(Screen.CommonLandingPage.route)

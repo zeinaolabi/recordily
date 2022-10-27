@@ -1,6 +1,5 @@
 package com.example.recordily_client.pages
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -36,7 +35,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
-import com.example.recordily_client.viewModels.UserViewModel
+import com.example.recordily_client.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import com.example.recordily_client.TextField
 
@@ -132,7 +131,7 @@ fun RegistrationColumn(navController: NavController) {
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
 
-    val userViewModel : UserViewModel = viewModel()
+    val userViewModel : LoginViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
 
     Column(

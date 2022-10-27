@@ -21,7 +21,7 @@ object RetrofitInstance {
         retrofit.create(UserAPI::class.java)
     }
 
-    val apiClient = UserService()
+    val authClient = UserService()
 
     private fun getLoggingHttpClient(): OkHttpClient{
         val client = OkHttpClient.Builder()
