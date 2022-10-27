@@ -17,8 +17,8 @@ object RetrofitInstance {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-    val userAPI: UserAPI by lazy {
-        retrofit.create(UserAPI::class.java)
+    val userAPI: AuthAPI by lazy {
+        retrofit.create(AuthAPI::class.java)
     }
 
     val authClient = UserService()

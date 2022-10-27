@@ -7,7 +7,7 @@ import com.example.recordily_client.responses.RegistrationResponse
 import retrofit2.Response
 import retrofit2.http.*
 
-interface UserAPI {
+interface AuthAPI {
     @POST("login")
     suspend fun login(@Body loginRequest: LoginRequest): LoginResponse
 

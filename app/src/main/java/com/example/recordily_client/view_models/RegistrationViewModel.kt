@@ -1,10 +1,10 @@
 package com.example.recordily_client.viewModels
 
-import com.example.recordily_client.repositories.LoginRepository
+import androidx.lifecycle.ViewModel
 import com.example.recordily_client.repositories.RegistrationRepository
 import com.example.recordily_client.requests.RegistrationRequest
 
-class RegistrationViewModel {
+class RegistrationViewModel: ViewModel() {
 
     private val repository = RegistrationRepository()
 

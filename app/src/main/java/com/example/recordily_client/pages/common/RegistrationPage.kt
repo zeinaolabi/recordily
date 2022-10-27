@@ -38,6 +38,8 @@ import com.example.recordily_client.validation.isValidPassword
 import com.example.recordily_client.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import com.example.recordily_client.TextField
+import com.example.recordily_client.requests.RegistrationRequest
+import com.example.recordily_client.viewModels.RegistrationViewModel
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
@@ -131,7 +133,7 @@ fun RegistrationColumn(navController: NavController) {
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
 
-    val userViewModel : LoginViewModel = viewModel()
+    val registerViewModel : RegistrationViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -170,14 +172,14 @@ fun RegistrationColumn(navController: NavController) {
             }
 
             coroutineScope.launch {
-                val request = LoginRequest(
+                val request = RegistrationRequest(
                     email.value.lowercase().trim(),
-                    password.value
+                    password.value,
+                    user_type_id.value
                 )
 
-                if (!userViewModel.login(request)){
-                    errorMessage.value = "Invalid Email or Password"
-                    visible.value = true
+                if (!registerViewModel.register(request)){
+                    setErrorMessage("Email Used", true)
                     return@launch
                 }
                 navController.navigate(Screen.CommonLandingPage.route)
