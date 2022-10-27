@@ -5,7 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.recordily_client.R
-import com.example.recordily_client.Screen
+import com.example.recordily_client.navigation.Screen
 
 sealed class BottomNavItem(
     val route: String,

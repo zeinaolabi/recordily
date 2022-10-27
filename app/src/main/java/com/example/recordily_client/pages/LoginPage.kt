@@ -1,4 +1,4 @@
-package com.example.recordily_client
+package com.example.recordily_client.pages
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.recordily_client.R
 import com.example.recordily_client.components.RoundButton
+import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.viewModels.UserViewModel
 import kotlinx.coroutines.launch
@@ -133,13 +135,13 @@ fun TextFieldColumn(navController: NavController) {
         )
     ) {
 
-        TextField(
+        com.example.recordily_client.TextField(
             input = email,
             text = stringResource(R.string.email),
             visibility = true
         )
 
-        TextField(
+        com.example.recordily_client.TextField(
             input = password,
             text = stringResource(R.string.password),
             visibility = false

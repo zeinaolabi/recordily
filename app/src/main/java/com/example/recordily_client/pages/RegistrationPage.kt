@@ -31,10 +31,6 @@ import com.example.recordily_client.components.RoundButton
 import com.example.recordily_client.requests.LoginRequest
 
 
-//private val viewModel: UserViewModel by lazy {
-//    ViewModelProvider(this)[UserViewModel::class.java]
-//}
-
 private var errorMessage = mutableStateOf("")
 
 @Composable

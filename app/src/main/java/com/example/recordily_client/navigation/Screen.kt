@@ -1,4 +1,4 @@
-package com.example.recordily_client
+package com.example.recordily_client.navigation
 
 sealed class Screen(val route: String){
     object LoginPage: Screen(route = "login_screen")
