@@ -7,5 +7,5 @@ fun isValidEmail(email: String): Boolean {
 }
 
 fun isValidPassword(password: String): Boolean {
-    return !TextUtils.isEmpty(password) && password.length != 6
+    return !TextUtils.isEmpty(password) && password.length >= 6
 }

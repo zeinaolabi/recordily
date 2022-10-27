@@ -26,6 +26,8 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.RoundButton
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
+import com.example.recordily_client.validation.isValidEmail
+import com.example.recordily_client.validation.isValidPassword
 import com.example.recordily_client.viewModels.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -158,6 +160,12 @@ fun TextFieldColumn(navController: NavController) {
 
         RoundButton(text = stringResource(R.string.login), onClick = {
 
+            if(!isValidEmail(email.value) || !isValidPassword(password.value)){
+                errorMessage.value = "Invalid Email or Password"
+                visible.value = true
+                return@RoundButton
+            }
+
             coroutineScope.launch {
                 val request = LoginRequest(
                     email.value.lowercase().trim(),
@@ -169,7 +177,7 @@ fun TextFieldColumn(navController: NavController) {
                     visible.value = true
                     return@launch
                 }
-                navController.navigate(Screen.RegistrationPage.route)
+                navController.navigate(Screen.CommonLandingPage.route)
             }
 
         })

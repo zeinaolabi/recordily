@@ -1,6 +1,10 @@
-package com.example.recordily_client
+package com.example.recordily_client.pages
 
-import android.widget.Toast
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -9,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,20 +24,28 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.recordily_client.viewModels.UserViewModel
+import com.example.recordily_client.R
 import com.example.recordily_client.components.RoundButton
+import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
+import com.example.recordily_client.validation.isValidEmail
+import com.example.recordily_client.validation.isValidPassword
+import com.example.recordily_client.viewModels.UserViewModel
+import kotlinx.coroutines.launch
+import com.example.recordily_client.TextField
 
+private val errorMessage = mutableStateOf("")
+private val visible = mutableStateOf(false)
+private val user_type = mutableStateOf("")
+private val user_type_id = mutableStateOf(-1)
 
-private var errorMessage = mutableStateOf("")
-
+@ExperimentalAnimationApi
 @Composable
 fun RegistrationPage(navController: NavController) {
     Box(
@@ -64,6 +77,7 @@ fun RegistrationPage(navController: NavController) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun RegistrationContent(navController: NavController) {
     val image =
@@ -91,22 +105,35 @@ fun RegistrationContent(navController: NavController) {
             fontWeight = FontWeight.ExtraBold
         )
 
-        RegistrationColumn()
+        RegistrationColumn(navController)
 
         SignInRow(navController)
 
-        Text(
-            text = errorMessage.value,
-            color = MaterialTheme.colors.primary
-        )
+        AnimatedVisibility(
+            visible = visible.value,
+            enter = expandVertically(
+                expandFrom = Alignment.Top
+            ),
+            exit = fadeOut()
+        ){
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colors.primary,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
 @Composable
-fun RegistrationColumn() {
+fun RegistrationColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
+
+    val userViewModel : UserViewModel = viewModel()
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -138,7 +165,24 @@ fun RegistrationColumn() {
         UserTypesRow()
 
         RoundButton(text = stringResource(R.string.signup), onClick = {
-//            handleLogin(LoginRequest(email.value, password.value))
+
+            if(!errorHandling(email.value, password.value, confirmPassword.value) || !setTypeId()){
+                return@RoundButton
+            }
+
+            coroutineScope.launch {
+                val request = LoginRequest(
+                    email.value.lowercase().trim(),
+                    password.value
+                )
+
+                if (!userViewModel.login(request)){
+                    errorMessage.value = "Invalid Email or Password"
+                    visible.value = true
+                    return@launch
+                }
+                navController.navigate(Screen.CommonLandingPage.route)
+            }
         })
     }
 }
@@ -202,11 +246,13 @@ fun RadioButtons(){
         ) {
             RadioButton(
                 selected = (text == selectedOption),
-                onClick = { onOptionSelected(text) },
+                onClick = {
+                    onOptionSelected(text)
+                    user_type.value = text
+                },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = MaterialTheme.colors.secondary,
-                    unselectedColor = Color.White,
-                    disabledColor = Color.LightGray
+                    unselectedColor = Color.White
                 )
             )
             Text(
@@ -217,21 +263,41 @@ fun RadioButtons(){
     }
 }
 
-//private fun handleLogin(loginRequest: LoginRequest) {
-//    loginRequest.email = loginRequest.email.lowercase().trim()
-//    loginRequest.password = loginRequest.password.trim()
-//
-//    viewModel.login(loginRequest)
-//    viewModel.loginLiveData.observe(this) { response ->
-//        if (response == null) {
-//            Toast.makeText(
-//                this@LoginActivity,
-//                "Unsuccessful Network Call!",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            return@observe
-//        }
-//
-//
-//    }
-//}
+private fun errorHandling(email: String, password: String, confirmPassword: String): Boolean{
+    if(!isValidEmail(email)){
+        setErrorMessage("Invalid Email", true)
+        return false
+    }
+    else if(!isValidPassword(password) || !isValidPassword(confirmPassword)){
+        setErrorMessage("Password should have minimum of 6 chars", true)
+        return false
+    }
+    else if(password != confirmPassword){
+        setErrorMessage("Passwords don't match", true)
+        return false
+    }
+
+    setErrorMessage("", false)
+    return true
+}
+
+private fun setTypeId(): Boolean{
+    if(user_type.value == "Artist"){
+        user_type_id.value = 0
+        setErrorMessage("", false)
+        return true
+    }
+    else if(user_type.value == "Listener"){
+        user_type_id.value = 1
+        setErrorMessage("", false)
+        return true
+    }
+
+    setErrorMessage("Missing Field", true)
+    return false
+}
+
+private fun setErrorMessage(message: String, visibility: Boolean){
+    errorMessage.value = message
+    visible.value = visibility
+}
