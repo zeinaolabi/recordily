@@ -1,12 +1,11 @@
 package com.example.recordily_client
 
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,18 +16,21 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.components.RoundButton
+import com.example.recordily_client.requests.LoginRequest
+import com.example.recordily_client.viewModels.UserViewModel
+import kotlinx.coroutines.launch
 
+private val errorMessage = mutableStateOf("")
+private val visible = mutableStateOf(false)
 
-
-private var errorMessage = mutableStateOf("")
-
+@ExperimentalAnimationApi
 @Composable
 fun LoginPage(navController: NavController) {
     Box(
@@ -60,6 +62,7 @@ fun LoginPage(navController: NavController) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun BoxContent(navController: NavController) {
     val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
@@ -90,10 +93,7 @@ fun BoxContent(navController: NavController) {
 
         CreateAccountRow(navController)
 
-        Text(
-            text = errorMessage.value,
-            color = MaterialTheme.colors.primary
-        )
+
     }
 }
 
@@ -101,6 +101,14 @@ fun BoxContent(navController: NavController) {
 fun TextFieldColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
+
+    val userViewModel : UserViewModel = viewModel()
+//    val loginResponse = userViewModel.loginResultLiveData.observeAsState()
+//    if (loginResponse.value?.token !== "") {
+//        navController.navigate(Screen.CommonLandingPage.route)
+//    }
+
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -134,8 +142,19 @@ fun TextFieldColumn(navController: NavController) {
 
         RoundButton(text = stringResource(R.string.login), onClick = {
 
-//            handleLogin(LoginRequest(email.value, password.value))
-            navController.navigate(Screen.CommonLandingPage.route)
+            coroutineScope.launch {
+                val request = LoginRequest(
+                    email.value.lowercase().trim(),
+                    password.value
+                )
+
+                if (!userViewModel.login(request)){
+                    errorMessage.value = "Invalid Email or Password"
+                    visible.value = true
+                    return@launch
+                }
+                navController.navigate(Screen.RegistrationPage.route)
+            }
 
         })
     }
@@ -163,26 +182,3 @@ fun CreateAccountRow(navController: NavController) {
         )
     }
 }
-
-private fun handleLogin(loginRequest: LoginRequest) {
-    loginRequest.email = loginRequest.email.lowercase().trim()
-    loginRequest.password = loginRequest.password.trim()
-
-    viewModel.login(loginRequest)
-    viewModel.loginLiveData.observe(this) { response ->
-        if (response == null) {
-            Toast.makeText(
-                this@LoginActivity,
-                "Unsuccessful Network Call!",
-                Toast.LENGTH_SHORT
-            ).show()
-            return@observe
-        }
-
-
-    }
-}
-
-
-
-

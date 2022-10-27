@@ -9,17 +9,8 @@ import retrofit2.Response
 import java.lang.Exception
 
 class UserService{
-    suspend fun login(loginRequest: LoginRequest): SimpleResponse<LoginResponse>{
-        return safeApiCall { RetrofitInstance.userAPI.login(loginRequest) }
-    }
-
-    private inline fun<T> safeApiCall(apiCall: () -> Response<T>): SimpleResponse<T> {
-        return try{
-            SimpleResponse.success(apiCall.invoke())
-        }
-        catch (e: Exception){
-            SimpleResponse.failure(e)
-        }
+    suspend fun login(loginRequest: LoginRequest): LoginResponse {
+        return RetrofitInstance.userAPI.login(loginRequest)
     }
 
 }

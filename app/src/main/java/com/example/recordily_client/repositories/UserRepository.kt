@@ -5,17 +5,7 @@ import com.example.recordily_client.responses.LoginResponse
 import com.example.recordily_client.requests.LoginRequest
 
 class UserRepository {
-    suspend fun login(loginRequest: LoginRequest): LoginResponse? {
-        val request = RetrofitInstance.apiClient.login(loginRequest)
-
-        if(request.failed){
-            return null
-        }
-
-        if(!request.isSuccessful){
-            return null
-        }
-
-        return request.body
+    suspend fun login(loginRequest: LoginRequest): LoginResponse {
+        return RetrofitInstance.apiClient.login(loginRequest)
     }
 }
