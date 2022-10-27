@@ -1,4 +1,4 @@
-package com.example.recordily_client
+package com.example.recordily_client.pages.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

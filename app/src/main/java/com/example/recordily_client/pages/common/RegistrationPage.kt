@@ -1,4 +1,4 @@
-package com.example.recordily_client.pages
+package com.example.recordily_client.pages.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,14 +32,12 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.RoundButton
 import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
-import com.example.recordily_client.viewModels.LoginViewModel
 import kotlinx.coroutines.launch
 import com.example.recordily_client.TextField
 import com.example.recordily_client.requests.RegistrationRequest
-import com.example.recordily_client.viewModels.RegistrationViewModel
+import com.example.recordily_client.view_models.RegistrationViewModel
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)

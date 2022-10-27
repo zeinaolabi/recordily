@@ -1,4 +1,4 @@
-package com.example.recordily_client.pages
+package com.example.recordily_client.pages.common
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
@@ -28,7 +28,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
-import com.example.recordily_client.viewModels.LoginViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 
 private val errorMessage = mutableStateOf("")
