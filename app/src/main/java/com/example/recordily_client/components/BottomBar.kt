@@ -1,13 +1,17 @@
 package com.example.recordily_client.components
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.recordily_client.ui.theme.backgroundColor
@@ -32,9 +36,10 @@ fun BottomNavigationBar(
             BottomNavigationItem(
                 icon = {
                     Icon(
-                        imageVector = item.icon,
+                        painter = painterResource(item.icon),
                         contentDescription = stringResource(id = item.titleResId),
-                        tint = Color.White
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
                     )
                 },
                 selected = currentRoute == item.route,

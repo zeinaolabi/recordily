@@ -3,12 +3,10 @@ package com.example.recordily_client
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.fragment.NavHostFragment
+import com.example.recordily_client.navigation.SetupNavGraph
 import com.example.recordily_client.ui.theme.Recordily_clientTheme
 
 @ExperimentalAnimationApi

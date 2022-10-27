@@ -1,4 +1,4 @@
-package com.example.recordily_client.viewModels
+package com.example.recordily_client.view_models
 
 import androidx.lifecycle.ViewModel
 import com.example.recordily_client.repositories.LoginRepository

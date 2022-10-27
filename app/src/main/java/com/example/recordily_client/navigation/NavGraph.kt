@@ -1,4 +1,4 @@
-package com.example.recordily_client
+package com.example.recordily_client.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
@@ -6,8 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.pages.LoginPage
-import com.example.recordily_client.pages.RegistrationPage
+import com.example.recordily_client.pages.common.LoginPage
+import com.example.recordily_client.pages.common.RegistrationPage
+import com.example.recordily_client.pages.common.CommonLandingPage
 
 @ExperimentalAnimationApi
 @Composable

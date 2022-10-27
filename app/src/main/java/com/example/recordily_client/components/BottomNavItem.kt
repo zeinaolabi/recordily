@@ -1,38 +1,37 @@
 package com.example.recordily_client.components
 
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 
 sealed class BottomNavItem(
     val route: String,
     @StringRes val titleResId: Int,
-    val icon: ImageVector
+    val icon: Int
 ) {
     object Home : BottomNavItem(
         route = Screen.RegistrationPage.route,
-        titleResId = R.string.signup,
-        icon = Icons.Default.Menu
+        titleResId = R.string.signin,
+        icon = R.drawable.deviation_icon
     )
 
     object Search : BottomNavItem(
         route = Screen.LoginPage.route,
         titleResId = R.string.signin,
-        icon = Icons.Default.Search
+        icon = R.drawable.search_icon
     )
 
     object Live : BottomNavItem(
         route = Screen.LoginPage.route,
         titleResId = R.string.signin,
-        icon = Icons.Default.Info
+        icon = R.drawable.live_icon
     )
 
     object Profile : BottomNavItem(
         route = Screen.LoginPage.route,
         titleResId = R.string.signin,
-        icon = Icons.Default.AccountCircle
+        icon = R.drawable.music_library_icon
     )
 }
