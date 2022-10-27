@@ -10,6 +10,6 @@ interface UserAPI {
     @POST("login")
     suspend fun login(@Body loginRequest: LoginRequest): LoginResponse
 
-    @POST("login")
+    @POST("register")
     suspend fun register(@Body registrationResponse: RegistrationResponse): RegistrationResponse
 }
