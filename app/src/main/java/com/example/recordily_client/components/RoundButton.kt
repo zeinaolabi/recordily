@@ -18,7 +18,7 @@ fun RoundButton(text:String, onClick: () -> Unit){
         .height(48.dp)
         .width(120.dp)
         .clip(MaterialTheme.shapes.large)
-        .background(MaterialTheme.colors.primary),
+        .background(MaterialTheme.colors.secondary),
         onClick = { onClick() }) {
         Text(text = text)
     }
