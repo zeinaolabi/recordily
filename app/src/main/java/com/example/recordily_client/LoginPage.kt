@@ -93,6 +93,20 @@ fun BoxContent(navController: NavController) {
 
         CreateAccountRow(navController)
 
+        AnimatedVisibility(
+            visible = visible.value,
+            enter = expandVertically(
+                expandFrom = Alignment.Top
+            ),
+            exit = fadeOut()
+        ) {
+            Text(
+                text = errorMessage.value,
+                color = MaterialTheme.colors.primary,
+                fontWeight = FontWeight.Bold,
+
+            )
+        }
 
     }
 }
