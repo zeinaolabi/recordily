@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.ProfileHeader
+import com.example.recordily_client.components.SongsCards
 import com.example.recordily_client.components.TopNavBar
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.Destination
@@ -34,6 +35,7 @@ fun CommonProfilePage(navController: NavController){
                 navController = navController
             )
 
+            SongsCards("Top Songs", navController)
         }
     }
 }
