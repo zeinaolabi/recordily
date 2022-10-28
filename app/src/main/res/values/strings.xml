@@ -14,6 +14,10 @@
     <string name="artist">Artist</string>
     <string name="listener">Listener</string>
 
+    <string name="home">Home</string>
+    <string name="view_stats">Views Stats</string>
+    <string name="song_stats">Songs Stats</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>

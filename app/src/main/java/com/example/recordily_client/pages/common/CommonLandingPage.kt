@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.Header
+import com.example.recordily_client.components.TopNavBar
 
 @Composable
 fun CommonLandingPage(navController: NavController){
@@ -17,19 +18,7 @@ fun CommonLandingPage(navController: NavController){
         topBar = { Header() },
         bottomBar = { BottomNavigationBar(navController) }
     ) {
-
+        TopNavBar(currentPage = "Home")
     }
 
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(MaterialTheme.colors.background)
-//    ) {
-//        Column(){
-//            Header()
-//
-//            BottomNavigationBar(navController = navController )
-//
-//        }
-//    }
 }
