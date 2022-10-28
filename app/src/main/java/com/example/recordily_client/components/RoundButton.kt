@@ -33,7 +33,7 @@ fun RoundButton(text:String, onClick: () -> Unit){
 fun SmallRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
         .height(35.dp)
-        .width(120.dp)
+        .width(90.dp)
         .clip(MaterialTheme.shapes.medium)
         .background(MaterialTheme.colors.primary),
         onClick = { onClick() })

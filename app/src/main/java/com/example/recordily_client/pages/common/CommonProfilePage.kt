@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.Header
+import com.example.recordily_client.components.ProfileHeader
 import com.example.recordily_client.components.TopNavBar
 
 @Composable
@@ -18,7 +18,7 @@ fun CommonProfilePage(navController: NavController){
     )
 
     Scaffold(
-        topBar = { Header(navController) },
+        topBar = { ProfileHeader(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ){
         Column(

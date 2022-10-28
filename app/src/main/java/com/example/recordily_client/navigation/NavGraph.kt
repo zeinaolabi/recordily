@@ -16,7 +16,7 @@ import com.example.recordily_client.pages.common.CommonProfilePage
 fun SetupNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.CommonLandingPage.route
+        startDestination = Screen.CommonProfilePage.route
     ){
         composable(
             route = Screen.LoginPage.route,
