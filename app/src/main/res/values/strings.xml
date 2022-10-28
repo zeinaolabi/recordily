@@ -29,6 +29,11 @@
     <string name="upload_song">Upload Song</string>
     <string name="upload_album">Upload Album</string>
 
+    <!--Record Page-->
+    <string name="recording">Recording</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

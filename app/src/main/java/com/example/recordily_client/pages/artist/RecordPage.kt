@@ -21,11 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.components.MediumRoundButton
 import com.example.recordily_client.pages.common.BoxContent
 
 @Composable
@@ -45,6 +47,10 @@ fun RecordPage(navController: NavController){
             verticalArrangement = Arrangement.SpaceBetween
         ){
             ExitPage(navController)
+
+            RecordContent()
+
+            RecordButtonRow()
         }
     }
 }
@@ -62,7 +68,7 @@ fun ExitPage(navController: NavController){
         )
 
         Text(
-            text = "Recording",
+            text = stringResource(id = R.string.recording),
             modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
             color = MaterialTheme.colors.onPrimary,
             fontWeight = FontWeight.ExtraBold
@@ -97,5 +103,25 @@ fun RecordContent(){
         }
 
 
+    }
+}
+
+@Composable
+fun RecordButtonRow(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {}
+        )
+
+        MediumRoundButton(
+            text = stringResource(id = R.string.cancel),
+            onClick = {}
+        )
     }
 }
