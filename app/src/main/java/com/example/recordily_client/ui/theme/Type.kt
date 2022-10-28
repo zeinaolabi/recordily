@@ -1,5 +1,6 @@
 package com.example.recordily_client.ui.theme
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -19,12 +20,13 @@ val Typography = Typography(
             fontWeight = FontWeight.ExtraBold,
             fontSize = 16.sp,
             color = Color.White
-),
-    /* Other default text styles to override
+    ),
     caption = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 18.sp
     )
+    /* Other default text styles to override
+
     */
 )
