@@ -99,10 +99,10 @@ fun BoxContent(navController: NavController) {
 
         AnimatedVisibility(
             visible = visible.value,
-            enter = expandVertically(
-                expandFrom = Alignment.Top
+            enter = slideInHorizontally(
+                initialOffsetX = { -40 }
             ),
-            exit = fadeOut()
+            exit = slideOutHorizontally()
         ) {
             Text(
                 text = errorMessage.value,

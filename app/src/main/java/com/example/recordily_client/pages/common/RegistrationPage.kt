@@ -1,9 +1,6 @@
 package com.example.recordily_client.pages.common
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -17,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -110,10 +108,10 @@ fun RegistrationContent(navController: NavController) {
 
         AnimatedVisibility(
             visible = visible.value,
-            enter = expandVertically(
-                expandFrom = Alignment.Top
+            enter = slideInHorizontally(
+                initialOffsetX = { -40 }
             ),
-            exit = fadeOut()
+            exit = slideOutHorizontally()
         ){
             Text(
                 text = errorMessage.value,
