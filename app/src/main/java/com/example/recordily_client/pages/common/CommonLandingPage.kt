@@ -14,7 +14,7 @@ import com.example.recordily_client.components.TopNavBar
 fun CommonLandingPage(navController: NavController){
 
     Scaffold(
-        topBar = { Header() },
+        topBar = { Header(navController) },
         bottomBar = { BottomNavigationBar(navController) }
     ){
         Column(
