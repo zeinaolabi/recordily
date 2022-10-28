@@ -54,7 +54,7 @@ fun SongCard(navController: NavController){
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
             .height(60.dp)
             .fillMaxWidth()
-            .shadow(25.dp)
+            .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
