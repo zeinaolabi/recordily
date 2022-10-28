@@ -17,7 +17,7 @@ import com.example.recordily_client.navigation.Destination
 @Composable
 fun CommonProfilePage(navController: NavController){
     val profile = Destination(stringResource(R.string.profile), Screen.CommonProfilePage.route)
-    val unreleased = Destination(stringResource(R.string.unreleased), Screen.CommonProfilePage.route)
+    val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
         profile, unreleased
     )
