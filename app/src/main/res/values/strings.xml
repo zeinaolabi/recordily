@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">recordily_client</string>
+    <string name="app_name">Recordily</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign up</string>
+    <string name="signupas">Sign up as:</string>
+    <string name="signin">Sign in</string>
+    <string name="create_account">Don\'t have an account?</string>
+    <string name="sign_in">Already have an account?</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <string name="artist">Artist</string>
+    <string name="listener">Listener</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main">MainActivity</string>
+
 </resources>
