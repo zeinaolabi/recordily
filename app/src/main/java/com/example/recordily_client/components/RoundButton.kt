@@ -48,6 +48,24 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
 }
 
 @Composable
+fun MediumRoundButton(text:String, onClick: () -> (Unit)){
+    Button(modifier = Modifier
+        .height(40.dp)
+        .width(120.dp)
+        .clip(MaterialTheme.shapes.medium)
+        .background(MaterialTheme.colors.primary),
+        onClick = { onClick() })
+    {
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
+    }
+}
+
+@Composable
 fun LargeRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
         .height(48.dp)
