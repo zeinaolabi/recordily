@@ -40,6 +40,23 @@ fun TopNavBar(currentPage: String){
             }
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
     ){
+        PageOptions(currentPage)
+    }
+
+}
+
+@Composable
+fun PageOptions(currentPage: String){
+    val pageOptions = listOf(stringResource(R.string.home), stringResource(R.string.view_stats), stringResource(R.string.song_stats))
+    val secondaryColor = MaterialTheme.colors.secondary
+
+    pageOptions.forEach { text ->
+        Row(){
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
 }
