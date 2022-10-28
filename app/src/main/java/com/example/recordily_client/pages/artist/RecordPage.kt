@@ -41,19 +41,22 @@ fun RecordPage(navController: NavController){
                     vertical = dimensionResource(id = R.dimen.padding_large)
                 )
         ){
-            ExitPage()
+            ExitPage(navController)
         }
 
     }
 }
 
 @Composable
-fun ExitPage(){
+fun ExitPage(navController: NavController){
     Row {
         Icon(
             Icons.Default.Close,
             contentDescription = "Exit",
             tint = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.clickable {
+                navController.popBackStack()
+            }
         )
 
         Text(
