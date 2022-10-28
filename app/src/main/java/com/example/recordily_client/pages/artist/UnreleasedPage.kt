@@ -1,9 +1,14 @@
 package com.example.recordily_client.pages.artist
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -27,7 +32,7 @@ fun UnreleasedPage(navController: NavController) {
     bottomBar = { BottomNavigationBar(navController) }
     ){
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ){
             TopNavBar(
                 pageOptions = pageOptions,
@@ -35,9 +40,14 @@ fun UnreleasedPage(navController: NavController) {
                 navController = navController
             )
 
-            SongsCards("Unreleased Songs", navController)
-            SongsCards("Unreleased Albums", navController)
-
+            Column(
+                modifier = Modifier
+                    .padding(top = dimensionResource(id = R.dimen.padding_large))
+                    .verticalScroll(ScrollState(0))
+            ){
+                SongsCards("Unreleased Songs", navController)
+                SongsCards("Unreleased Albums", navController)
+            }
         }
     }
 }
