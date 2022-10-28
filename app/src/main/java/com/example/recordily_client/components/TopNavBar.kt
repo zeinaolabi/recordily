@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Destination
-import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController: NavController){
