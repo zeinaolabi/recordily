@@ -10,11 +10,15 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.ProfileHeader
 import com.example.recordily_client.components.TopNavBar
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.Destination
 
 @Composable
 fun CommonProfilePage(navController: NavController){
+    val profile = Destination(stringResource(R.string.profile), Screen.CommonProfilePage.route)
+    val unreleased = Destination(stringResource(R.string.unreleased), Screen.CommonProfilePage.route)
     val pageOptions = listOf(
-        stringResource(R.string.profile), stringResource(R.string.unreleased)
+        profile, unreleased
     )
 
     Scaffold(
@@ -24,7 +28,11 @@ fun CommonProfilePage(navController: NavController){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            TopNavBar(pageOptions = pageOptions, currentPage = "Profile")
+            TopNavBar(
+                pageOptions = pageOptions,
+                currentPage = "Profile",
+                navController = navController
+            )
 
         }
     }

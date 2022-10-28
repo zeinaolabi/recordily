@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,13 +16,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.Screen
 
 @Composable
-fun TopNavBar(pageOptions: List<String>, currentPage: String){
+fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController: NavController){
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -41,19 +44,22 @@ fun TopNavBar(pageOptions: List<String>, currentPage: String){
             }
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
     ){
-        PageOptions(pageOptions, currentPage)
+        PageOptions(pageOptions, currentPage, navController)
     }
 
 }
 
 @Composable
-fun PageOptions(pageOptions: List<String>, currentPage: String){
+fun PageOptions(pageOptions: List<Destination>, currentPage: String, navController: NavController){
     val secondaryColor = MaterialTheme.colors.secondary
 
-    pageOptions.forEach { text ->
+    pageOptions.forEach { option ->
         Row(
             modifier = Modifier
-                .conditional(currentPage == text) {
+                .clickable {
+                    navController.navigate(option.route)
+                }
+                .conditional(currentPage == option.page) {
                     drawBehind {
                         val strokeWidth = Stroke.DefaultMiter * 5
                         val y = size.height - strokeWidth / 10 + 20
@@ -69,7 +75,7 @@ fun PageOptions(pageOptions: List<String>, currentPage: String){
                 }
         ){
             Text(
-                text = text,
+                text = option.page,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
