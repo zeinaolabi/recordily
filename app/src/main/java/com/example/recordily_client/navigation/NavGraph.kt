@@ -9,6 +9,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.pages.common.LoginPage
 import com.example.recordily_client.pages.common.RegistrationPage
 import com.example.recordily_client.pages.common.CommonLandingPage
+import com.example.recordily_client.pages.common.CommonProfilePage
 
 @ExperimentalAnimationApi
 @Composable
@@ -36,6 +37,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.CommonLandingPage.route
         ){
             CommonLandingPage(navController)
+        }
+
+        composable(
+            route = Screen.CommonProfilePage.route
+        ){
+            CommonProfilePage(navController)
         }
     }
 }
