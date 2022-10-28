@@ -11,12 +11,16 @@ import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.Header
 import com.example.recordily_client.components.SongsBox
 import com.example.recordily_client.components.TopNavBar
+import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun CommonLandingPage(navController: NavController){
+    val home = Destination(stringResource(R.string.home), Screen.CommonLandingPage.route)
+    val viewStats = Destination(stringResource(R.string.view_stats), Screen.CommonLandingPage.route)
+    val songStats = Destination(stringResource(R.string.song_stats), Screen.CommonLandingPage.route)
     val pageOptions = listOf(
-        stringResource(R.string.home), stringResource(R.string.view_stats), stringResource(
-            R.string.song_stats)
+        home, viewStats, songStats
     )
 
     Scaffold(
@@ -26,7 +30,7 @@ fun CommonLandingPage(navController: NavController){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            TopNavBar(pageOptions = pageOptions, currentPage = "Home")
+            TopNavBar(pageOptions = pageOptions, currentPage = "Home", navController = navController)
 
             SongsBox("Suggested Songs")
         }
