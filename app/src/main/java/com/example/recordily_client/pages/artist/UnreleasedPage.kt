@@ -56,9 +56,23 @@ fun AddMusicRow(navController: NavController){
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
-        MediumRoundButton(text = stringResource(id = R.string.record), onClick = {})
-        MediumRoundButton(text = stringResource(id = R.string.upload_song), onClick = {})
-        MediumRoundButton(text = stringResource(id = R.string.upload_album), onClick = {})
+
+        MediumRoundButton(
+            text = stringResource(id = R.string.record),
+            onClick = {
+                navController.navigate(Screen.RecordPage.route)
+            }
+        )
+
+        MediumRoundButton(
+            text = stringResource(id = R.string.upload_song),
+            onClick = {}
+        )
+
+        MediumRoundButton(
+            text = stringResource(id = R.string.upload_album),
+            onClick = {}
+        )
     }
 }
 
