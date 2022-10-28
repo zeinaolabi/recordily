@@ -23,6 +23,13 @@ fun RoundButton(text:String, onClick: () -> Unit){
         .height(48.dp)
         .width(120.dp)
         .clip(MaterialTheme.shapes.large)
+        .innerShadow(
+            blur = 15.dp,
+            color = MaterialTheme.colors.primaryVariant,
+            cornersRadius = 50.dp,
+            offsetX = (-12.5).dp,
+            offsetY = (-7.5).dp
+        )
         .background(MaterialTheme.colors.secondary),
         onClick = { onClick() }) {
         Text(text = text)
@@ -35,6 +42,13 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
         .height(35.dp)
         .width(90.dp)
         .clip(MaterialTheme.shapes.medium)
+        .innerShadow(
+            blur = 15.dp,
+            color = MaterialTheme.colors.primaryVariant,
+            cornersRadius = 50.dp,
+            offsetX = (-5.5).dp,
+            offsetY = (-3.5).dp
+        )
         .background(MaterialTheme.colors.primary),
         onClick = { onClick() })
     {
@@ -53,6 +67,13 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
         .height(40.dp)
         .width(120.dp)
         .clip(MaterialTheme.shapes.medium)
+        .innerShadow(
+            blur = 15.dp,
+            color = MaterialTheme.colors.primaryVariant,
+            cornersRadius = 50.dp,
+            offsetX = (-8.5).dp,
+            offsetY = (-5.5).dp
+        )
         .background(MaterialTheme.colors.primary),
         onClick = { onClick() })
     {

@@ -1,5 +1,8 @@
 package com.example.recordily_client.pages.artist
 
+import android.graphics.BlurMaskFilter
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,17 +20,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.MediumRoundButton
+import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.pages.common.BoxContent
 
 @Composable
@@ -79,26 +91,41 @@ fun ExitPage(navController: NavController){
 @Composable
 fun RecordContent(){
     Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(.8f),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = "2:17",
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+            fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colors.onPrimary
         )
         
         Box(
             modifier = Modifier
-                .size(300.dp)
+                .size(280.dp)
                 .clip(CircleShape)
+                .shadow(15.dp)
                 .background(MaterialTheme.colors.primary)
+                .innerShadow(
+                    blur = 25.dp,
+                    color = MaterialTheme.colors.primaryVariant,
+                    cornersRadius = 150.dp,
+                    offsetX = (-20.5).dp,
+                    offsetY = (-15.5).dp
+                )
                 .clickable { },
             contentAlignment = Alignment.Center
         ){
             Icon(
                 painter = painterResource(id = R.drawable.record_logo),
                 contentDescription = "Record Logo",
-                modifier = Modifier.size(250.dp)
+                modifier = Modifier.size(100.dp),
+                tint = MaterialTheme.colors.onPrimary
             )
         }
 
@@ -112,7 +139,7 @@ fun RecordButtonRow(){
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceAround
     ){
         MediumRoundButton(
             text = stringResource(id = R.string.save),
