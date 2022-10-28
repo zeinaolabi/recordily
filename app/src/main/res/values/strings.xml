@@ -1,4 +1,5 @@
 <resources>
+    <!--Sign in and sign up pages-->
     <string name="app_name">Recordily</string>
     <string name="login">Login</string>
     <string name="signup">Sign up</string>
@@ -10,19 +11,23 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="forgot_password">Forgot password?</string>
-
     <string name="artist">Artist</string>
     <string name="listener">Listener</string>
 
+    <!--Home page-->
     <string name="home">Home</string>
     <string name="view_stats">Views Stats</string>
     <string name="song_stats">Songs Stats</string>
-
     <string name="suggested">Suggested For You</string>
 
+    <!--Profile Page -->
     <string name="profile">Profile</string>
     <string name="unreleased">Unreleased</string>
 
+    <!--Unreleased Page -->
+    <string name="record">Record</string>
+    <string name="upload_song">Upload Song</string>
+    <string name="upload_album">Upload Album</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

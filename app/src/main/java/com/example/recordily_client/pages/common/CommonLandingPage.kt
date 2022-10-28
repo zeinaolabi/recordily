@@ -30,7 +30,10 @@ fun CommonLandingPage(navController: NavController){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            TopNavBar(pageOptions = pageOptions, currentPage = "Home", navController = navController)
+            TopNavBar(
+                pageOptions = pageOptions,
+                currentPage = "Home", navController = navController
+            )
 
             SongsBox("Suggested Songs")
         }
