@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -39,11 +41,11 @@ fun RecordPage(navController: NavController){
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium),
                     vertical = dimensionResource(id = R.dimen.padding_large)
-                )
+                ),
+            verticalArrangement = Arrangement.SpaceBetween
         ){
             ExitPage(navController)
         }
-
     }
 }
 
@@ -68,17 +70,32 @@ fun ExitPage(navController: NavController){
     }
 }
 
-//@Composable
-//fun RecordContent(){
-//    Row {
-//        Icon(
-//            Icons.Default.Close,
-//            contentDescription = "Exit"
-//        )
-//
-//        Text(
-//            text = "Recording",
-//            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-//        )
-//    }
-//}
+@Composable
+fun RecordContent(){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "2:17",
+            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+        )
+        
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colors.primary)
+                .clickable { },
+            contentAlignment = Alignment.Center
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.record_logo),
+                contentDescription = "Record Logo",
+                modifier = Modifier.size(250.dp)
+            )
+        }
+
+
+    }
+}
