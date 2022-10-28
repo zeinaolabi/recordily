@@ -51,7 +51,23 @@ fun PageOptions(currentPage: String){
     val secondaryColor = MaterialTheme.colors.secondary
 
     pageOptions.forEach { text ->
-        Row(){
+        Row(
+            modifier = Modifier
+                .conditional(currentPage == text){
+                    drawBehind {
+                        val strokeWidth = Stroke.DefaultMiter * 5
+                        val y = size.height - strokeWidth/10 + 20
+
+                        drawLine(
+                            secondaryColor,
+                            Offset(-10f, y),
+                            Offset(size.width + 10, y),
+                            strokeWidth,
+                            cap = StrokeCap.Round
+                        )
+                    }
+                }
+        ){
             Text(
                 text = text,
                 fontWeight = FontWeight.Bold
