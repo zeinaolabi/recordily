@@ -23,7 +23,9 @@ import com.example.recordily_client.R
 
 @Composable
 fun SongsCards(title: String, navController: NavController){
-    Column{
+    Column(
+        modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_large))
+    ){
         Text(
             text = title,
             fontWeight = FontWeight.ExtraBold,

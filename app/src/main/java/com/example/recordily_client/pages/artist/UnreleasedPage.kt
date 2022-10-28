@@ -40,14 +40,19 @@ fun UnreleasedPage(navController: NavController) {
                 navController = navController
             )
 
-            Column(
-                modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.padding_large))
-                    .verticalScroll(ScrollState(0))
-            ){
-                SongsCards("Unreleased Songs", navController)
-                SongsCards("Unreleased Albums", navController)
-            }
+            UnreleasedContentColumn(navController)
         }
+    }
+}
+
+@Composable
+fun UnreleasedContentColumn(navController: NavController){
+    Column(
+        modifier = Modifier
+            .padding(top = dimensionResource(id = R.dimen.padding_large))
+            .verticalScroll(ScrollState(0))
+    ){
+        SongsCards("Unreleased Songs", navController)
+        SongsCards("Unreleased Albums", navController)
     }
 }
