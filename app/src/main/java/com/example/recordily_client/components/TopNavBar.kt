@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,20 +16,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Destination
 
 @Composable
-fun TopNavBar(currentPage: String){
+fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController: NavController){
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .drawBehind {
                 val strokeWidth = Stroke.DefaultMiter * 1.5f
-                val y = size.height - strokeWidth/10 + 20
+                val y = size.height - strokeWidth / 10 + 20
 
                 drawLine(
                     Color.Black,
@@ -40,23 +43,25 @@ fun TopNavBar(currentPage: String){
             }
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
     ){
-        PageOptions(currentPage)
+        PageOptions(pageOptions, currentPage, navController)
     }
 
 }
 
 @Composable
-fun PageOptions(currentPage: String){
-    val pageOptions = listOf(stringResource(R.string.home), stringResource(R.string.view_stats), stringResource(R.string.song_stats))
+fun PageOptions(pageOptions: List<Destination>, currentPage: String, navController: NavController){
     val secondaryColor = MaterialTheme.colors.secondary
 
-    pageOptions.forEach { text ->
+    pageOptions.forEach { option ->
         Row(
             modifier = Modifier
-                .conditional(currentPage == text){
+                .clickable {
+                    navController.navigate(option.route)
+                }
+                .conditional(currentPage == option.page) {
                     drawBehind {
                         val strokeWidth = Stroke.DefaultMiter * 5
-                        val y = size.height - strokeWidth/10 + 20
+                        val y = size.height - strokeWidth / 10 + 20
 
                         drawLine(
                             secondaryColor,
@@ -69,8 +74,9 @@ fun PageOptions(currentPage: String){
                 }
         ){
             Text(
-                text = text,
-                fontWeight = FontWeight.Bold
+                text = option.page,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
         }
     }
