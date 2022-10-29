@@ -1,10 +1,7 @@
-package com.example.recordily_client.components
+package com.example.recordily_client.navigation
 
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.res.stringResource
 import com.example.recordily_client.R
-import com.example.recordily_client.navigation.Screen
 
 sealed class BottomNavItem(
     val route: String,
@@ -13,19 +10,19 @@ sealed class BottomNavItem(
 ) {
     object Home : BottomNavItem(
         route = Screen.CommonLandingPage.route,
-        titleResId = R.string.signin,
+        titleResId = R.string.home,
         icon = R.drawable.deviation_icon
     )
 
     object Search : BottomNavItem(
         route = Screen.CommonSearchPage.route,
-        titleResId = R.string.signin,
+        titleResId = R.string.search,
         icon = R.drawable.search_icon
     )
 
     object Live : BottomNavItem(
-        route = Screen.LoginPage.route,
-        titleResId = R.string.signin,
+        route = Screen.CommonLiveEventsPage.route,
+        titleResId = R.string.live,
         icon = R.drawable.live_icon
     )
 
