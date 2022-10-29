@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
@@ -94,9 +93,16 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
 @Composable
 fun LargeRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
-        .height(48.dp)
+        .height(45.dp)
         .fillMaxWidth()
-        .clip(MaterialTheme.shapes.large)
+        .clip(MaterialTheme.shapes.small)
+        .innerShadow(
+            blur = 12.dp,
+            color = MaterialTheme.colors.primaryVariant,
+            cornersRadius = 10.dp,
+            offsetX = (-5.5).dp,
+            offsetY = (-3.5).dp
+        )
         .background(MaterialTheme.colors.primary),
         onClick = { onClick() }) {
         Text(text = text)
