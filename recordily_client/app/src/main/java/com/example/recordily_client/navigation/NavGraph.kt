@@ -11,10 +11,7 @@ import com.example.recordily_client.pages.artist.RecordPage
 import com.example.recordily_client.pages.artist.SongsStatsPage
 import com.example.recordily_client.pages.artist.UnreleasedPage
 import com.example.recordily_client.pages.artist.ViewsStatsPage
-import com.example.recordily_client.pages.common.LoginPage
-import com.example.recordily_client.pages.common.RegistrationPage
-import com.example.recordily_client.pages.common.CommonLandingPage
-import com.example.recordily_client.pages.common.CommonProfilePage
+import com.example.recordily_client.pages.common.*
 
 @RequiresApi(Build.VERSION_CODES.S)
 @ExperimentalAnimationApi
@@ -73,6 +70,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.SongsStatsPage.route
         ){
             SongsStatsPage(navController)
+        }
+
+        composable(
+            route = Screen.CommonSearchPage.route
+        ){
+            CommonSearchPage(navController)
         }
     }
 }
