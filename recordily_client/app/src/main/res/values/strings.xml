@@ -28,6 +28,7 @@
     <string name="record">Record</string>
     <string name="upload_song">Upload Song</string>
     <string name="upload_album">Upload Album</string>
+    <string name="more">More</string>
 
     <!--Record Page-->
     <string name="recording">Recording</string>
