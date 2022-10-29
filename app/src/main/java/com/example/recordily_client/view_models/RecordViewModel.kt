@@ -41,5 +41,40 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun startRecording(){
+        mediaRecorder = MediaRecorder()
+
+        val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+
+        val fileName = System.currentTimeMillis().toString() + ".mp3"
+        val file = File(dir, fileName)
+
+        try{
+            if (!dir.isDirectory) {
+                dir.mkdir()
+            }
+            file.createNewFile()
+        } catch (e: Exception) {
+            Log.i("Exception", e.message.toString())
+        }
+
+        mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+        mediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+        mediaRecorder?.setOutputFile(file)
+
+        try {
+            mediaRecorder?.prepare()
+            mediaRecorder?.start()
+            state = true
+            Toast.makeText(context, "Recording started!", Toast.LENGTH_SHORT).show()
+        } catch (e: IllegalStateException) {
+            Log.i("IllegalStateException", e.message.toString())
+        } catch (e: IOException) {
+            Log.i("IOException", e.message.toString())
+        }
+    }
+
 
 }
