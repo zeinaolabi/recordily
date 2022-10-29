@@ -17,8 +17,6 @@ import java.io.IOException
 import java.io.File
 
 
-
-
 @SuppressLint("StaticFieldLeak")
 class RecordViewModel(application: Application): AndroidViewModel(application) {
 
@@ -90,7 +88,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
 
     @SuppressLint("RestrictedApi", "SetTextI18n")
     @TargetApi(Build.VERSION_CODES.N)
-    private fun pauseRecording() {
+    fun pauseRecording() {
         if(state) {
             if(!recordingStopped){
                 mediaRecorder?.pause()
@@ -103,9 +101,17 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
 
     @SuppressLint("RestrictedApi", "SetTextI18n")
     @TargetApi(Build.VERSION_CODES.N)
-    private fun resumeRecording() {
+    fun resumeRecording() {
         Toast.makeText(context,"Resume!", Toast.LENGTH_SHORT).show()
         mediaRecorder?.resume()
+        recordingStopped = false
+    }
+
+    @SuppressLint("RestrictedApi", "SetTextI18n")
+    @TargetApi(Build.VERSION_CODES.N)
+    fun deleteRecording() {
+        mediaRecorder?.stop()
+        mediaRecorder?.reset()
         recordingStopped = false
     }
 
