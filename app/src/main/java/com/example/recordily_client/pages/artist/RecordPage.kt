@@ -13,10 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
@@ -112,6 +109,18 @@ fun RecordContent(){
 
 @Composable
 fun RecordButtonRow(){
+    var currentTime by remember { mutableStateOf(0L)}
+
+    val minutes = currentTime / 60L
+    val seconds = currentTime % 60000L
+
+    LaunchedEffect(key1 = currentTime, key2 = recordState.value) {
+        if (recordState.value) {
+            delay(100L)
+            currentTime += 100L
+        }
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,7 +128,7 @@ fun RecordButtonRow(){
         horizontalArrangement = Arrangement.SpaceAround
     ){
         Text(
-            text = "2:17",
+            text = String.format("%d:%02d", minutes / 1000L, seconds / 1000L),
             modifier = Modifier
                 .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
             fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
