@@ -76,5 +76,17 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun stopRecording(){
+        if(state){
+            mediaRecorder?.stop()
+            mediaRecorder?.reset()
+            mediaRecorder?.release()
+            state = false
+            Toast.makeText(context, "Recording finished", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
 }
