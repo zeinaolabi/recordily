@@ -42,7 +42,7 @@ fun CommonSearchPage(navController: NavController){
 @Composable
 fun SearchPageContent(navController: NavController){
     Text(
-        text = "Discover New Songs",
+        text = stringResource(id = R.string.discover_songs),
         fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
         fontWeight = FontWeight.ExtraBold,
         color = MaterialTheme.colors.onPrimary,
