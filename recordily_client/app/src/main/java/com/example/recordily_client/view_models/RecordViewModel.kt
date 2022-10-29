@@ -22,15 +22,12 @@ import java.io.IOException
 import java.io.File
 import android.media.AudioManager
 import android.media.MediaPlayer.OnPreparedListener
+import com.example.recordily_client.R
 import java.io.FileNotFoundException
 
 import java.io.FileInputStream
 import java.security.AccessController.getContext
 import java.io.FileDescriptor
-
-
-
-
 
 @SuppressLint("StaticFieldLeak")
 class RecordViewModel(application: Application): AndroidViewModel(application) {
@@ -38,7 +35,6 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
     private var mediaRecorder: MediaRecorder? = null
     private var state: Boolean = false
-    private var recordingStopped: Boolean = false
     private var currentFile: File? = null
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -55,6 +51,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.S)
     private fun startRecording(){
         mediaRecorder = MediaRecorder()
@@ -96,7 +93,6 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
             mediaRecorder?.reset()
             mediaRecorder?.release()
             state = false
-            Toast.makeText(context, "Recording Saved", Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
         }
@@ -104,50 +100,22 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
 
     @SuppressLint("RestrictedApi", "SetTextI18n")
     @TargetApi(Build.VERSION_CODES.N)
-    fun pauseRecording() {
-        if(state) {
-            if(!recordingStopped){
-                mediaRecorder?.pause()
-                recordingStopped = true
-            }else{
-                resumeRecording()
-            }
-        }
-    }
-
-    @SuppressLint("RestrictedApi", "SetTextI18n")
-    @TargetApi(Build.VERSION_CODES.N)
-    fun resumeRecording() {
-        mediaRecorder?.resume()
-        recordingStopped = false
-    }
-
-    @SuppressLint("RestrictedApi", "SetTextI18n")
-    @TargetApi(Build.VERSION_CODES.N)
     fun deleteRecording() {
-        mediaRecorder?.stop()
-        mediaRecorder?.release()
-        recordingStopped = false
         currentFile?.delete()
     }
 
-    fun playContentUri() {
-
+    fun playRecordContent() {
         val path = currentFile?.path.toString()
-        Log.i("path2", currentFile?.path.toString())
-//        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
 
-
-        val mediaPlayer = MediaPlayer.create(context, Uri.parse(path))
+        val mediaPlayer = MediaPlayer()
         try {
-
+            mediaPlayer.setDataSource(path)
+            mediaPlayer.prepare()
             mediaPlayer.start()
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (t: Throwable) {
             t.printStackTrace()
         }
-
     }
-
 }
