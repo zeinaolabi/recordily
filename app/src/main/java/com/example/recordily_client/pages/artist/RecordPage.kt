@@ -175,7 +175,7 @@ fun RecordButton(recordViewModel: RecordViewModel){
             painter = painterResource(id = R.drawable.record_logo),
             contentDescription = "Record Logo",
             modifier = Modifier.size(50.dp),
-            tint = MaterialTheme.colors.onPrimary
+            tint = Color.White
         )
     }
 }
@@ -196,7 +196,7 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
         ) {
             Text(
                 text = "Delete",
-                color = Color.Black,
+                color = MaterialTheme.colors.onPrimary,
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 modifier = Modifier.clickable {
@@ -287,7 +287,7 @@ fun WaveRecordAnimation(recordViewModel: RecordViewModel){
             Icon(
                 painter = painterResource(id = R.drawable.record_logo),
                 "mic",
-                tint = MaterialTheme.colors.onPrimary,
+                tint = Color.White,
                 modifier = Modifier
                     .size(50.dp)
                     .align(Center)

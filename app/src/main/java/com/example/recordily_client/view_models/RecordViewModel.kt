@@ -24,6 +24,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
     private var mediaRecorder: MediaRecorder? = null
     private var state: Boolean = false
     private var recordingStopped: Boolean = false
+    private var currentFile: File? = null
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun recordAudio(){
@@ -53,6 +54,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
                 dir.mkdir()
             }
             file.createNewFile()
+            currentFile = file
         } catch (e: Exception) {
             Log.i("Exception", e.message.toString())
         }
@@ -66,7 +68,6 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
             mediaRecorder?.prepare()
             mediaRecorder?.start()
             state = true
-            Toast.makeText(context, "Recording started!", Toast.LENGTH_SHORT).show()
         } catch (e: IllegalStateException) {
             Log.i("IllegalStateException", e.message.toString())
         } catch (e: IOException) {
@@ -80,7 +81,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
             mediaRecorder?.reset()
             mediaRecorder?.release()
             state = false
-            Toast.makeText(context, "Recording finished", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Recording Saved", Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(context, "You are not recording right now!", Toast.LENGTH_SHORT).show()
         }
@@ -102,7 +103,6 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
     @SuppressLint("RestrictedApi", "SetTextI18n")
     @TargetApi(Build.VERSION_CODES.N)
     fun resumeRecording() {
-        Toast.makeText(context,"Resume!", Toast.LENGTH_SHORT).show()
         mediaRecorder?.resume()
         recordingStopped = false
     }
@@ -111,8 +111,9 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
     @TargetApi(Build.VERSION_CODES.N)
     fun deleteRecording() {
         mediaRecorder?.stop()
-        mediaRecorder?.reset()
+        mediaRecorder?.release()
         recordingStopped = false
+        currentFile?.delete()
     }
 
 }
