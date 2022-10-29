@@ -43,6 +43,7 @@ fun SongsBox(title: String){
                 .shadow(25.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colors.surface)
+                .padding(dimensionResource(id = R.dimen.padding_medium))
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
         ){
