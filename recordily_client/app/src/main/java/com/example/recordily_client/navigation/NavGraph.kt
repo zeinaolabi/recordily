@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.recordily_client.pages.artist.RecordPage
+import com.example.recordily_client.pages.artist.SongsStatsPage
 import com.example.recordily_client.pages.artist.UnreleasedPage
 import com.example.recordily_client.pages.artist.ViewsStatsPage
 import com.example.recordily_client.pages.common.LoginPage
@@ -66,6 +67,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.ViewsStatsPage.route
         ){
             ViewsStatsPage(navController)
+        }
+
+        composable(
+            route = Screen.SongsStatsPage.route
+        ){
+            SongsStatsPage(navController)
         }
     }
 }
