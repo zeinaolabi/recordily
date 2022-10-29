@@ -22,15 +22,16 @@ import java.io.File
 @SuppressLint("StaticFieldLeak")
 class RecordViewModel(application: Application): AndroidViewModel(application) {
 
+    private val context = getApplication<Application>().applicationContext
     private var mediaRecorder: MediaRecorder? = null
     private var state: Boolean = false
     private var recordingStopped: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.S)
     fun recordAudio(){
-        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO)  != PackageManager.PERMISSION_GRANTED){
+        if(ActivityCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO)  != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(
-                this, arrayOf(
+                context as Activity, arrayOf(
                     android.Manifest.permission.RECORD_AUDIO,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 111)
