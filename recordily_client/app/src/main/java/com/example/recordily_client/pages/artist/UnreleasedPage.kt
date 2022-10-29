@@ -2,6 +2,7 @@ package com.example.recordily_client.pages.artist
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -79,8 +80,10 @@ fun AddMusicRow(navController: NavController){
 @Composable
 fun UnreleasedContentColumn(navController: NavController){
     Column(
-        modifier = Modifier.verticalScroll(ScrollState(0))
-    ){
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
+        ){
         SongsCards("Unreleased Songs", navController, Screen.CommonLandingPage.route)
         SongsCards("Unreleased Albums", navController, Screen.CommonLandingPage.route)
     }
