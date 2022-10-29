@@ -3,6 +3,7 @@ package com.example.recordily_client.pages.artist
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -34,10 +36,15 @@ import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
 
 val recordState = mutableStateOf(false)
+val pausedState = mutableStateOf(false)
+val currentTime = mutableStateOf(0L)
 
+@ExperimentalAnimationApi
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun RecordPage(navController: NavController){
+    val recordViewModel : RecordViewModel = viewModel()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,9 +61,11 @@ fun RecordPage(navController: NavController){
         ){
             ExitPage(navController)
 
-            RecordContent()
+            RecordContent(recordViewModel)
 
-            RecordButtonRow()
+            RecordTimer()
+
+            RecordButtonsRow(recordViewModel)
         }
     }
 }
@@ -84,9 +93,7 @@ fun ExitPage(navController: NavController){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun RecordContent(){
-    val recordViewModel : RecordViewModel = viewModel()
-
+fun RecordContent(recordViewModel: RecordViewModel){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -95,8 +102,7 @@ fun RecordContent(){
         verticalArrangement = Arrangement.Center
     ) {
 
-        Log.i("Test", recordState.value.toString())
-        if(recordState.value){
+        if(recordState.value && !pausedState.value){
             WaveRecordAnimation(recordViewModel)
         }
         else{
@@ -108,16 +114,14 @@ fun RecordContent(){
 
 
 @Composable
-fun RecordButtonRow(){
-    var currentTime by remember { mutableStateOf(0L)}
+fun RecordTimer(){
+    val minutes = currentTime.value / 60L
+    val seconds = currentTime.value % 60000L
 
-    val minutes = currentTime / 60L
-    val seconds = currentTime % 60000L
-
-    LaunchedEffect(key1 = currentTime, key2 = recordState.value) {
-        if (recordState.value) {
+    LaunchedEffect(key1 = currentTime.value, key2 = recordState.value, key3 = pausedState.value) {
+        if (recordState.value && !pausedState.value) {
             delay(100L)
-            currentTime += 100L
+            currentTime.value += 100L
         }
     }
 
@@ -155,8 +159,15 @@ fun RecordButton(recordViewModel: RecordViewModel){
                 offsetY = (-15.5).dp
             )
             .clickable {
-                recordViewModel.recordAudio()
-                recordState.value = true
+                if(pausedState.value){
+                    recordViewModel.resumeRecording()
+                    pausedState.value = false
+                }
+                else{
+                    recordViewModel.recordAudio()
+                    recordState.value = true
+                }
+
             },
         contentAlignment = Center
     ){
@@ -166,6 +177,50 @@ fun RecordButton(recordViewModel: RecordViewModel){
             modifier = Modifier.size(50.dp),
             tint = MaterialTheme.colors.onPrimary
         )
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+fun RecordButtonsRow(recordViewModel: RecordViewModel){
+
+    AnimatedVisibility(
+        pausedState.value,
+        enter = fadeIn(0.4f) + expandIn(expandFrom = Alignment.TopStart),
+        exit = fadeOut(animationSpec = tween(durationMillis = 250)) + shrinkOut(shrinkTowards = Alignment.TopStart)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Delete",
+                color = Color.Black,
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                modifier = Modifier.clickable {
+                    currentTime.value = 0L
+                    recordViewModel.deleteRecording()
+                    pausedState.value = false
+                    recordState.value = false
+                }
+            )
+
+            Text(
+                text = "Save",
+                color = MaterialTheme.colors.primaryVariant,
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                modifier = Modifier.clickable {
+                    //Navigate to save song page
+                    currentTime.value = 0L
+                    recordViewModel.stopRecording()
+                    pausedState.value = false
+                    recordState.value = false
+                }
+            )
+        }
     }
 }
 
@@ -198,8 +253,8 @@ fun WaveRecordAnimation(recordViewModel: RecordViewModel){
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                recordViewModel.stopRecording()
-                recordState.value = false
+                recordViewModel.pauseRecording()
+                pausedState.value = true
             },
         contentAlignment = Center
     ) {
