@@ -35,7 +35,7 @@ import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
 
 val recordState = mutableStateOf(false)
-val pausedState = mutableStateOf(false)
+val buttonsVisibility = mutableStateOf(false)
 val currentTime = mutableStateOf(0L)
 
 @ExperimentalAnimationApi
@@ -58,7 +58,7 @@ fun RecordPage(navController: NavController){
                 ),
             verticalArrangement = Arrangement.SpaceBetween
         ){
-            ExitPage(navController)
+            ExitPage(navController, recordViewModel)
 
             RecordContent(recordViewModel)
 
@@ -70,13 +70,19 @@ fun RecordPage(navController: NavController){
 }
 
 @Composable
-fun ExitPage(navController: NavController){
+fun ExitPage(navController: NavController, recordViewModel: RecordViewModel){
     Row {
         Icon(
             Icons.Default.Close,
             contentDescription = "Exit",
             tint = MaterialTheme.colors.onPrimary,
             modifier = Modifier.clickable {
+                if(recordState.value){
+                    recordViewModel.stopRecording()
+                    recordViewModel.deleteRecording()
+                    currentTime.value = 0L
+                    recordState.value = false
+                }
                 navController.popBackStack()
             }
         )
@@ -101,7 +107,7 @@ fun RecordContent(recordViewModel: RecordViewModel){
         verticalArrangement = Arrangement.Center
     ) {
 
-        if(recordState.value && !pausedState.value){
+        if(recordState.value){
             WaveRecordAnimation(recordViewModel)
         }
         else{
@@ -117,8 +123,8 @@ fun RecordTimer(){
     val minutes = currentTime.value / 60L
     val seconds = currentTime.value % 60000L
 
-    LaunchedEffect(key1 = currentTime.value, key2 = recordState.value, key3 = pausedState.value) {
-        if (recordState.value && !pausedState.value) {
+    LaunchedEffect(key1 = currentTime.value, key2 = recordState.value) {
+        if (recordState.value) {
             delay(100L)
             currentTime.value += 100L
         }
@@ -158,15 +164,10 @@ fun RecordButton(recordViewModel: RecordViewModel){
                 offsetY = (-15.5).dp
             )
             .clickable {
-                if(pausedState.value){
-                    recordViewModel.resumeRecording()
-                    pausedState.value = false
-                }
-                else{
-                    recordViewModel.recordAudio()
-                    recordState.value = true
-                }
-
+                currentTime.value = 0L
+                recordViewModel.recordAudio()
+                recordState.value = true
+                buttonsVisibility.value = false
             },
         contentAlignment = Center
     ){
@@ -184,7 +185,7 @@ fun RecordButton(recordViewModel: RecordViewModel){
 fun RecordButtonsRow(recordViewModel: RecordViewModel){
 
     AnimatedVisibility(
-        pausedState.value,
+        buttonsVisibility.value,
         enter = fadeIn(0.4f) + expandIn(expandFrom = Alignment.TopStart),
         exit = fadeOut(animationSpec = tween(durationMillis = 250)) + shrinkOut(shrinkTowards = Alignment.TopStart)
     ) {
@@ -201,21 +202,7 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
                 modifier = Modifier.clickable {
                     currentTime.value = 0L
                     recordViewModel.deleteRecording()
-                    pausedState.value = false
-                    recordState.value = false
-                }
-            )
-
-            Text(
-                text = "Save",
-                color = MaterialTheme.colors.primaryVariant,
-                fontWeight = FontWeight.Medium,
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                modifier = Modifier.clickable {
-                    currentTime.value = 0L
-                    recordViewModel.stopRecording()
-                    pausedState.value = false
-                    recordState.value = false
+                    buttonsVisibility.value = false
                 }
             )
 
@@ -225,7 +212,7 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 modifier = Modifier.clickable {
-                    recordViewModel.playContentUri()
+                    recordViewModel.playRecordContent()
                 }
             )
         }
@@ -261,8 +248,9 @@ fun WaveRecordAnimation(recordViewModel: RecordViewModel){
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                recordViewModel.pauseRecording()
-                pausedState.value = true
+                recordViewModel.stopRecording()
+                recordState.value = false
+                buttonsVisibility.value = true
             },
         contentAlignment = Center
     ) {
