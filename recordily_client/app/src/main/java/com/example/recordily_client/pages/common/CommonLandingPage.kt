@@ -1,9 +1,14 @@
 package com.example.recordily_client.pages.common
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -25,18 +30,33 @@ fun CommonLandingPage(navController: NavController){
 
     Scaffold(
         topBar = { Header(navController) },
+        content = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                TopNavBar(
+                    pageOptions = pageOptions,
+                    currentPage = "Home", navController = navController
+                )
+
+                LandingPageContent()
+            }
+        },
         bottomBar = { BottomNavigationBar(navController) }
+    )
+}
+
+@Composable
+fun LandingPageContent(){
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
     ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            TopNavBar(
-                pageOptions = pageOptions,
-                currentPage = "Home", navController = navController
-            )
-
-            SongsBox("Suggested Songs")
-        }
+        SongsBox("Suggested Songs")
+        SongsBox("Top 5 Played Songs")
+        SongsBox("Top 5 Artists")
+        SongsBox("Top 5 Liked Songs")
+        SongsBox("Recently Played")
     }
-
 }
