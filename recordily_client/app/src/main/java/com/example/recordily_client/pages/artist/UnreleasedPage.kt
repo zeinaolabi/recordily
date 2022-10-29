@@ -81,7 +81,7 @@ fun UnreleasedContentColumn(navController: NavController){
     Column(
         modifier = Modifier.verticalScroll(ScrollState(0))
     ){
-        SongsCards("Unreleased Songs", navController)
-        SongsCards("Unreleased Albums", navController)
+        SongsCards("Unreleased Songs", navController, Screen.CommonLandingPage.route)
+        SongsCards("Unreleased Albums", navController, Screen.CommonLandingPage.route)
     }
 }
