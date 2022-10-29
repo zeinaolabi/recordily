@@ -1,11 +1,7 @@
 package com.example.recordily_client.pages.artist
 
-import android.media.MediaRecorder
-import android.media.metrics.LogSessionId
 import android.os.Build
-import android.os.Environment
 import android.util.Log
-import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -33,11 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.components.MediumRoundButton
 import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
@@ -166,3 +160,75 @@ fun RecordButton(recordViewModel: RecordViewModel){
     }
 }
 
+@Composable
+fun WaveRecordAnimation(recordViewModel: RecordViewModel){
+    val waves = listOf(
+        remember { Animatable(0f) },
+        remember { Animatable(0f) },
+        remember { Animatable(0f) },
+        remember { Animatable(0f) },
+    )
+
+    val animationSpec = infiniteRepeatable<Float>(
+        animation = tween(4000, easing = FastOutLinearInEasing),
+        repeatMode = RepeatMode.Restart,
+    )
+
+    waves.forEachIndexed { index, animatable ->
+        LaunchedEffect(animatable) {
+            delay(index * 1000L)
+            animatable.animateTo(
+                targetValue = 1f, animationSpec = animationSpec
+            )
+        }
+    }
+
+    val dys = waves.map { it.value }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable {
+                recordViewModel.stopRecording()
+                recordState.value = false
+            },
+        contentAlignment = Center
+    ) {
+
+        dys.forEach { dy ->
+            Box(
+                Modifier
+                    .size(70.dp)
+                    .align(Center)
+                    .graphicsLayer {
+                        scaleX = dy * 4 + 1
+                        scaleY = dy * 4 + 1
+                        alpha = 1 - dy
+                    },
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(color = MaterialTheme.colors.primary, shape = CircleShape)
+                )
+            }
+        }
+
+        Box(
+            Modifier
+                .size(80.dp)
+                .align(Center)
+                .background(color = MaterialTheme.colors.primary, shape = CircleShape)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.record_logo),
+                "mic",
+                tint = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Center)
+            )
+        }
+
+    }
+}
