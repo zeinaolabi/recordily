@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun SongsCards(title: String, navController: NavController){
+fun SongsCards(title: String, navController: NavController, destination: String){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_large))
     ){
@@ -33,17 +34,27 @@ fun SongsCards(title: String, navController: NavController){
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .height(225.dp)
-                .verticalScroll(ScrollState(0)),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            for(i in 1..5){
-                SongCard(navController)
-            }
+        CardsContent(navController, destination)
+    }
+}
+
+@Composable
+fun CardsContent(navController: NavController, destination: String){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .height(250.dp)
+            .verticalScroll(ScrollState(0)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        for(i in 1..3){
+            SongCard(navController)
         }
+
+        SmallTealButton(stringResource(id = R.string.more), onClick = {
+            navController.navigate(destination)
+        })
+        
     }
 }
 
