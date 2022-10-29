@@ -77,5 +77,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             CommonSearchPage(navController)
         }
+
+        composable(
+            route = Screen.CommonLiveEventsPage.route
+        ){
+            CommonLiveEventsPage(navController)
+        }
     }
 }
