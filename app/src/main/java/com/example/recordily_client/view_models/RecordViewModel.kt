@@ -88,5 +88,19 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    @SuppressLint("RestrictedApi", "SetTextI18n")
+    @TargetApi(Build.VERSION_CODES.N)
+    private fun pauseRecording() {
+        if(state) {
+            if(!recordingStopped){
+                mediaRecorder?.pause()
+                recordingStopped = true
+            }else{
+                resumeRecording()
+            }
+        }
+    }
+
+
 
 }
