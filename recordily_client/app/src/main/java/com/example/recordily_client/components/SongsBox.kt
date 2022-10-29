@@ -27,7 +27,7 @@ import com.example.recordily_client.R
 @Composable
 fun SongsBox(title: String){
     Column(
-        modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_large))
+        modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){
         Text(
             text = title,
@@ -39,7 +39,7 @@ fun SongsBox(title: String){
         Row(
             modifier = Modifier
                 .fillMaxWidth(0.95f)
-                .height(195.dp)
+                .height(180.dp)
                 .shadow(25.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colors.surface)

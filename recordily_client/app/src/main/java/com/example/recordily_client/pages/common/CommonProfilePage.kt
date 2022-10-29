@@ -51,7 +51,7 @@ fun CommonProfilePage(navController: NavController){
 fun ProfileContentColumn(navController: NavController){
     Column(
         modifier = Modifier
-            .padding(vertical = dimensionResource(id = R.dimen.padding_very_large))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .verticalScroll(rememberScrollState())
     ){
         SongsCards("Top Songs", navController, Screen.CommonLandingPage.route)

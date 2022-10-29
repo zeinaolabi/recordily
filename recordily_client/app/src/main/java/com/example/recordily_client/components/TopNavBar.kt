@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Destination
@@ -29,6 +30,7 @@ fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_large))
             .drawBehind {
                 val strokeWidth = Stroke.DefaultMiter * 1.5f
                 val y = size.height - strokeWidth / 10 + 20
@@ -42,6 +44,7 @@ fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController
                 )
             }
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+
     ){
         PageOptions(pageOptions, currentPage, navController)
     }
@@ -76,7 +79,8 @@ fun PageOptions(pageOptions: List<Destination>, currentPage: String, navControll
             Text(
                 text = option.page,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp
             )
         }
     }
