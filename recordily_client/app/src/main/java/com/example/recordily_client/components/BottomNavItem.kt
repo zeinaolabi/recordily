@@ -18,7 +18,7 @@ sealed class BottomNavItem(
     )
 
     object Search : BottomNavItem(
-        route = Screen.LoginPage.route,
+        route = Screen.CommonSearchPage.route,
         titleResId = R.string.signin,
         icon = R.drawable.search_icon
     )
