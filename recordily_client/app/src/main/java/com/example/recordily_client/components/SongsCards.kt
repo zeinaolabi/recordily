@@ -43,7 +43,7 @@ fun CardsContent(navController: NavController, destination: String){
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .height(250.dp)
+            .height(260.dp)
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
