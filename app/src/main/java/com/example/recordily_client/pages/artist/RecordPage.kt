@@ -1,47 +1,50 @@
 package com.example.recordily_client.pages.artist
 
-import android.graphics.BlurMaskFilter
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import androidx.compose.foundation.Image
+import android.media.MediaRecorder
+import android.media.metrics.LogSessionId
+import android.os.Build
+import android.os.Environment
+import android.util.Log
+import android.view.View
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.MediumRoundButton
 import com.example.recordily_client.components.innerShadow
-import com.example.recordily_client.pages.common.BoxContent
+import com.example.recordily_client.view_models.RecordViewModel
+import kotlinx.coroutines.delay
 
+val recordState = mutableStateOf(false)
+
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun RecordPage(navController: NavController){
     Box(
@@ -88,50 +91,30 @@ fun ExitPage(navController: NavController){
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun RecordContent(){
+    val recordViewModel : RecordViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(.8f),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "2:17",
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
-            fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colors.onPrimary
-        )
-        
-        Box(
-            modifier = Modifier
-                .size(280.dp)
-                .clip(CircleShape)
-                .shadow(15.dp)
-                .background(MaterialTheme.colors.primary)
-                .innerShadow(
-                    blur = 25.dp,
-                    color = MaterialTheme.colors.primaryVariant,
-                    cornersRadius = 150.dp,
-                    offsetX = (-20.5).dp,
-                    offsetY = (-15.5).dp
-                )
-                .clickable { },
-            contentAlignment = Alignment.Center
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.record_logo),
-                contentDescription = "Record Logo",
-                modifier = Modifier.size(100.dp),
-                tint = MaterialTheme.colors.onPrimary
-            )
-        }
 
+        Log.i("Test", recordState.value.toString())
+        if(recordState.value){
+            WaveRecordAnimation(recordViewModel)
+        }
+        else{
+            RecordButton(recordViewModel)
+        }
 
     }
 }
+
 
 @Composable
 fun RecordButtonRow(){
@@ -141,14 +124,45 @@ fun RecordButtonRow(){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         horizontalArrangement = Arrangement.SpaceAround
     ){
-        MediumRoundButton(
-            text = stringResource(id = R.string.save),
-            onClick = {}
-        )
-
-        MediumRoundButton(
-            text = stringResource(id = R.string.cancel),
-            onClick = {}
+        Text(
+            text = "2:17",
+            modifier = Modifier
+                .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
+            fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colors.onPrimary
         )
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.S)
+@Composable
+fun RecordButton(recordViewModel: RecordViewModel){
+    Box(
+        modifier = Modifier
+            .size(220.dp)
+            .clip(CircleShape)
+            .shadow(15.dp)
+            .background(MaterialTheme.colors.primary)
+            .innerShadow(
+                blur = 25.dp,
+                color = MaterialTheme.colors.primaryVariant,
+                cornersRadius = 150.dp,
+                offsetX = (-20.5).dp,
+                offsetY = (-15.5).dp
+            )
+            .clickable {
+                recordViewModel.recordAudio()
+                recordState.value = true
+            },
+        contentAlignment = Center
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.record_logo),
+            contentDescription = "Record Logo",
+            modifier = Modifier.size(50.dp),
+            tint = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
