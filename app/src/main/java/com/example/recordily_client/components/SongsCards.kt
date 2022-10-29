@@ -36,7 +36,7 @@ fun SongsCards(title: String, navController: NavController){
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.95f)
-                .height(235.dp)
+                .height(225.dp)
                 .verticalScroll(ScrollState(0)),
             horizontalAlignment = Alignment.CenterHorizontally
         ){

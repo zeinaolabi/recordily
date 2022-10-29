@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,8 +28,8 @@ fun RoundButton(text:String, onClick: () -> Unit){
             blur = 15.dp,
             color = MaterialTheme.colors.primaryVariant,
             cornersRadius = 50.dp,
-            offsetX = (-12.5).dp,
-            offsetY = (-7.5).dp
+            offsetX = (-8.5).dp,
+            offsetY = (-5.5).dp
         )
         .background(MaterialTheme.colors.secondary),
         onClick = { onClick() }) {
@@ -43,7 +44,7 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
         .width(90.dp)
         .clip(MaterialTheme.shapes.medium)
         .innerShadow(
-            blur = 15.dp,
+            blur = 7.dp,
             color = MaterialTheme.colors.primaryVariant,
             cornersRadius = 50.dp,
             offsetX = (-5.5).dp,
@@ -68,11 +69,11 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
         .width(120.dp)
         .clip(MaterialTheme.shapes.medium)
         .innerShadow(
-            blur = 15.dp,
+            blur = 12.dp,
             color = MaterialTheme.colors.primaryVariant,
             cornersRadius = 50.dp,
-            offsetX = (-8.5).dp,
-            offsetY = (-5.5).dp
+            offsetX = (-5.5).dp,
+            offsetY = (-3.5).dp
         )
         .background(MaterialTheme.colors.primary),
         onClick = { onClick() })
