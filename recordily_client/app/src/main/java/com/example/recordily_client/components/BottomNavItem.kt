@@ -12,7 +12,7 @@ sealed class BottomNavItem(
     val icon: Int
 ) {
     object Home : BottomNavItem(
-        route = Screen.RegistrationPage.route,
+        route = Screen.CommonLandingPage.route,
         titleResId = R.string.signin,
         icon = R.drawable.deviation_icon
     )
