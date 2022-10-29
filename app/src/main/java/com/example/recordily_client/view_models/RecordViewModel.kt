@@ -101,6 +101,12 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-
+    @SuppressLint("RestrictedApi", "SetTextI18n")
+    @TargetApi(Build.VERSION_CODES.N)
+    private fun resumeRecording() {
+        Toast.makeText(context,"Resume!", Toast.LENGTH_SHORT).show()
+        mediaRecorder?.resume()
+        recordingStopped = false
+    }
 
 }
