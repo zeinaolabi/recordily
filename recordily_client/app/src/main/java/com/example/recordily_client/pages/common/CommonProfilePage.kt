@@ -3,6 +3,7 @@ package com.example.recordily_client.pages.common
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,29 +30,32 @@ fun CommonProfilePage(navController: NavController){
 
     Scaffold(
         topBar = { ProfileHeader(navController) },
-        bottomBar = { BottomNavigationBar(navController) }
-    ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            TopNavBar(
-                pageOptions = pageOptions,
-                currentPage = "Profile",
-                navController = navController
-            )
+        bottomBar = { BottomNavigationBar(navController) },
+        content = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                TopNavBar(
+                    pageOptions = pageOptions,
+                    currentPage = "Profile",
+                    navController = navController
+                )
 
-            ProfileContentColumn(navController)
+                ProfileContentColumn(navController)
+            }
         }
-    }
+    )
 }
 
 @Composable
 fun ProfileContentColumn(navController: NavController){
     Column(
         modifier = Modifier
-            .padding(top = dimensionResource(id = R.dimen.padding_large))
-            .verticalScroll(ScrollState(0))
+            .padding(vertical = dimensionResource(id = R.dimen.padding_very_large))
+            .verticalScroll(rememberScrollState())
     ){
         SongsCards("Top Songs", navController, Screen.CommonLandingPage.route)
+        SongsCards("Recently Played", navController, Screen.CommonLandingPage.route)
+        SongsCards("Playlists", navController, Screen.CommonLandingPage.route)
     }
 }
