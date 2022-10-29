@@ -1,7 +1,6 @@
 package com.example.recordily_client.pages.artist
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -213,11 +212,20 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 modifier = Modifier.clickable {
-                    //Navigate to save song page
                     currentTime.value = 0L
                     recordViewModel.stopRecording()
                     pausedState.value = false
                     recordState.value = false
+                }
+            )
+
+            Text(
+                text = "Play",
+                color = MaterialTheme.colors.primaryVariant,
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                modifier = Modifier.clickable {
+                    recordViewModel.playContentUri()
                 }
             )
         }

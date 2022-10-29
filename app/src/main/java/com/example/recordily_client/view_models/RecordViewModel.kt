@@ -5,16 +5,31 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Application
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
+import kotlinx.coroutines.NonCancellable.start
 import java.io.IOException
 import java.io.File
+import android.media.AudioManager
+import android.media.MediaPlayer.OnPreparedListener
+import java.io.FileNotFoundException
+
+import java.io.FileInputStream
+import java.security.AccessController.getContext
+import java.io.FileDescriptor
+
+
+
 
 
 @SuppressLint("StaticFieldLeak")
@@ -114,6 +129,25 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         mediaRecorder?.release()
         recordingStopped = false
         currentFile?.delete()
+    }
+
+    fun playContentUri() {
+
+        val path = currentFile?.path.toString()
+        Log.i("path2", currentFile?.path.toString())
+//        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+
+
+        val mediaPlayer = MediaPlayer.create(context, Uri.parse(path))
+        try {
+
+            mediaPlayer.start()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+
     }
 
 }
