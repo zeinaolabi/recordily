@@ -1,24 +1,27 @@
 package com.example.recordily_client.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.pages.artist.RecordPage
 import com.example.recordily_client.pages.artist.UnreleasedPage
+import com.example.recordily_client.pages.artist.ViewsStatsPage
 import com.example.recordily_client.pages.common.LoginPage
 import com.example.recordily_client.pages.common.RegistrationPage
 import com.example.recordily_client.pages.common.CommonLandingPage
 import com.example.recordily_client.pages.common.CommonProfilePage
 
+@RequiresApi(Build.VERSION_CODES.S)
 @ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.CommonProfilePage.route
+        startDestination = Screen.CommonLandingPage.route
     ){
         composable(
             route = Screen.LoginPage.route,
@@ -57,6 +60,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.RecordPage.route
         ){
             RecordPage(navController)
+        }
+
+        composable(
+            route = Screen.ViewsStatsPage.route
+        ){
+            ViewsStatsPage(navController)
         }
     }
 }
