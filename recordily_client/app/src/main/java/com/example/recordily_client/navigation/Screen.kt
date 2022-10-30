@@ -13,6 +13,7 @@ sealed class Screen(val route: String){
     object CommonLiveEventsPage: Screen(route = "common_live_page")
     object LibraryPage: Screen(route = "library_page")
     object PlaylistsPage: Screen(route = "playlists_page")
+    object ArtistsPage: Screen(route = "artists_page")
 
 
 }
