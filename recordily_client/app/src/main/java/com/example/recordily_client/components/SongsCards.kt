@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun SongsCards(title: String, navController: NavController, destination: String){
+fun SongsCards(title: String, navController: NavController, destination: String, onClick: () -> (Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_large))
     ){
@@ -38,12 +38,12 @@ fun SongsCards(title: String, navController: NavController, destination: String)
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
         )
 
-        CardsContent(navController, destination)
+        CardsContent(navController, destination, onClick)
     }
 }
 
 @Composable
-fun CardsContent(navController: NavController, destination: String){
+fun CardsContent(navController: NavController, destination: String, onClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
@@ -52,7 +52,7 @@ fun CardsContent(navController: NavController, destination: String){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         for(i in 1..3){
-            SongCard(navController)
+            SongCard(navController, onClick = {})
         }
 
         SmallTealButton(stringResource(id = R.string.more), onClick = {
@@ -63,7 +63,7 @@ fun CardsContent(navController: NavController, destination: String){
 }
 
 @Composable
-fun SongCard(navController: NavController){
+fun SongCard(navController: NavController, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -74,12 +74,12 @@ fun SongCard(navController: NavController){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent()
+        SongCardContent(onClick)
     }
 }
 
 @Composable
-fun SongCardContent(){
+fun SongCardContent(onClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -92,7 +92,10 @@ fun SongCardContent(){
             contentDescription = "more",
             modifier = Modifier
                 .size(20.dp)
-                .clickable{}
+                .clickable{
+                    onClick()
+                },
+            tint = MaterialTheme.colors.onPrimary
         )
     }
 }
@@ -116,13 +119,15 @@ fun SongDetails(){
             Text(
                 text = "Song title",
                 fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(id = R.dimen.font_small).value.sp
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                color = MaterialTheme.colors.onPrimary
             )
 
             Text(
                 text = "Artist name",
                 fontWeight = FontWeight.Medium,
-                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
+                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                color = MaterialTheme.colors.onPrimary
             )
         }
     }
