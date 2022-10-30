@@ -43,13 +43,13 @@ fun RoundButton(text:String, onClick: () -> Unit){
 @Composable
 fun SmallRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
-        .height(35.dp)
-        .width(90.dp)
-        .clip(MaterialTheme.shapes.medium)
+        .height(30.dp)
+        .width(80.dp)
+        .clip(MaterialTheme.shapes.small)
         .innerShadow(
             blur = 7.dp,
             color = MaterialTheme.colors.primaryVariant,
-            cornersRadius = 50.dp,
+            cornersRadius = 10.dp,
             offsetX = (-5.5).dp,
             offsetY = (-3.5).dp
         )
@@ -59,7 +59,8 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
