@@ -12,10 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.ProfileHeader
-import com.example.recordily_client.components.SongsCards
-import com.example.recordily_client.components.TopNavBar
+import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.Destination
 
@@ -28,12 +25,13 @@ fun CommonProfilePage(navController: NavController){
     )
 
     Scaffold(
-        topBar = { ProfileHeader(navController) },
-        bottomBar = { BottomNavigationBar(navController) },
+        topBar = { ExitBar( navController) },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                ProfileHeader(navController)
+
                 TopNavBar(
                     pageOptions = pageOptions,
                     currentPage = "Profile",

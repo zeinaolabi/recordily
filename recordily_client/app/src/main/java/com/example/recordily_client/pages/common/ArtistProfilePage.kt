@@ -16,9 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
+import com.example.recordily_client.navigation.Screen
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -34,6 +37,8 @@ fun ArtistProfilePage(navController: NavController){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            ExitBar(navController)
+
             ArtistPageHeader(navController)
 
             HorizontalLine()
@@ -42,13 +47,6 @@ fun ArtistProfilePage(navController: NavController){
 
         }
 
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
-        ) {
-            Popup(popUpVisibility)
-        }
     }
 }
 
@@ -56,14 +54,28 @@ fun ArtistProfilePage(navController: NavController){
 fun ArtistProfileContent(navController: NavController){
     Column(
         modifier = Modifier
-            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
-        for(i in 1..3){
-            SongCard(navController){
-                popUpVisibility.value = true
-            }
-        }
+        SongsBox(title = "Top 5 Albums")
+
+        SongsCards(
+            title = stringResource(id = R.string.albums),
+            navController = navController,
+            destination = Screen.CommonLandingPage.route,
+            onClick = {}
+        )
+
+        SongsBox(title = "Top 5 Songs")
+
+        SongsCards(
+            title = stringResource(id = R.string.songs),
+            navController = navController,
+            destination = Screen.CommonLandingPage.route,
+            onClick = {}
+        )
+
+
     }
 }

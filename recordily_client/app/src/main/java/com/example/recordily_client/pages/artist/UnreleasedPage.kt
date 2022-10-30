@@ -25,23 +25,23 @@ fun UnreleasedPage(navController: NavController) {
     )
 
     Scaffold(
-    topBar = { ProfileHeader(navController) },
-    bottomBar = { BottomNavigationBar(navController) }
-    ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ){
-            TopNavBar(
-                pageOptions = pageOptions,
-                currentPage = "Unreleased",
-                navController = navController
-            )
+        topBar = { ProfileHeader(navController) },
+        content = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                TopNavBar(
+                    pageOptions = pageOptions,
+                    currentPage = "Unreleased",
+                    navController = navController
+                )
 
-            AddMusicRow(navController)
+                AddMusicRow(navController)
 
-            UnreleasedContentColumn(navController)
+                UnreleasedContentColumn(navController)
+            }
         }
-    }
+    )
 }
 
 @Composable
@@ -49,10 +49,8 @@ fun AddMusicRow(navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                vertical = dimensionResource(id = R.dimen.padding_large),
-                horizontal = dimensionResource(id = R.dimen.padding_medium)
-            )
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_large),)
         ,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
