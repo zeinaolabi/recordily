@@ -29,6 +29,17 @@ fun Popup(popUpVisibility: MutableState<Boolean>){
             .fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
+        Surface(
+            color = Color.Black.copy(alpha = 0.4f),
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    indication = null
+                ) {
+                    popUpVisibility.value = false
+                }
+        ){}
 
         Box(
             modifier = Modifier
