@@ -66,7 +66,17 @@ fun AddMusicRow(navController: NavController){
 
         MediumRoundButton(
             text = stringResource(id = R.string.upload_song),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screen.UploadSongPage.route) {
+
+                    popUpTo(Screen.CommonProfilePage.route) {
+                        saveState = true
+                    }
+
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
         )
 
         MediumRoundButton(

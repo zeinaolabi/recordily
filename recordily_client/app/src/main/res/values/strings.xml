@@ -53,6 +53,15 @@
     <string name="songs">Songs</string>
     <string name="albums">Albums</string>
 
+    <!--Upload Pages-->
+    <string name="new_song">Upload New Song</string>
+    <string name="new_album">Create New Album</string>
+    <string name="song_name">Song Name</string>
+    <string name="album_name">Album Name</string>
+    <string name="upload">Upload</string>
+    <string name="upload_new_song">Upload Song: </string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_main">MainActivity</string>
