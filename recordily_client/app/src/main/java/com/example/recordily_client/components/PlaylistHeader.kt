@@ -60,7 +60,8 @@ fun PlaylistHeaderContent(navController: NavController){
             text = "Playlist Title",
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
+            color = MaterialTheme.colors.onPrimary
         )
 
         Row(
