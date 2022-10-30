@@ -89,5 +89,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             LibraryPage(navController)
         }
+
+        composable(
+            route = Screen.PlaylistsPage.route
+        ){
+            PlaylistsPage(navController)
+        }
     }
 }
