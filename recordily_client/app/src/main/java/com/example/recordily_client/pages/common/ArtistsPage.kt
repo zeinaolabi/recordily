@@ -70,7 +70,15 @@ fun ArtistsPageContent(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         for(i in 1..3){
-            ArtistCard(navController)
+            ArtistCard(navController, onClick = {
+                navController.navigate(Screen.ArtistProfilePage.route) {
+                    popUpTo(Screen.ArtistsPage.route) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            })
         }
     }
 }

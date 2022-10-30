@@ -45,23 +45,7 @@ fun PlaylistPage(navController: NavController){
         ){
             PlaylistHeader(navController)
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_large))
-                    .drawBehind {
-                        val strokeWidth = Stroke.DefaultMiter * 1.5f
-                        val y = size.height - strokeWidth / 10 + 20
-
-                        drawLine(
-                            Color.Black,
-                            Offset(1f, y),
-                            Offset(size.width, y),
-                            strokeWidth,
-                            cap = StrokeCap.Round
-                        )
-                    }
-            ){}
+            HorizontalLine()
 
             PlaylistPageContent(navController)
 
