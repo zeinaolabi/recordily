@@ -49,8 +49,33 @@ fun ArtistsBox(title: String){
             verticalAlignment = Alignment.CenterVertically
         ){
             for (i in 1..5) {
-                SongSquareCard()
+                ArtistsBoxContent()
             }
         }
+    }
+}
+
+@Composable
+fun ArtistsBoxContent(){
+    Column(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+
+    ){
+        Image(
+            painter = painterResource(R.drawable.recordily_dark_logo),
+            contentDescription = "logo",
+            modifier = Modifier
+                .size(115.dp)
+                .clip(RoundedCornerShape(5.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Text(
+            text = "Artist name",
+            fontWeight = FontWeight.SemiBold,
+            fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+            color = MaterialTheme.colors.onPrimary
+        )
     }
 }
