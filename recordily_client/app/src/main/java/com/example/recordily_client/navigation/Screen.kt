@@ -18,5 +18,6 @@ sealed class Screen(val route: String){
     object ArtistProfilePage: Screen(route = "artist_page")
     object UploadSongPage: Screen(route = "upload_song_page")
     object UploadAlbumPage: Screen(route = "upload_album_page")
+    object EditProfilePage: Screen(route = "edit_profile_page")
 
 }
