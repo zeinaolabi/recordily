@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
