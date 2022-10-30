@@ -19,7 +19,7 @@ import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.SongsCards
 import com.example.recordily_client.navigation.Screen
 
-val searchInput = mutableStateOf("")
+private val searchInput = mutableStateOf("")
 
 @Composable
 fun CommonSearchPage(navController: NavController){
@@ -29,7 +29,7 @@ fun CommonSearchPage(navController: NavController){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimensionResource(id = R.dimen.font_large)),
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 SearchPageContent(navController)
