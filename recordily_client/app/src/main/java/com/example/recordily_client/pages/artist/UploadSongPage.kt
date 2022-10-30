@@ -148,3 +148,31 @@ fun DropDownAlbumMenu(){
         }
     }
 }
+
+@Composable
+fun PickAudioRow(){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth(0.9f)
+    ){
+        Row{
+            Text(
+                text = stringResource(id = R.string.upload_new_song),
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Text(
+                text = "File name",
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary
+            )
+        }
+
+        SmallTealButton(text = "Upload", onClick = {})
+
+    }
+}
