@@ -64,7 +64,7 @@ fun LibraryPageContent(navController: NavController){
         modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
     ){
         for(i in 1..3){
-            SongCard(navController)
+            SongCard(navController, onClick = {})
         }
     }
 }
