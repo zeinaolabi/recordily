@@ -31,7 +31,7 @@ fun SongsBox(title: String){
     ){
         Text(
             text = title,
-            fontWeight = FontWeight.ExtraBold,
+            fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
             color = MaterialTheme.colors.onPrimary
