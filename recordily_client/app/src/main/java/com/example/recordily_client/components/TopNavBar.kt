@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController: NavController){
@@ -59,7 +60,15 @@ fun PageOptions(pageOptions: List<Destination>, currentPage: String, navControll
         Row(
             modifier = Modifier
                 .clickable {
-                    navController.navigate(option.route)
+                    navController.navigate(option.route) {
+
+                        popUpTo(pageOptions[0].route) {
+                            saveState = true
+                        }
+
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
                 .conditional(currentPage == option.page) {
                     drawBehind {
