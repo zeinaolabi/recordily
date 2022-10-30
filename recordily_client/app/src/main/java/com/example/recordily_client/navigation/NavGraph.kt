@@ -116,5 +116,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             UploadSongPage(navController)
         }
+
+        composable(
+            route = Screen.UploadAlbumPage.route
+        ){
+            UploadAlbumPage(navController)
+        }
     }
 }
