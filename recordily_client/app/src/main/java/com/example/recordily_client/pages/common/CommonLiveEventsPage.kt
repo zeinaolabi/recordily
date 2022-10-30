@@ -31,6 +31,10 @@ fun CommonLiveEventsPage(navController: NavController){
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             ){
                 LiveEventsContent(navController)
+
+                for( i in 1..3){
+                    LiveEventCard(navController)
+                }
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
