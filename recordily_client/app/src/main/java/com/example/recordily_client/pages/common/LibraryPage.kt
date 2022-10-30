@@ -23,9 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.SearchTextField
-import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.LibraryHeader
-import com.example.recordily_client.components.SongsCards
+import com.example.recordily_client.components.*
+import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
 
 private val searchInput = mutableStateOf("")
@@ -50,11 +49,36 @@ fun LibraryPage(navController: NavController){
 
 @Composable
 fun LibraryPageContent(navController: NavController){
-
-    LibraryHeader(
-        input = searchInput,
-        navController = navController
+    val likes = Destination(stringResource(R.string.likes), Screen.CommonLandingPage.route)
+    val playlists = Destination(stringResource(R.string.playlists), Screen.ViewsStatsPage.route)
+    val artists = Destination(stringResource(R.string.artists), Screen.SongsStatsPage.route)
+    val pageOptions = listOf(
+        likes, playlists, artists
     )
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ){
+        LibraryHeader(
+            input = searchInput,
+            navController = navController
+        )
+
+        TopNavBar(
+            pageOptions = pageOptions,
+            currentPage = "Likes",
+            navController = navController
+        )
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+    ){
+        for(i in 1..3){
+            SongCard(navController)
+        }
+    }
 
 
 }
