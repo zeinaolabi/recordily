@@ -2,6 +2,7 @@ package com.example.recordily_client.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun PlaylistCard(navController: NavController){
@@ -29,7 +31,19 @@ fun PlaylistCard(navController: NavController){
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .clickable{
+                navController.navigate(Screen.PlaylistPage.route) {
+
+                    popUpTo(Screen.PlaylistsPage.route) {
+                        saveState = true
+                    }
+
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        ,
         verticalAlignment = Alignment.CenterVertically
     ){
         PlaylistCardContent()
@@ -50,7 +64,7 @@ fun PlaylistCardContent(){
         )
 
         Text(
-            text = "Artist name",
+            text = "Playlist Title",
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
