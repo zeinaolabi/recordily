@@ -29,7 +29,10 @@ fun CommonSearchPage(navController: NavController){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
+                    .padding(
+                        vertical = dimensionResource(id = R.dimen.padding_large),
+                        horizontal = dimensionResource(id = R.dimen.padding_medium)
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
                 SearchPageContent(navController)

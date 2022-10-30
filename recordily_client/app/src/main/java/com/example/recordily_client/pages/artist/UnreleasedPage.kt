@@ -25,11 +25,13 @@ fun UnreleasedPage(navController: NavController) {
     )
 
     Scaffold(
-        topBar = { ProfileHeader(navController) },
+        topBar = { ExitBar(navController) },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
+                ProfileHeader(navController)
+
                 TopNavBar(
                     pageOptions = pageOptions,
                     currentPage = "Unreleased",
@@ -80,7 +82,7 @@ fun UnreleasedContentColumn(navController: NavController){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
         SongsCards("Unreleased Songs", navController, Screen.CommonLandingPage.route, onClick = {})
         SongsCards("Unreleased Albums", navController, Screen.CommonLandingPage.route, onClick = {})
