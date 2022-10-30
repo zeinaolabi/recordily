@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun ProfileHeader(navController: NavController){
@@ -80,7 +81,17 @@ fun ProfileInfo(navController: NavController){
                 tint = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-                    .clickable {}
+                    .clickable {
+                        navController.navigate(Screen.EditProfilePage.route) {
+
+                            popUpTo(Screen.CommonProfilePage.route) {
+                                saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
             )
 
             Icon(
