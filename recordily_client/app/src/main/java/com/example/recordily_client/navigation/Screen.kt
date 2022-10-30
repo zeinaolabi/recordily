@@ -12,6 +12,7 @@ sealed class Screen(val route: String){
     object CommonSearchPage: Screen(route = "common_search_page")
     object CommonLiveEventsPage: Screen(route = "common_live_page")
     object LibraryPage: Screen(route = "library_page")
+    object PlaylistsPage: Screen(route = "playlists_page")
 
 
 }
