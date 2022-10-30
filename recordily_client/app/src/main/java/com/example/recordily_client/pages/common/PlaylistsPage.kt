@@ -36,6 +36,7 @@ fun PlaylistsPage(navController: NavController){
             ){
                 PlaylistsPageContent(navController)
 
+                FloatingButton(onClick={})
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
