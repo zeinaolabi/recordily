@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -36,6 +37,15 @@ fun LiveEventCard(navController: NavController){
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         EventCardContent()
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.Bottom
+        ){
+            SmallRoundButton(text = "Join Event", onClick = {})
+        }
     }
 }
 
@@ -53,7 +63,7 @@ fun EventCardContent(){
 
         Column(
             modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(3.dp)
         ){
             Text(
                 text = "Live Name",
