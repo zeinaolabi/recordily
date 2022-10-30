@@ -82,7 +82,7 @@ fun UploadAlbumContent(){
         visibility = true
     )
 
-    MediumRoundButton(text = stringResource(id = R.string.upload), onClick = {})
+    MediumRoundButton(text = stringResource(id = R.string.save), onClick = {})
 }
 
 
