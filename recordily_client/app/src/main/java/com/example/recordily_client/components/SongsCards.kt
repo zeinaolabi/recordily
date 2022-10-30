@@ -97,3 +97,33 @@ fun SongCardContent(){
     }
 }
 
+@Composable
+fun SongDetails(){
+    Row(verticalAlignment = Alignment.CenterVertically)
+    {
+        Image(
+            painter = painterResource(R.drawable.recordily_dark_logo),
+            contentDescription = "logo",
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
+        ){
+            Text(
+                text = "Song title",
+                fontWeight = FontWeight.Bold,
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp
+            )
+
+            Text(
+                text = "Artist name",
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
+            )
+        }
+    }
+}
