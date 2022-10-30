@@ -47,7 +47,7 @@ fun PlaylistsPage(navController: NavController){
 fun PlaylistsPageContent(navController: NavController){
     val likes = Destination(stringResource(R.string.likes), Screen.LibraryPage.route)
     val playlists = Destination(stringResource(R.string.playlists), Screen.PlaylistsPage.route)
-    val artists = Destination(stringResource(R.string.artists), Screen.SongsStatsPage.route)
+    val artists = Destination(stringResource(R.string.artists), Screen.ArtistsPage.route)
     val pageOptions = listOf(
         likes, playlists, artists
     )
