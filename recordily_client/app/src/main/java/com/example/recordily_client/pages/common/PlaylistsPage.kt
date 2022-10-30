@@ -74,7 +74,7 @@ fun PlaylistsPageContent(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         for(i in 1..3){
-            SongCard(navController)
+            PlaylistCard(navController)
         }
     }
 }
