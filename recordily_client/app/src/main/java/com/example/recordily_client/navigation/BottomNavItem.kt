@@ -27,7 +27,7 @@ sealed class BottomNavItem(
     )
 
     object Profile : BottomNavItem(
-        route = Screen.LoginPage.route,
+        route = Screen.LibraryPage.route,
         titleResId = R.string.signin,
         icon = R.drawable.music_library_icon
     )
