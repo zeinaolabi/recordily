@@ -7,7 +7,7 @@
     <dimen name="font.title">32sp</dimen>
     <dimen name="padding.very_small">2dp</dimen>
     <dimen name="padding.small">5dp</dimen>
-    <dimen name="padding.medium">10dp</dimen>
+    <dimen name="padding.medium">15dp</dimen>
     <dimen name="padding.large">25dp</dimen>
     <dimen name="padding.very_large">40dp</dimen>
 

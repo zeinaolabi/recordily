@@ -58,7 +58,7 @@ fun ArtistProfileContent(navController: NavController){
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
-        SongsBox(title = "Top 5 Albums")
+        SongsBox(title = "Top 5 Albums", navController)
 
         SongsCards(
             title = stringResource(id = R.string.albums),
@@ -67,7 +67,7 @@ fun ArtistProfileContent(navController: NavController){
             onClick = {}
         )
 
-        SongsBox(title = "Top 5 Songs")
+        SongsBox(title = "Top 5 Songs", navController)
 
         SongsCards(
             title = stringResource(id = R.string.songs),

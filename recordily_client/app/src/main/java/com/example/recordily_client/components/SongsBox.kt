@@ -22,10 +22,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun SongsBox(title: String){
+fun SongsBox(title: String, navController: NavController){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){

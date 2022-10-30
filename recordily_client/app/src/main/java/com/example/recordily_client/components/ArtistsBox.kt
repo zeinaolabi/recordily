@@ -1,9 +1,6 @@
 package com.example.recordily_client.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -22,10 +19,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
 
 @Composable
-fun ArtistsBox(title: String){
+fun ArtistsBox(title: String, navController: NavController){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -49,18 +48,22 @@ fun ArtistsBox(title: String){
             verticalAlignment = Alignment.CenterVertically
         ){
             for (i in 1..5) {
-                ArtistsBoxContent()
+                ArtistsBoxContent{
+                    navController.navigate(Screen.ArtistProfilePage.route)
+                }
             }
         }
     }
 }
 
 @Composable
-fun ArtistsBoxContent(){
+fun ArtistsBoxContent(onClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
-
+            .clickable {
+                onClick()
+            }
     ){
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),

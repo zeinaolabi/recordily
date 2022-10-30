@@ -12,10 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.Header
-import com.example.recordily_client.components.SongsBox
-import com.example.recordily_client.components.TopNavBar
+import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
 
@@ -39,7 +36,7 @@ fun CommonLandingPage(navController: NavController){
                     currentPage = "Home", navController = navController
                 )
 
-                LandingPageContent()
+                LandingPageContent(navController)
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
@@ -47,17 +44,17 @@ fun CommonLandingPage(navController: NavController){
 }
 
 @Composable
-fun LandingPageContent(){
+fun LandingPageContent(navController: NavController){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ){
-        SongsBox("Suggested Songs")
-        SongsBox("Top 5 Played Songs")
-        SongsBox("Top 5 Artists")
-        SongsBox("Top 5 Liked Songs")
-        SongsBox("Recently Played")
+        SongsBox("Suggested Songs", navController)
+        SongsBox("Top 5 Played Songs", navController)
+        ArtistsBox("Top 5 Artists", navController)
+        SongsBox("Top 5 Liked Songs", navController)
+        SongsBox("Recently Played", navController)
     }
 }
