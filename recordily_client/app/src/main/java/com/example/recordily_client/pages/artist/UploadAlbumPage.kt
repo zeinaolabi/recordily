@@ -30,7 +30,7 @@ import androidx.core.app.ActivityCompat
 
 import androidx.core.app.ActivityCompat.startActivityForResult
 
-private val songName = mutableStateOf("")
+private val albumName = mutableStateOf("")
 
 @Composable
 fun UploadAlbumPage(navController: NavController) {
@@ -49,7 +49,7 @@ fun UploadAlbumPage(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
                 ){
-                    UploadSongContent()
+                    UploadAlbumContent()
                 }
             }
         }
@@ -61,7 +61,7 @@ fun UploadAlbumContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
 
     Text(
-        text = stringResource(id = R.string.new_song),
+        text = stringResource(id = R.string.new_album),
         fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
         fontWeight = FontWeight.ExtraBold,
         color = MaterialTheme.colors.onPrimary
@@ -77,8 +77,8 @@ fun UploadAlbumContent(){
     )
 
     TextField(
-        input = songName,
-        text = stringResource(id = R.string.song_name),
+        input = albumName,
+        text = stringResource(id = R.string.album_name),
         visibility = true
     )
 

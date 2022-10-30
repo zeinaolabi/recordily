@@ -18,7 +18,7 @@ import com.example.recordily_client.navigation.Screen
 @Composable
 fun UnreleasedPage(navController: NavController) {
     val profile = Destination(stringResource(R.string.profile), Screen.CommonProfilePage.route)
-    val unreleased = Destination(stringResource(R.string.unreleased), Screen.CommonProfilePage.route)
+    val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
         profile, unreleased
     )
@@ -60,7 +60,15 @@ fun AddMusicRow(navController: NavController){
         MediumRoundButton(
             text = stringResource(id = R.string.record),
             onClick = {
-                navController.navigate(Screen.RecordPage.route)
+                navController.navigate(Screen.RecordPage.route) {
+
+                    popUpTo(Screen.CommonProfilePage.route) {
+                        saveState = true
+                    }
+
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         )
 
@@ -81,7 +89,17 @@ fun AddMusicRow(navController: NavController){
 
         MediumRoundButton(
             text = stringResource(id = R.string.upload_album),
-            onClick = {}
+            onClick = {
+                navController.navigate(Screen.UploadAlbumPage.route) {
+
+                    popUpTo(Screen.CommonProfilePage.route) {
+                        saveState = true
+                    }
+
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
         )
     }
 }
