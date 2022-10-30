@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,15 +30,17 @@ fun BottomNavigationBar(
     BottomNavigation(
         backgroundColor = Color.Black
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
+        val navBackStackEntry = navController.currentBackStackEntryAsState()
         items.forEach { item ->
+            val currentRoute = navBackStackEntry.value?.destination?.route
+            val selected = currentRoute == item.route
+
             BottomNavigationItem(
                 icon = {
                     Icon(
                         painter = painterResource(item.icon),
                         contentDescription = stringResource(id = item.titleResId),
-                        tint = Color.White,
+                        tint = if (selected) Color.White else MaterialTheme.colors.surface,
                         modifier = Modifier.size(24.dp)
                     )
                 },
