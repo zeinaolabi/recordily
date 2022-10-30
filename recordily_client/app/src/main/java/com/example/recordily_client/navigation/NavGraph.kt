@@ -7,10 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.recordily_client.pages.artist.RecordPage
-import com.example.recordily_client.pages.artist.SongsStatsPage
-import com.example.recordily_client.pages.artist.UnreleasedPage
-import com.example.recordily_client.pages.artist.ViewsStatsPage
+import com.example.recordily_client.pages.artist.*
 import com.example.recordily_client.pages.common.*
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -112,6 +109,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.ArtistProfilePage.route
         ){
             ArtistProfilePage(navController)
+        }
+
+        composable(
+            route = Screen.UploadSongPage.route
+        ){
+            UploadSongPage(navController)
         }
     }
 }
