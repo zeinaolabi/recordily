@@ -89,3 +89,62 @@ fun UploadSongContent(){
     MediumRoundButton(text = stringResource(id = R.string.upload), onClick = {}) 
 }
 
+@Composable
+fun DropDownAlbumMenu(){
+    var expanded by remember { mutableStateOf(false) }
+    var selectedAlbum by remember { mutableStateOf("Single") }
+    val albumList = listOf(
+        "Single",
+        "Album names"
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .height(60.dp)
+            .border(1.dp, MaterialTheme.colors.secondary, RoundedCornerShape(10.dp))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .clickable {
+                expanded = !expanded
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = selectedAlbum,
+            fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+            color = colorResource(R.color.darker_gray),
+            fontWeight = FontWeight.Bold
+        )
+
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = "",
+            tint = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.size(25.dp)
+        )
+
+        DropdownMenu(
+            expanded = expanded, onDismissRequest = {
+                expanded = false
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .background(colorResource(id = R.color.darker_gray))
+        ) {
+            albumList.forEach { album ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        selectedAlbum = album
+                    }
+                ) {
+                    Text(
+                        text = album,
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                }
+            }
+        }
+    }
+}
