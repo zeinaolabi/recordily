@@ -56,4 +56,33 @@ fun UploadAlbumPage(navController: NavController) {
     )
 }
 
+@Composable
+fun UploadAlbumContent(){
+    val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
+
+    Text(
+        text = stringResource(id = R.string.new_song),
+        fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
+        fontWeight = FontWeight.ExtraBold,
+        color = MaterialTheme.colors.onPrimary
+    )
+
+    Image(
+        painter = painterResource(id = logo),
+        contentDescription = "logo",
+        modifier = Modifier
+            .size(160.dp)
+            .clip(CircleShape)
+            .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+    )
+
+    TextField(
+        input = songName,
+        text = stringResource(id = R.string.song_name),
+        visibility = true
+    )
+
+    MediumRoundButton(text = stringResource(id = R.string.upload), onClick = {})
+}
+
 
