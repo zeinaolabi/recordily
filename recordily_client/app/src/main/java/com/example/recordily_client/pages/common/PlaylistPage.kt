@@ -51,3 +51,17 @@ fun PlaylistPage(navController: NavController){
         }
     )
 }
+
+@Composable
+fun PlaylistPageContent(navController: NavController){
+    Column(
+        modifier = Modifier
+            .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .verticalScroll(rememberScrollState())
+    ){
+        for(i in 1..3){
+            SongCard(navController)
+        }
+    }
+}
