@@ -35,7 +35,7 @@ fun ProfileHeader(navController: NavController){
         )
     ){
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter = painterResource(id = R.drawable.profile_picture),
             contentDescription = "profile picture",
             modifier = Modifier
                 .size(110.dp)

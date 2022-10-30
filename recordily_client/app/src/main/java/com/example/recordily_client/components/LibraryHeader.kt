@@ -64,7 +64,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
         )
 
         Image(
-            painter = painterResource(R.drawable.recordily_gray_logo),
+            painter = painterResource(R.drawable.profile_picture),
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier

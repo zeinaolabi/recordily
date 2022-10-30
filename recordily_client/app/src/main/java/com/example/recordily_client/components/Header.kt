@@ -57,7 +57,7 @@ fun Header(navController: NavController){
         }
 
         Image(
-            painter = painterResource(logo),
+            painter = painterResource(R.drawable.profile_picture),
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
