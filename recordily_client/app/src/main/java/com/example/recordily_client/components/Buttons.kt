@@ -2,12 +2,11 @@ package com.example.recordily_client.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -136,5 +135,27 @@ fun SmallTealButton(text:String, onClick: () -> (Unit)){
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.onPrimary
         )
+    }
+}
+
+@Composable
+fun FloatingButton(onClick: () -> (Unit)){
+    Box(modifier = Modifier.fillMaxSize()) {
+        FloatingActionButton(
+            modifier = Modifier
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_medium),
+                    vertical = dimensionResource(id = R.dimen.padding_very_large)
+                )
+                .align(Alignment.BottomEnd),
+            backgroundColor = MaterialTheme.colors.primary,
+            onClick = {onClick()}
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "add",
+                tint = Color.White
+            )
+        }
     }
 }
