@@ -19,6 +19,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
@@ -34,7 +35,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
     ){
         TextField(
             modifier = Modifier
-                .fillMaxWidth(.85f)
+                .fillMaxWidth(.80f)
                 .clip(MaterialTheme.shapes.small),
             value = input.value,
             leadingIcon = {
@@ -43,7 +44,12 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
                     contentDescription = "Search Icon",
                 )
             },
-            placeholder = { Text(text = stringResource(id = R.string.search)) },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search),
+                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp
+                )
+                          },
             onValueChange = { input.value = it },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
@@ -59,7 +65,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(40.dp)
+                .size(50.dp)
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
