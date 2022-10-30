@@ -2,6 +2,7 @@ package com.example.recordily_client.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -21,7 +22,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun ArtistCard(navController: NavController){
+fun ArtistCard(navController: NavController, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -29,7 +30,8 @@ fun ArtistCard(navController: NavController){
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ){
         ArtistCardContent()
@@ -38,7 +40,7 @@ fun ArtistCard(navController: NavController){
 
 @Composable
 fun ArtistCardContent(){
-    Row(verticalAlignment = Alignment.CenterVertically)
+    Row(verticalAlignment = Alignment.CenterVertically,)
     {
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),
