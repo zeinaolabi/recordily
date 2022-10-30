@@ -33,13 +33,14 @@ fun SongsBox(title: String){
             text = title,
             fontWeight = FontWeight.ExtraBold,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
+            color = MaterialTheme.colors.onPrimary
         )
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.95f)
-                .height(180.dp)
+                .fillMaxWidth()
+                .height(200.dp)
                 .shadow(15.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colors.surface)
@@ -73,13 +74,15 @@ fun SongSquareCard(){
         Text(
             text = "Song title",
             fontWeight = FontWeight.SemiBold,
-            fontSize = dimensionResource(id = R.dimen.font_small).value.sp
+            fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+            color = MaterialTheme.colors.onPrimary
         )
 
         Text(
             text = "Artist name",
             fontWeight = FontWeight.Medium,
-            fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
+            fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+            color = MaterialTheme.colors.onPrimary
         )
     }
 }

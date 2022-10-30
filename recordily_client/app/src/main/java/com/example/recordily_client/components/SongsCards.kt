@@ -29,13 +29,14 @@ import com.example.recordily_client.R
 @Composable
 fun SongsCards(title: String, navController: NavController, destination: String, onClick: () -> (Unit)){
     Column(
-        modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_large))
+        modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
         Text(
             text = title,
             fontWeight = FontWeight.ExtraBold,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
+            color = MaterialTheme.colors.onPrimary
         )
 
         CardsContent(navController, destination, onClick)
