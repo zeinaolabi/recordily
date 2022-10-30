@@ -47,3 +47,14 @@ fun LibraryPage(navController: NavController){
         bottomBar = { BottomNavigationBar(navController) }
     )
 }
+
+@Composable
+fun LibraryPageContent(navController: NavController){
+
+    LibraryHeader(
+        input = searchInput,
+        navController = navController
+    )
+
+
+}
