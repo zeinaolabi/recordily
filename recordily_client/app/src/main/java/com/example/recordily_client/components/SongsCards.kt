@@ -5,8 +5,12 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,28 +80,20 @@ fun SongCard(navController: NavController){
 
 @Composable
 fun SongCardContent(){
-    Image(
-        painter = painterResource(R.drawable.recordily_dark_logo),
-        contentDescription = "logo",
-        modifier = Modifier
-            .size(50.dp)
-            .clip(CircleShape),
-        contentScale = ContentScale.Crop
-    )
-
-    Column(
-        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
     ){
-        Text(
-            text = "Song title",
-            fontWeight = FontWeight.Bold,
-            fontSize = dimensionResource(id = R.dimen.font_small).value.sp
-        )
+        SongDetails()
 
-        Text(
-            text = "Artist name",
-            fontWeight = FontWeight.Medium,
-            fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
+        Icon(
+            painter = painterResource(id = R.drawable.more),
+            contentDescription = "more",
+            modifier = Modifier
+                .size(20.dp)
+                .clickable{}
         )
     }
 }
+
