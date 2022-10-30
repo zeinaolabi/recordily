@@ -132,7 +132,8 @@ fun SmallTealButton(text:String, onClick: () -> (Unit)){
             textAlign = TextAlign.Center,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.align(Alignment.CenterVertically),
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.onPrimary
         )
     }
 }

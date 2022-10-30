@@ -40,7 +40,7 @@ fun SongsBox(title: String){
             modifier = Modifier
                 .fillMaxWidth(0.95f)
                 .height(180.dp)
-                .shadow(25.dp)
+                .shadow(15.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .background(MaterialTheme.colors.surface)
                 .padding(dimensionResource(id = R.dimen.padding_medium))
@@ -57,7 +57,9 @@ fun SongsBox(title: String){
 @Composable
 fun SongSquareCard(){
     Column(
-        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+
     ){
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),
