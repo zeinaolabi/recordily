@@ -42,6 +42,7 @@ fun TextField(input: MutableState<String>, text: String, visibility: Boolean) {
 
 @Composable
 fun SearchTextField(input: MutableState<String>) {
+    val grayColor = Color(0xFF828282)
 
     TextField(
         modifier = Modifier
@@ -58,7 +59,7 @@ fun SearchTextField(input: MutableState<String>) {
         placeholder = { Text(text = stringResource(id = R.string.search)) },
         onValueChange = { input.value = it },
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colors.surface,
+            backgroundColor = grayColor,
             cursorColor = Color.White,
             textColor = Color.White,
             unfocusedIndicatorColor = MaterialTheme.colors.surface,
@@ -67,3 +68,4 @@ fun SearchTextField(input: MutableState<String>) {
     )
 
 }
+

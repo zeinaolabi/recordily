@@ -62,8 +62,13 @@ fun PageOptions(pageOptions: List<Destination>, currentPage: String, navControll
                 .clickable {
                     navController.navigate(option.route) {
 
-                        popUpTo(pageOptions[0].route) {
-                            saveState = true
+                        if(option.route == pageOptions[0].route){
+                            return@navigate
+                        }
+                        else{
+                            popUpTo(pageOptions[0].route) {
+                                saveState = true
+                            }
                         }
 
                         launchSingleTop = true
