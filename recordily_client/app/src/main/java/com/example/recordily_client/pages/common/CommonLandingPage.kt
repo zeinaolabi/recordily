@@ -52,6 +52,7 @@ fun LandingPageContent(){
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ){
         SongsBox("Suggested Songs")
         SongsBox("Top 5 Played Songs")

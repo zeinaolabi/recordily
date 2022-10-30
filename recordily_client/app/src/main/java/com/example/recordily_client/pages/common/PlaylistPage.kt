@@ -43,6 +43,8 @@ fun PlaylistPage(navController: NavController){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            ExitBar(navController)
+
             PlaylistHeader(navController)
 
             HorizontalLine()

@@ -13,6 +13,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -26,6 +27,8 @@ import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun LibraryHeader(input: MutableState<String>, navController: NavController) {
+    val grayColor = Color(0xFF828282)
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +55,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
                           },
             onValueChange = { input.value = it },
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.surface,
+                backgroundColor = grayColor,
                 cursorColor = Color.White,
                 textColor = Color.White,
                 unfocusedIndicatorColor = MaterialTheme.colors.surface,
