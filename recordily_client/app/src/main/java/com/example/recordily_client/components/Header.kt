@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -64,7 +65,15 @@ fun Header(navController: NavController){
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
-                    navController.navigate(Screen.CommonProfilePage.route)
+                    navController.navigate(Screen.CommonProfilePage.route) {
+                        navController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
         )
     }
