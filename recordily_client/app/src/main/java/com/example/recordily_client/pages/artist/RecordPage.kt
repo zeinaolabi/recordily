@@ -76,7 +76,9 @@ fun ExitPage(navController: NavController, recordViewModel: RecordViewModel){
             Icons.Default.Close,
             contentDescription = "Exit",
             tint = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.clickable {
+            modifier = Modifier
+                .size(25.dp)
+                .clickable {
                 if(recordState.value){
                     recordViewModel.stopRecording()
                     recordViewModel.deleteRecording()

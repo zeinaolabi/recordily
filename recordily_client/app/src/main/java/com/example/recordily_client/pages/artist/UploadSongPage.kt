@@ -35,7 +35,7 @@ private val songName = mutableStateOf("")
 @Composable
 fun UploadSongPage(navController: NavController) {
     Scaffold(
-        topBar = { ExitBar(navController) },
+        topBar = { ExitBar(navController, stringResource(id = R.string.upload_song)) },
         content = {
             Column(
                 modifier = Modifier
@@ -59,13 +59,6 @@ fun UploadSongPage(navController: NavController) {
 @Composable
 fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
-
-    Text(
-        text = stringResource(id = R.string.new_song),
-        fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
-        fontWeight = FontWeight.ExtraBold,
-        color = MaterialTheme.colors.onPrimary
-    )
 
     Image(
         painter = painterResource(id = logo),

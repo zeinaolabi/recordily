@@ -24,7 +24,7 @@ fun UnreleasedPage(navController: NavController) {
     )
 
     Scaffold(
-        topBar = { ExitBar(navController) },
+        topBar = { ExitBar(navController, stringResource(id = R.string.profile)) },
         content = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -37,7 +37,7 @@ fun ArtistProfilePage(navController: NavController){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            ExitBar(navController)
+            ExitBar(navController, stringResource(id = R.string.artist))
 
             ArtistPageHeader(navController)
 

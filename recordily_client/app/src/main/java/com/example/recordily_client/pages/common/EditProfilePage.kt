@@ -1,4 +1,4 @@
-package com.example.recordily_client.pages.artist
+package com.example.recordily_client.pages.common
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,16 +18,6 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.TextField
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
-import com.example.recordily_client.navigation.Screen
-import android.content.Intent
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.ui.res.colorResource
-import androidx.core.app.ActivityCompat
-
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 private val name = mutableStateOf("")
 private val bio = mutableStateOf("")
@@ -36,7 +25,7 @@ private val bio = mutableStateOf("")
 @Composable
 fun EditProfilePage(navController: NavController) {
     Scaffold(
-        topBar = { ExitBar(navController) },
+        topBar = { ExitBar(navController, stringResource(id = R.string.edit_profile)) },
         content = {
             Column(
                 modifier = Modifier
@@ -59,12 +48,6 @@ fun EditProfilePage(navController: NavController) {
 
 @Composable
 fun EditProfileContent(){
-    Text(
-        text = stringResource(id = R.string.new_album),
-        fontSize = dimensionResource(id = R.dimen.font_title).value.sp,
-        fontWeight = FontWeight.ExtraBold,
-        color = MaterialTheme.colors.onPrimary
-    )
 
     Image(
         painter = painterResource(id = R.drawable.profile_picture),
