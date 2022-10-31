@@ -33,7 +33,7 @@ fun LibraryPage(navController: NavController){
     ){
         Column(
             modifier = Modifier
-                .padding(top = dimensionResource(id = R.dimen.padding_medium))
+                .padding(top = dimensionResource(id = R.dimen.padding_large))
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){

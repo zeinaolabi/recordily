@@ -53,7 +53,7 @@ fun PlaylistsPageContent(navController: NavController){
     )
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
         LibraryHeader(
             input = searchInput,
