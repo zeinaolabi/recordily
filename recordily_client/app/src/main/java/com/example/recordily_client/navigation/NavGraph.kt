@@ -16,7 +16,7 @@ import com.example.recordily_client.pages.common.*
 fun SetupNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.CommonLandingPage.route
+        startDestination = Screen.LandingPage.route
     ){
         composable(
             route = Screen.LoginPage.route,
@@ -34,13 +34,13 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.CommonLandingPage.route
+            route = Screen.LandingPage.route
         ){
             CommonLandingPage(navController)
         }
 
         composable(
-            route = Screen.CommonProfilePage.route
+            route = Screen.ProfilePage.route
         ){
             CommonProfilePage(navController)
         }
@@ -70,13 +70,13 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.CommonSearchPage.route
+            route = Screen.SearchPage.route
         ){
             CommonSearchPage(navController)
         }
 
         composable(
-            route = Screen.CommonLiveEventsPage.route
+            route = Screen.LiveEventsPage.route
         ){
             CommonLiveEventsPage(navController)
         }
@@ -139,6 +139,12 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.SongStatsPage.route
         ){
             SongStatsPage(navController)
+        }
+
+        composable(
+            route = Screen.SuggestedSongsPage.route
+        ){
+            SuggestedSongsPage(navController)
         }
     }
 }
