@@ -102,12 +102,12 @@ fun ProfileContentColumn(navController: NavController){
         )
 
         SongsCards(
-            title = "Recently Played",
+            title = stringResource(id = R.string.recently_played),
             navController,
             destination = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.TopSongsPage.route,
+                    destination = Screen.RecentlyPlayedSongsPage.route,
                     popUpTo = Screen.ProfilePage.route
                 )
             },
