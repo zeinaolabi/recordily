@@ -6,6 +6,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -77,6 +79,44 @@ fun UnreleasedSongCard(onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
         verticalAlignment = Alignment.CenterVertically
     ){
         SongCardContent(onSongClick, onUploadClick)
+    }
+}
+
+@Composable
+fun UnreleasedAlbumSongCard(onSongClick: ()->(Unit), onDeleteClick: ()->(Unit)){
+    Row(
+        modifier = Modifier
+            .padding(vertical = dimensionResource(id = R.dimen.padding_small))
+            .height(60.dp)
+            .fillMaxWidth()
+            .shadow(5.dp)
+            .background(MaterialTheme.colors.surface)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            SongDetails(onSongClick)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable{
+                        onDeleteClick()
+                    },
+                verticalArrangement = Arrangement.Center
+            ){
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "upload",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
     }
 }
 
