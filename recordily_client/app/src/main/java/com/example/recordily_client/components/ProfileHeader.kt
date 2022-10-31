@@ -61,13 +61,15 @@ fun ProfileInfo(navController: NavController){
                 text = "User Name",
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
+                color = MaterialTheme.colors.onPrimary
             )
 
             Text(
                 text = "Hi this is my bio",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.onPrimary
             )
         }
 
