@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -60,12 +61,24 @@ fun ArtistProfileContent(navController: NavController){
     ){
         SongsBox(title = "Top 5 Albums", navController)
 
-        SongsCards(
+        AlbumsCards(
             title = stringResource(id = R.string.albums),
             navController = navController,
             destination = Screen.LandingPage.route,
-            onSongClick = {},
-            onMoreClick = {}
+            onAlbumClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.AlbumPage.route,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            },
+            onMoreClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.AlbumsPage.route,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            }
         )
 
         SongsBox(title = "Top 5 Songs", navController)
