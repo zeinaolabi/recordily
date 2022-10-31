@@ -1,7 +1,12 @@
 package com.example.recordily_client.pages.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Scaffold
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -16,23 +21,36 @@ import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
 
 private val searchInput = mutableStateOf("")
+private val popUpVisibility = mutableStateOf(false)
 
+@ExperimentalAnimationApi
 @Composable
 fun LibraryPage(navController: NavController){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ){
+        Column(
+            modifier = Modifier
+                .padding(top = dimensionResource(id = R.dimen.padding_medium))
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+            LibraryPageContent(navController)
+        }
 
-    Scaffold(
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                LibraryPageContent(navController)
-            }
-        },
-        bottomBar = { BottomNavigationBar(navController) }
-    )
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+        ) {
+            Popup(
+                popUpVisibility = popUpVisibility,
+                isPlaylist = false
+            )
+        }
+    }
 }
 
 @Composable
@@ -45,7 +63,7 @@ fun LibraryPageContent(navController: NavController){
     )
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
         LibraryHeader(
             input = searchInput,
@@ -57,14 +75,36 @@ fun LibraryPageContent(navController: NavController){
             currentPage = "Likes",
             navController = navController
         )
-    }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
-    ){
-        for(i in 1..3){
-            SongCard(onSongClick = {}, onMoreClick = {})
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+        ){
+            for(i in 1..3){
+                SongCard(
+                    onSongClick = {
+                        navController.navigate(Screen.SongPage.route) {
+
+                            popUpTo(Screen.LibraryPage.route) {
+                                saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                    }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.Bottom
+        ){
+            BottomNavigationBar(navController)
         }
     }
 }
