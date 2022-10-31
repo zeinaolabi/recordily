@@ -43,7 +43,7 @@ fun UploadAlbumPage(navController: NavController) {
 }
 
 @Composable
-fun UploadAlbumContent(){
+private fun UploadAlbumContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
 
     Image(
