@@ -27,5 +27,6 @@ sealed class Screen(val route: String){
     object AlbumPage: Screen(route = "album_page")
     object ArtistSongsPage: Screen(route = "artist_songs_page")
     object TopSongsPage: Screen(route = "top_songs_page")
+    object RecentlyPlayedSongsPage: Screen(route = "recently_played_page")
 
 }
