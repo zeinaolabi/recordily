@@ -76,6 +76,14 @@
     <!--Song Stats Page-->
     <string name="song_statistics">Song Statistics</string>
 
+    <!--Playlist Page-->
+    <string name="new_playlist">Create New Playlist</string>
+    <string name="playlist_name">Playlist Name</string>
+
+    <string name="album">Album</string>
+    <string name="top_albums">Top 5 Album</string>
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

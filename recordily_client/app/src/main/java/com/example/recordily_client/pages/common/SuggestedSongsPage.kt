@@ -21,6 +21,7 @@ import com.example.recordily_client.components.HorizontalLine
 import com.example.recordily_client.components.Popup
 import com.example.recordily_client.components.SongCard
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -72,15 +73,11 @@ private fun SuggestedSongsContent(navController: NavController){
         for(i in 1..3){
             SongCard(
                 onSongClick = {
-                    navController.navigate(Screen.SongPage.route) {
-
-                        popUpTo(Screen.SuggestedSongsPage.route) {
-                            saveState = true
-                        }
-
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.SongPage.route,
+                        popUpTo = Screen.SuggestedSongsPage.route
+                    )
                 },
                 onMoreClick = { popUpVisibility.value = true }
             )

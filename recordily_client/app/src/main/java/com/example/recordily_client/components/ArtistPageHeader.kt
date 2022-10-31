@@ -59,8 +59,8 @@ fun ArtistHeaderContent(navController: NavController){
             )
 
             Text(
-                text = "10K Follwers",
-                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                text = "10K Followers",
+                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary
             )

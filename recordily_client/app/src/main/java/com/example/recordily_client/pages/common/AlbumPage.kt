@@ -38,7 +38,7 @@ fun AlbumPage(navController: NavController){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            ExitBar(navController, stringResource(id = R.string.artist))
+            ExitBar(navController, stringResource(id = R.string.album))
 
             AlbumHeader()
 
@@ -48,6 +48,17 @@ fun AlbumPage(navController: NavController){
 
         }
 
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            Popup(
+                popUpVisibility = popUpVisibility,
+                isPlaylist = false
+            )
+        }
+
     }
 }
 
@@ -55,40 +66,20 @@ fun AlbumPage(navController: NavController){
 private fun AlbumPageContent(navController: NavController){
     Column(
         modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+            .fillMaxSize()
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        SongsBox(title = "Top 5 Albums", navController)
-
-        AlbumsCards(
-            title = stringResource(id = R.string.albums),
-            navController = navController,
-            destination = Screen.LandingPage.route,
-            onAlbumClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            },
-            onMoreClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumsPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            }
-        )
-
-        SongsBox(title = "Top 5 Songs", navController)
-
-        SongsCards(
-            title = stringResource(id = R.string.songs),
-            navController = navController,
-            destination = Screen.LandingPage.route,
-            onSongClick = {},
-            onMoreClick = {}
-        )
+        for(i in 1..3){
+            SongCard(
+                onSongClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.SongPage.route,
+                        popUpTo = Screen.SuggestedSongsPage.route
+                    )
+                },
+                onMoreClick = { popUpVisibility.value = true }
+            )
+        }
     }
 }

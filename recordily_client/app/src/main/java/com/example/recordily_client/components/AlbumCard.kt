@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun AlbumsCards(title: String, navController: NavController, destination: String, onAlbumClick: ()->(Unit),onMoreClick: () -> (Unit)){
+fun AlbumsCards(title: String, navController: NavController, buttonDestination: ()->(Unit), onAlbumClick: ()->(Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -34,12 +34,12 @@ fun AlbumsCards(title: String, navController: NavController, destination: String
             color = MaterialTheme.colors.onPrimary
         )
 
-        AlbumCardContent(navController, destination, onAlbumClick ,onMoreClick)
+        AlbumCardContent(buttonDestination, onAlbumClick)
     }
 }
 
 @Composable
-private fun AlbumCardContent(navController: NavController, destination: String, onAlbumClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun AlbumCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,8 +54,9 @@ private fun AlbumCardContent(navController: NavController, destination: String, 
         SmallTealButton(
             text = stringResource(id = R.string.more),
             onClick = {
-                navController.navigate(destination)
-            })
+                destination()
+            }
+        )
 
     }
 }
@@ -105,13 +106,15 @@ private fun AlbumCardContent(onAlbumClick: () -> (Unit)){
             Text(
                 text = "Album title",
                 fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(id = R.dimen.font_small).value.sp
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                color = MaterialTheme.colors.onPrimary
             )
 
             Text(
                 text = "Artist name",
                 fontWeight = FontWeight.Medium,
-                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
+                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                color = MaterialTheme.colors.onPrimary
             )
         }
     }

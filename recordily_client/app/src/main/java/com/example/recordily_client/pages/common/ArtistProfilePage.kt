@@ -48,6 +48,17 @@ fun ArtistProfilePage(navController: NavController){
 
         }
 
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            Popup(
+                popUpVisibility = popUpVisibility,
+                isPlaylist = false
+            )
+        }
+
     }
 }
 
@@ -59,23 +70,32 @@ fun ArtistProfileContent(navController: NavController){
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
-        SongsBox(title = "Top 5 Albums", navController)
-
-        AlbumsCards(
-            title = stringResource(id = R.string.albums),
-            navController = navController,
-            destination = Screen.LandingPage.route,
-            onAlbumClick = {
+        AlbumsBox(
+            title = stringResource(id = R.string.top_albums),
+            destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.AlbumPage.route,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             },
-            onMoreClick = {
+            navController = navController
+        )
+
+        AlbumsCards(
+            title = stringResource(id = R.string.albums),
+            navController = navController,
+            buttonDestination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.AlbumsPage.route,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            },
+            onAlbumClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.AlbumPage.route,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             }

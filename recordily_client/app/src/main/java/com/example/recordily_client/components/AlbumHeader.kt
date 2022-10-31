@@ -20,10 +20,12 @@ import com.example.recordily_client.R
 @Composable
 fun AlbumHeader(){
     Row(
-        modifier = Modifier.padding(
-            vertical = dimensionResource(id = R.dimen.padding_large),
-            horizontal = dimensionResource(id = R.dimen.padding_medium)
-        )
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                vertical = dimensionResource(id = R.dimen.padding_large),
+                horizontal = dimensionResource(id = R.dimen.padding_medium)
+            )
     ){
         Image(
             painter = painterResource(id = R.drawable.recordily_dark_logo),

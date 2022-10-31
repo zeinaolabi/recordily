@@ -129,7 +129,7 @@ fun SongDetails(onSongClick: ()->(Unit)){
     {
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),
-            contentDescription = "logo",
+            contentDescription = "song picture",
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape),

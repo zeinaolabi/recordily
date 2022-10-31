@@ -56,7 +56,7 @@ fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ) {
+                ){
                     popUpVisibility.value = true
                 },
         ) {
