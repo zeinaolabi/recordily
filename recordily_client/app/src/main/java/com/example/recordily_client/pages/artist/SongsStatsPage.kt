@@ -96,7 +96,17 @@ private fun SearchResult(navController: NavController){
                 SongCard(onMoreClick = {
                     popUpVisibility.value = true
                 },
-                    onSongClick = {})
+                    onSongClick = {
+                        navController.navigate(Screen.SongStatsPage.route) {
+
+                            popUpTo(Screen.SongsStatsPage.route) {
+                                saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    })
             }
         }
     }

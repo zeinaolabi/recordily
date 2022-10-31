@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -59,7 +60,10 @@ fun PageOptions(pageOptions: List<Destination>, currentPage: String, navControll
     pageOptions.forEach { option ->
         Row(
             modifier = Modifier
-                .clickable {
+                .clickable(
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    indication = null
+                ) {
                     navController.navigate(option.route) {
 
                         if(option.route == pageOptions[0].route){

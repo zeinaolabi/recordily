@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +47,20 @@ fun Header(navController: NavController){
                 modifier = Modifier
                     .height(64.dp)
                     .width(80.dp)
+                    .clickable(
+                        interactionSource = remember { NoRippleInteractionSource() },
+                        indication = null
+                    ){
+                        navController.navigate(Screen.CommonLandingPage.route) {
+                            navController.graph.startDestinationRoute?.let { route ->
+                                popUpTo(route) {
+                                    saveState = true
+                                }
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
             )
 
             Text(

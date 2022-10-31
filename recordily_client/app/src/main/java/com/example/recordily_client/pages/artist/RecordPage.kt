@@ -70,7 +70,7 @@ fun RecordPage(navController: NavController){
 }
 
 @Composable
-fun ExitPage(navController: NavController, recordViewModel: RecordViewModel){
+private fun ExitPage(navController: NavController, recordViewModel: RecordViewModel){
     Row {
         Icon(
             Icons.Default.Close,
@@ -100,7 +100,7 @@ fun ExitPage(navController: NavController, recordViewModel: RecordViewModel){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun RecordContent(recordViewModel: RecordViewModel){
+private fun RecordContent(recordViewModel: RecordViewModel){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,7 +121,7 @@ fun RecordContent(recordViewModel: RecordViewModel){
 
 
 @Composable
-fun RecordTimer(){
+private fun RecordTimer(){
     val minutes = currentTime.value / 60L
     val seconds = currentTime.value % 60000L
 
@@ -151,7 +151,7 @@ fun RecordTimer(){
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun RecordButton(recordViewModel: RecordViewModel){
+private fun RecordButton(recordViewModel: RecordViewModel){
     Box(
         modifier = Modifier
             .size(220.dp)
@@ -184,7 +184,7 @@ fun RecordButton(recordViewModel: RecordViewModel){
 
 @ExperimentalAnimationApi
 @Composable
-fun RecordButtonsRow(recordViewModel: RecordViewModel){
+private fun RecordButtonsRow(recordViewModel: RecordViewModel){
 
     AnimatedVisibility(
         buttonsVisibility.value,
@@ -222,7 +222,7 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
 }
 
 @Composable
-fun WaveRecordAnimation(recordViewModel: RecordViewModel){
+private fun WaveRecordAnimation(recordViewModel: RecordViewModel){
     val waves = listOf(
         remember { Animatable(0f) },
         remember { Animatable(0f) },

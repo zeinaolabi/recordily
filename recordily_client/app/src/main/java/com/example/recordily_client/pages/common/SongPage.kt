@@ -40,7 +40,7 @@ fun SongPage(navController: NavController) {
                     painter = painterResource(id = R.drawable.test),
                     contentDescription = "song picture",
                     modifier = Modifier
-                        .size(350.dp)
+                        .size(330.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.FillBounds
                 )

@@ -79,7 +79,7 @@ fun SongCard(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent(onMoreClick, onSongClick)
+        SongCardContent(onSongClick, onMoreClick)
     }
 }
 
