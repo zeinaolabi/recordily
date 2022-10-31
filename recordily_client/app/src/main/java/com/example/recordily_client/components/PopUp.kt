@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.example.recordily_client.R
 
 @Composable
-fun Popup(popUpVisibility: MutableState<Boolean>){
+fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -60,14 +60,36 @@ fun Popup(popUpVisibility: MutableState<Boolean>){
                     popUpVisibility.value = true
                 },
         ) {
-            PopupContent()
-        }
+            if(isPlaylist){
+                PlaylistPopupContent()
 
+            }
+            else{
+                RegularPopupContent()
+            }
+        }
     }
 }
 
 @Composable
-fun PopupContent(){
+private fun RegularPopupContent(){
+    Column(
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                vertical = dimensionResource(id = R.dimen.padding_large),
+                horizontal = dimensionResource(id = R.dimen.padding_medium)
+            )
+    ){
+        AddToLikes()
+
+        AddToPlaylist()
+    }
+}
+
+@Composable
+private fun PlaylistPopupContent(){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -78,52 +100,68 @@ fun PopupContent(){
             )
     ){
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.heart),
-                contentDescription = "delete",
-                modifier = Modifier.size(20.dp),
-                tint = Color.White
-            )
+        AddToLikes()
 
-            Text(
-                text="Like",
-                color = Color.White
-            )
-        }
+        AddToPlaylist()
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ){
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "delete",
-                modifier = Modifier.size(20.dp),
-                tint = Color.White
-            )
+        DeleteFromPlaylist()
 
-            Text(
-                text="Add to playlist",
-                color = Color.White
-            )
-        }
+    }
+}
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ){
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "delete",
-                modifier = Modifier.size(20.dp),
-                tint = Color.White
-            )
+@Composable
+private fun DeleteFromPlaylist(){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ){
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = "delete",
+            modifier = Modifier.size(20.dp),
+            tint = Color.White
+        )
 
-            Text(
-                text="Delete",
-                color = Color.White
-            )
-        }
+        Text(
+            text="Delete",
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+private fun AddToPlaylist(){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ){
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "add to playlist",
+            modifier = Modifier.size(20.dp),
+            tint = Color.White
+        )
+
+        Text(
+            text="Add to playlist",
+            color = Color.White
+        )
+    }
+}
+
+@Composable
+private fun AddToLikes(){
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "delete",
+            modifier = Modifier.size(20.dp),
+            tint = Color.White
+        )
+
+        Text(
+            text="Like",
+            color = Color.White
+        )
     }
 }

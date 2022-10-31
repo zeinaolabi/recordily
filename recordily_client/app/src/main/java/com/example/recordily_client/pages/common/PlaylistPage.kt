@@ -59,7 +59,10 @@ fun PlaylistPage(navController: NavController){
             enter = expandVertically(expandFrom = Alignment.CenterVertically),
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
-            Popup(popUpVisibility)
+            Popup(
+                popUpVisibility = popUpVisibility,
+                isPlaylist = true
+            )
         }
     }
 }

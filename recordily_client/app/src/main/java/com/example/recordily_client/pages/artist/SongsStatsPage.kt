@@ -76,7 +76,10 @@ private fun SongsStatsContent(navController: NavController){
         enter = expandVertically(expandFrom = Alignment.CenterVertically),
         exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
     ) {
-        Popup(popUpVisibility)
+        Popup(
+            popUpVisibility = popUpVisibility,
+            isPlaylist = false
+        )
     }
 }
 
