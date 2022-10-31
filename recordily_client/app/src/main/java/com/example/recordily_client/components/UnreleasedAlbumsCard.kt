@@ -48,8 +48,8 @@ private fun CardsContent(destination: ()->(Unit), onAlbumClick: ()->(Unit), onUp
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         for(i in 1..3){
-            UnreleasedSongCard(
-                onSongClick = onAlbumClick,
+            UnreleasedAlbumCard(
+                onAlbumClick = onAlbumClick,
                 onUploadClick = {onUploadClick()}
             )
         }
