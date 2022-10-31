@@ -152,5 +152,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             CreatePlaylistPage(navController)
         }
+
+        composable(
+            route = Screen.AlbumsPage.route
+        ){
+            AlbumsPage(navController)
+        }
     }
 }
