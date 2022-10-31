@@ -34,6 +34,7 @@ fun CommonSearchPage(navController: NavController){
                         horizontal = dimensionResource(id = R.dimen.padding_medium)
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
                 SearchPageContent(navController)
             }
@@ -43,7 +44,7 @@ fun CommonSearchPage(navController: NavController){
 }
 
 @Composable
-fun SearchPageContent(navController: NavController){
+private fun SearchPageContent(navController: NavController){
     Text(
         text = stringResource(id = R.string.discover_songs),
         fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
@@ -57,7 +58,27 @@ fun SearchPageContent(navController: NavController){
         title = stringResource(id = R.string.suggested),
         navController = navController,
         destination = Screen.CommonLandingPage.route,
-        onSongClick = {},
-        onMoreClick = {}
+        onSongClick = {
+            navController.navigate(Screen.SongStatsPage.route) {
+
+                popUpTo(Screen.CommonSearchPage.route) {
+                    saveState = true
+                }
+
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        onMoreClick = {
+            navController.navigate(Screen.SongStatsPage.route) {
+
+                popUpTo(Screen.SuggestedSongsPage.route) {
+                    saveState = true
+                }
+
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
     )
 }
