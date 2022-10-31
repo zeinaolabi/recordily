@@ -128,5 +128,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             EditProfilePage(navController)
         }
+
+        composable(
+            route = Screen.SongPage.route
+        ){
+            SongPage(navController)
+        }
     }
 }
