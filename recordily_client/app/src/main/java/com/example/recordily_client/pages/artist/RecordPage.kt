@@ -188,7 +188,7 @@ fun RecordButtonsRow(recordViewModel: RecordViewModel){
 
     AnimatedVisibility(
         buttonsVisibility.value,
-        enter = fadeIn(0.4f) + expandIn(expandFrom = Alignment.TopStart),
+        enter = fadeIn() + expandIn(expandFrom = Alignment.TopStart),
         exit = fadeOut(animationSpec = tween(durationMillis = 250)) + shrinkOut(shrinkTowards = Alignment.TopStart)
     ) {
         Row(
