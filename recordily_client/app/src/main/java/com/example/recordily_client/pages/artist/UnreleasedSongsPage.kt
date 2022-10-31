@@ -33,7 +33,7 @@ fun UnreleasedSongsPage(navController: NavController){
         Column(modifier = Modifier.fillMaxSize()){
             ExitBar(
                 navController = navController,
-                title = stringResource(id = R.string.suggested)
+                title = stringResource(id = R.string.unreleased_songs)
             )
 
             Column(

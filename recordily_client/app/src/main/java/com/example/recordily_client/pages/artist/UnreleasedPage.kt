@@ -108,7 +108,7 @@ fun UnreleasedContentColumn(navController: NavController){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
         UnreleasedSongsCard(
-            title = stringResource(id = R.string.unreleased),
+            title = stringResource(id = R.string.unreleased_songs),
             destination = {
                        navigateTo(
                            navController = navController,
@@ -128,10 +128,25 @@ fun UnreleasedContentColumn(navController: NavController){
             }
         )
 
-        AlbumsCards(
-            title = "Unreleased Albums",
-            buttonDestination = {},
-            onAlbumClick = {} ,
+        UnreleasedAlbumsCard(
+            title = stringResource(id = R.string.unreleased_albums),
+            destination = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UnreleasedAlbumsPage.route,
+                    popUpTo = Screen.UnreleasedPage.route
+                )
+            },
+            onAlbumClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UnreleasedAlbumPage.route,
+                    popUpTo = Screen.UnreleasedPage.route
+                )
+            },
+            onUploadClick = {
+                //Upload Song
+            }
         )
     }
 }

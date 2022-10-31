@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import com.example.recordily_client.components.SongCard
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 
@@ -33,7 +32,7 @@ fun UnreleasedAlbumsPage(navController: NavController){
         Column(modifier = Modifier.fillMaxSize()){
             ExitBar(
                 navController = navController,
-                title = stringResource(id = R.string.suggested)
+                title = stringResource(id = R.string.unreleased_albums)
             )
 
             Column(
@@ -72,8 +71,8 @@ private fun UnreleasedAlbumsContent(navController: NavController){
                 onAlbumClick = {
                     navigateTo(
                         navController = navController,
-                        destination = Screen.UnreleasedAlbumPage.route,
-                        popUpTo = Screen.UnreleasedSongsPage.route
+                        destination = Screen.UnreleasedAlbumsPage.route,
+                        popUpTo = Screen.UnreleasedAlbumsPage.route
                     )
                 },
                 onUploadClick = {

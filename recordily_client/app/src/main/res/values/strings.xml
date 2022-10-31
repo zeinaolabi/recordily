@@ -89,6 +89,8 @@
     <string name="top_songs">Top Songs</string>
     <string name="recently_played">Recently Played</string>
 
+    <string name="unreleased_albums">Unreleased Albums</string>
+    <string name="unreleased_songs">Unreleased Songs</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
