@@ -54,12 +54,12 @@ fun ArtistHeaderContent(navController: NavController){
                 text = "Artist Name",
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
                 color = MaterialTheme.colors.onPrimary
             )
 
             Text(
-                text = "Hi this is my bio",
+                text = "10K Follwers",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary

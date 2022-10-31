@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -47,7 +48,7 @@ fun CommonLandingPage(navController: NavController){
 fun LandingPageContent(navController: NavController){
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(ScrollState(0))
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ){
