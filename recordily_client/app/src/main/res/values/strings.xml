@@ -70,6 +70,9 @@
     <!--Song Page-->
     <string name="playing">Playing Now</string>
 
+    <!--Song Stats Page-->
+    <string name="song_statistics">Song Statistics</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
