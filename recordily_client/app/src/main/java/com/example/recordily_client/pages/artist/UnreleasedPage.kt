@@ -40,7 +40,7 @@ fun UnreleasedPage(navController: NavController) {
 
                 AddMusicRow(navController)
 
-                UnreleasedContentColumn()
+                UnreleasedContentColumn(navController)
             }
         }
     )
@@ -101,17 +101,31 @@ fun AddMusicRow(navController: NavController){
 }
 
 @Composable
-fun UnreleasedContentColumn(){
+fun UnreleasedContentColumn(navController: NavController){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
-        SongsCards(
-            title = "Unreleased Songs",
-            destination = {},
-            onSongClick = {},
-            onMoreClick = {}
+        UnreleasedSongsCard(
+            title = stringResource(id = R.string.unreleased),
+            destination = {
+                       navigateTo(
+                           navController = navController,
+                           destination = Screen.UnreleasedSongsPage.route,
+                           popUpTo = Screen.UnreleasedPage.route
+                       )
+            },
+            onSongClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.SongPage.route,
+                    popUpTo = Screen.UnreleasedPage.route
+                )
+            },
+            onUploadClick = {
+                //Upload Song
+            }
         )
 
         AlbumsCards(

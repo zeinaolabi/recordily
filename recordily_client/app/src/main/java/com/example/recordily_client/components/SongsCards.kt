@@ -39,7 +39,7 @@ fun SongsCards(title: String, destination: ()->(Unit), onSongClick: ()->(Unit),o
 }
 
 @Composable
-fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +81,7 @@ fun SongCard(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
 }
 
 @Composable
-fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -108,7 +108,7 @@ fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
 }
 
 @Composable
-fun SongDetails(onSongClick: ()->(Unit)){
+private fun SongDetails(onSongClick: ()->(Unit)){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
