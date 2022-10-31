@@ -46,7 +46,7 @@ fun CommonLiveEventsPage(navController: NavController){
 }
 
 @Composable
-fun LiveEventsContent(){
+private fun LiveEventsContent(){
     LargeRoundButton(
         text = stringResource(id = R.string.start_live),
         onClick = {

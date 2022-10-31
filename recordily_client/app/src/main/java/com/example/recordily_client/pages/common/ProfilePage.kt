@@ -73,7 +73,7 @@ fun CommonProfilePage(navController: NavController){
 
 
 @Composable
-fun ProfileContentColumn(navController: NavController){
+private fun ProfileContentColumn(navController: NavController){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))

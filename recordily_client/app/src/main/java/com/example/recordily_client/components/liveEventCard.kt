@@ -49,7 +49,7 @@ fun LiveEventCard(navController: NavController){
 }
 
 @Composable
-fun EventCardContent(){
+private fun EventCardContent(){
     Row{
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),

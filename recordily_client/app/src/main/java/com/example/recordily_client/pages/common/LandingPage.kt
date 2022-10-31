@@ -44,7 +44,7 @@ fun CommonLandingPage(navController: NavController){
 }
 
 @Composable
-fun LandingPageContent(navController: NavController){
+private fun LandingPageContent(navController: NavController){
     Column(
         modifier = Modifier
             .verticalScroll(ScrollState(0))

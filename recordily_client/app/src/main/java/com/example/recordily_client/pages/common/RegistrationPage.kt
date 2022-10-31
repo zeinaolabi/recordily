@@ -75,7 +75,7 @@ fun RegistrationPage(navController: NavController) {
 
 @ExperimentalAnimationApi
 @Composable
-fun RegistrationContent(navController: NavController) {
+private fun RegistrationContent(navController: NavController) {
     val image =
         if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
     val logo: Painter = painterResource(id = image)
@@ -123,7 +123,7 @@ fun RegistrationContent(navController: NavController) {
 }
 
 @Composable
-fun RegistrationColumn(navController: NavController) {
+private fun RegistrationColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val confirmPassword = remember { mutableStateOf("") }
@@ -184,7 +184,7 @@ fun RegistrationColumn(navController: NavController) {
 }
 
 @Composable
-fun SignInRow(navController: NavController) {
+private fun SignInRow(navController: NavController) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
@@ -207,7 +207,7 @@ fun SignInRow(navController: NavController) {
 }
 
 @Composable
-fun UserTypesRow() {
+private fun UserTypesRow() {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -227,7 +227,7 @@ fun UserTypesRow() {
 }
 
 @Composable
-fun RadioButtons(){
+private fun RadioButtons(){
     val radioOptions = listOf(stringResource(R.string.artist), stringResource(R.string.listener))
     val (selectedOption, onOptionSelected) = remember { mutableStateOf("") }
 

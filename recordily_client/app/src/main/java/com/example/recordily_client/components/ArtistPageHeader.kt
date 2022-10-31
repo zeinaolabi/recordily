@@ -40,7 +40,7 @@ fun ArtistPageHeader(){
 }
 
 @Composable
-fun ArtistHeaderContent(){
+private fun ArtistHeaderContent(){
     Column(
         modifier = Modifier
             .height(110.dp)

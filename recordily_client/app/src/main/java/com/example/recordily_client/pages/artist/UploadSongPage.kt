@@ -49,7 +49,7 @@ fun UploadSongPage(navController: NavController) {
 }
 
 @Composable
-fun UploadSongContent(){
+private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
 
     Image(
@@ -75,7 +75,7 @@ fun UploadSongContent(){
 }
 
 @Composable
-fun DropDownAlbumMenu(){
+private fun DropDownAlbumMenu(){
     var expanded by remember { mutableStateOf(false) }
     var selectedAlbum by remember { mutableStateOf("Single") }
     val albumList = listOf(
@@ -135,7 +135,7 @@ fun DropDownAlbumMenu(){
 }
 
 @Composable
-fun PickAudioRow(){
+private fun PickAudioRow(){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

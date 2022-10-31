@@ -84,7 +84,7 @@ fun PlaylistCard(onPlaylistClick: () -> (Unit)){
 }
 
 @Composable
-fun PlaylistCardContent(){
+private fun PlaylistCardContent(){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(

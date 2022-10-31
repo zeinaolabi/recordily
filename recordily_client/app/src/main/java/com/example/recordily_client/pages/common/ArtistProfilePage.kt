@@ -57,7 +57,7 @@ fun ArtistProfilePage(navController: NavController){
 }
 
 @Composable
-fun ArtistProfileContent(navController: NavController){
+private fun ArtistProfileContent(navController: NavController){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))

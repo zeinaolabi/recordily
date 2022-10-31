@@ -60,7 +60,7 @@ fun ArtistsBox(title: String, navController: NavController){
 }
 
 @Composable
-fun ArtistsBoxContent(onClick: () -> (Unit)){
+private fun ArtistsBoxContent(onClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_small))

@@ -47,7 +47,7 @@ fun ProfileHeader(navController: NavController){
 }
 
 @Composable
-fun ProfileInfo(navController: NavController){
+private fun ProfileInfo(navController: NavController){
     Column(
         modifier = Modifier
             .height(110.dp)

@@ -56,7 +56,7 @@ fun PlaylistPage(navController: NavController){
 }
 
 @Composable
-fun PlaylistPageContent(navController: NavController){
+private fun PlaylistPageContent(navController: NavController){
     Column(
         modifier = Modifier
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))

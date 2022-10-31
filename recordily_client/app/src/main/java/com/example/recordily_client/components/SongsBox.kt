@@ -55,7 +55,7 @@ fun SongsBox(title: String, navController: NavController){
 }
 
 @Composable
-fun SongSquareCard(onClick: () -> (Unit)){
+private fun SongSquareCard(onClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .bounceClick()

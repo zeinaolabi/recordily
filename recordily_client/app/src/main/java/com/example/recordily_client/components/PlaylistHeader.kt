@@ -43,7 +43,7 @@ fun PlaylistHeader(navController: NavController){
 }
 
 @Composable
-fun PlaylistHeaderContent(navController: NavController){
+private fun PlaylistHeaderContent(navController: NavController){
     Column(
         modifier = Modifier
             .height(110.dp)

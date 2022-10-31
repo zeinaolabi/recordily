@@ -47,7 +47,7 @@ fun UnreleasedPage(navController: NavController) {
 }
 
 @Composable
-fun AddMusicRow(navController: NavController){
+private fun AddMusicRow(navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +101,7 @@ fun AddMusicRow(navController: NavController){
 }
 
 @Composable
-fun UnreleasedContentColumn(navController: NavController){
+private fun UnreleasedContentColumn(navController: NavController){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())

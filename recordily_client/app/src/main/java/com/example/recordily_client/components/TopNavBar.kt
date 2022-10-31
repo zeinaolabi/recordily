@@ -53,7 +53,7 @@ fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController
 }
 
 @Composable
-fun PageOptions(pageOptions: List<Destination>, currentPage: String, navController: NavController){
+private fun PageOptions(pageOptions: List<Destination>, currentPage: String, navController: NavController){
     val secondaryColor = MaterialTheme.colors.secondary
 
     pageOptions.forEach { option ->

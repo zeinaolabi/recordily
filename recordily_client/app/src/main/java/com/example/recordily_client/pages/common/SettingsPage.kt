@@ -35,7 +35,7 @@ fun SettingsPage(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
                 ){
-                    EditProfileContent()
+                    SettingsContent()
                 }
             }
         }
@@ -43,7 +43,7 @@ fun SettingsPage(navController: NavController) {
 }
 
 @Composable
-fun SettingsContent(){
+private fun SettingsContent(){
     Text(
         text = stringResource(id = R.string.edit_profile),
         fontSize = dimensionResource(id = R.dimen.font_title).value.sp,

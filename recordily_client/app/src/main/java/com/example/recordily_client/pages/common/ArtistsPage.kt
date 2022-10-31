@@ -39,7 +39,7 @@ fun ArtistsPage(navController: NavController) {
 }
 
 @Composable
-fun ArtistsPageContent(navController: NavController){
+private fun ArtistsPageContent(navController: NavController){
     val likes = Destination(stringResource(R.string.likes), Screen.LibraryPage.route)
     val playlists = Destination(stringResource(R.string.playlists), Screen.PlaylistsPage.route)
     val artists = Destination(stringResource(R.string.artists), Screen.ArtistsPage.route)

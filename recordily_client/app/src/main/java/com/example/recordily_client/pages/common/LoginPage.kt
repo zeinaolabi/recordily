@@ -69,7 +69,7 @@ fun LoginPage(navController: NavController) {
 
 @ExperimentalAnimationApi
 @Composable
-fun BoxContent(navController: NavController) {
+private fun BoxContent(navController: NavController) {
     val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
     val logo: Painter = painterResource(id = image)
 
@@ -117,7 +117,7 @@ fun BoxContent(navController: NavController) {
 }
 
 @Composable
-fun TextFieldColumn(navController: NavController) {
+private fun TextFieldColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 

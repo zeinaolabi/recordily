@@ -44,7 +44,7 @@ fun EditProfilePage(navController: NavController) {
 }
 
 @Composable
-fun EditProfileContent(){
+private fun EditProfileContent(){
 
     Image(
         painter = painterResource(id = R.drawable.profile_picture),

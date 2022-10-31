@@ -42,7 +42,7 @@ fun ArtistCard(onClick: () -> (Unit)){
 }
 
 @Composable
-fun ArtistCardContent(){
+private fun ArtistCardContent(){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
