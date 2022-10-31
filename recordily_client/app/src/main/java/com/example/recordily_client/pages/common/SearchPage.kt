@@ -1,8 +1,12 @@
 package com.example.recordily_client.pages.common
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -15,17 +19,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.SearchTextField
-import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.SongsCards
+import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 
 private val searchInput = mutableStateOf("")
+private val popUpVisibility = mutableStateOf(false)
 
+@ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
 
-    Scaffold(
-        content = {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -38,11 +50,29 @@ fun CommonSearchPage(navController: NavController){
             ){
                 SearchPageContent(navController)
             }
-        },
-        bottomBar = { BottomNavigationBar(navController) }
-    )
+
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.Bottom
+            ){
+                BottomNavigationBar(navController)
+            }
+        }
+
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            Popup(
+                popUpVisibility = popUpVisibility,
+                isPlaylist = false
+            )
+        }
+    }
 }
 
+@ExperimentalAnimationApi
 @Composable
 private fun SearchPageContent(navController: NavController){
     Text(
@@ -57,9 +87,9 @@ private fun SearchPageContent(navController: NavController){
     SongsCards(
         title = stringResource(id = R.string.suggested),
         navController = navController,
-        destination = Screen.LandingPage.route,
+        destination = Screen.SuggestedSongsPage.route,
         onSongClick = {
-            navController.navigate(Screen.SongStatsPage.route) {
+            navController.navigate(Screen.SongPage.route) {
 
                 popUpTo(Screen.SearchPage.route) {
                     saveState = true
@@ -69,16 +99,6 @@ private fun SearchPageContent(navController: NavController){
                 restoreState = true
             }
         },
-        onMoreClick = {
-            navController.navigate(Screen.SongStatsPage.route) {
-
-                popUpTo(Screen.SuggestedSongsPage.route) {
-                    saveState = true
-                }
-
-                launchSingleTop = true
-                restoreState = true
-            }
-        }
+        onMoreClick = { popUpVisibility.value = true }
     )
 }

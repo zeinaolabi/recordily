@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -118,7 +119,10 @@ fun SongDetails(onSongClick: ()->(Unit)){
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth(0.9f)
-            .clickable {
+            .clickable(
+                interactionSource = remember { NoRippleInteractionSource() },
+                indication = null
+            ) {
                 onSongClick()
             }
     )
