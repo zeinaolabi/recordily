@@ -16,8 +16,8 @@
 
     <!--Home page-->
     <string name="home">Home</string>
-    <string name="view_stats">Views Stats</string>
-    <string name="song_stats">Songs Stats</string>
+    <string name="view_stats">Views</string>
+    <string name="song_stats">Songs</string>
     <string name="suggested">Suggested For You</string>
 
     <!--Profile Page -->
