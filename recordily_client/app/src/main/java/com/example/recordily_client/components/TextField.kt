@@ -1,4 +1,4 @@
-package com.example.recordily_client
+package com.example.recordily_client.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,8 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.sp
+import com.example.recordily_client.R
 
 @Composable
 fun TextField(input: MutableState<String>, text: String, visibility: Boolean) {
@@ -23,7 +26,13 @@ fun TextField(input: MutableState<String>, text: String, visibility: Boolean) {
             .fillMaxWidth(.9f)
             .clip(MaterialTheme.shapes.small),
         value = input.value,
-        label = { Text(text) },
+        label = {
+            Text(
+                text = text,
+                fontWeight = FontWeight.Medium,
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp
+            )
+                },
         onValueChange = { input.value = it },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,

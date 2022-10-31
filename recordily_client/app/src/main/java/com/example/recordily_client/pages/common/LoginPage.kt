@@ -30,6 +30,7 @@ import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
+import com.example.recordily_client.components.TextField
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
@@ -137,13 +138,13 @@ fun TextFieldColumn(navController: NavController) {
         )
     ) {
 
-        com.example.recordily_client.TextField(
+        TextField(
             input = email,
             text = stringResource(R.string.email),
             visibility = true
         )
 
-        com.example.recordily_client.TextField(
+        TextField(
             input = password,
             text = stringResource(R.string.password),
             visibility = false

@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.SearchTextField
+import com.example.recordily_client.components.SearchTextField
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 

@@ -8,27 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.TextField
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
-import com.example.recordily_client.navigation.Screen
-import android.content.Intent
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.ui.res.colorResource
-import androidx.core.app.ActivityCompat
-
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 private val albumName = mutableStateOf("")
 

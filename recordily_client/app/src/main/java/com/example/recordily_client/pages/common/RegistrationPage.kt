@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -33,7 +32,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.validation.isValidEmail
 import com.example.recordily_client.validation.isValidPassword
 import kotlinx.coroutines.launch
-import com.example.recordily_client.TextField
+import com.example.recordily_client.components.TextField
 import com.example.recordily_client.requests.RegistrationRequest
 import com.example.recordily_client.view_models.RegistrationViewModel
 
