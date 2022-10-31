@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.ui.theme.backgroundColor
 
 @Composable
 fun RoundButton(text:String, onClick: () -> Unit){
@@ -42,9 +43,6 @@ fun RoundButton(text:String, onClick: () -> Unit){
 @Composable
 fun SmallRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
-        .height(30.dp)
-        .width(80.dp)
-        .clip(MaterialTheme.shapes.small)
         .innerShadow(
             blur = 7.dp,
             color = MaterialTheme.colors.primaryVariant,
@@ -52,7 +50,12 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
             offsetX = (-5.5).dp,
             offsetY = (-3.5).dp
         )
-        .background(MaterialTheme.colors.primary),
+        .clip(MaterialTheme.shapes.small)
+        .height(30.dp)
+        .width(80.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.primary
+        ),
         onClick = { onClick() })
     {
         Text(
@@ -115,9 +118,9 @@ fun SmallTealButton(text:String, onClick: () -> (Unit)){
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_small))
             .bounceClick()
+            .border(1.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp))
             .height(35.dp)
-            .width(80.dp)
-            .border(1.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp)),
+            .width(80.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent
         ),
