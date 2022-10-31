@@ -23,6 +23,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.navigateTo
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -79,12 +80,22 @@ fun ProfileContentColumn(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         SongsCards(
-            title = "Top Songs",
+            title = stringResource(id = R.string.top_songs),
             navController,
             destination = {
-
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.TopSongsPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
             },
-            onSongClick = {} ,
+            onSongClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.SongPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
+            },
             onMoreClick = {
                 popUpVisibility.value = true
             }
@@ -94,11 +105,19 @@ fun ProfileContentColumn(navController: NavController){
             title = "Recently Played",
             navController,
             destination = {
-
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.TopSongsPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
             },
             onSongClick = {
-
-            } ,
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.SongPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
+            },
             onMoreClick = {
                 popUpVisibility.value = true
             }
