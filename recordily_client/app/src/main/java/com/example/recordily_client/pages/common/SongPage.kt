@@ -123,4 +123,46 @@ private fun SongDetails(){
 
 }
 
+@Composable
+private fun PlayButtonRow(){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "like",
+            modifier = Modifier.size(25.dp)
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = "before",
+                modifier = Modifier.size(25.dp)
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = "play",
+                modifier = Modifier.size(50.dp)
+            )
+
+            Icon(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = "after",
+                modifier = Modifier.size(25.dp)
+            )
+        }
+
+        Icon(
+            painter = painterResource(id = R.drawable.add_to_playlist),
+            contentDescription = "add to playlist",
+            modifier = Modifier.size(25.dp)
+        )
+    }
+}
 
