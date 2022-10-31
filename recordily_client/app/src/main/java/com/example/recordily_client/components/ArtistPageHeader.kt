@@ -15,11 +15,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun ArtistPageHeader(navController: NavController){
+fun ArtistPageHeader(){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -36,12 +35,12 @@ fun ArtistPageHeader(navController: NavController){
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent(navController)
+        ArtistHeaderContent()
     }
 }
 
 @Composable
-fun ArtistHeaderContent(navController: NavController){
+fun ArtistHeaderContent(){
     Column(
         modifier = Modifier
             .height(110.dp)

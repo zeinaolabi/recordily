@@ -14,6 +14,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun UnreleasedPage(navController: NavController) {
@@ -39,7 +40,7 @@ fun UnreleasedPage(navController: NavController) {
 
                 AddMusicRow(navController)
 
-                UnreleasedContentColumn(navController)
+                UnreleasedContentColumn()
             }
         }
     )
@@ -51,8 +52,7 @@ fun AddMusicRow(navController: NavController){
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_large),)
-        ,
+            .padding(bottom = dimensionResource(id = R.dimen.padding_large)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -90,22 +90,18 @@ fun AddMusicRow(navController: NavController){
         MediumRoundButton(
             text = stringResource(id = R.string.upload_album),
             onClick = {
-                navController.navigate(Screen.UploadAlbumPage.route) {
-
-                    popUpTo(Screen.ProfilePage.route) {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UploadAlbumPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
             }
         )
     }
 }
 
 @Composable
-fun UnreleasedContentColumn(navController: NavController){
+fun UnreleasedContentColumn(){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -113,7 +109,6 @@ fun UnreleasedContentColumn(navController: NavController){
         ){
         SongsCards(
             title = "Unreleased Songs",
-            navController,
             destination = {},
             onSongClick = {},
             onMoreClick = {}

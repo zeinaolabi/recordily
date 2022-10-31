@@ -13,10 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 
@@ -47,12 +45,5 @@ fun ExitBar(navController: NavController, title: String){
             color = MaterialTheme.colors.onPrimary,
             fontWeight = FontWeight.ExtraBold
         )
-//
-//        Text(
-//            text = title,
-//            fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
-//            fontWeight = FontWeight.Bold,
-//            color = MaterialTheme.colors.onPrimary
-//        )
     }
 }

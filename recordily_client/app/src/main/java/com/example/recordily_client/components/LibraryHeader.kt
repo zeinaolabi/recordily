@@ -13,7 +13,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun LibraryHeader(input: MutableState<String>, navController: NavController) {
@@ -72,15 +72,11 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
-                    navController.navigate(Screen.ProfilePage.route) {
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.ProfilePage.route,
+                        popUpTo = Screen.LandingPage.route
+                    )
                 }
         )
     }

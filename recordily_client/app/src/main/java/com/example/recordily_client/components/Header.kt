@@ -1,6 +1,5 @@
 package com.example.recordily_client.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,17 +13,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
-
 
 @Composable
 fun Header(navController: NavController){
@@ -50,7 +48,7 @@ fun Header(navController: NavController){
                     .clickable(
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
-                    ){
+                    ) {
                         navController.navigate(Screen.LandingPage.route) {
                             navController.graph.startDestinationRoute?.let { route ->
                                 popUpTo(route) {
@@ -64,7 +62,7 @@ fun Header(navController: NavController){
             )
 
             Text(
-                text="Recordily",
+                text= stringResource(id = R.string.app_name),
                 color = MaterialTheme.colors.onPrimary,
                 fontFamily = FontFamily.Cursive,
                 fontSize = dimensionResource(R.dimen.font_large).value.sp

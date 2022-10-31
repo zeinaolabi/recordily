@@ -13,12 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -83,15 +83,11 @@ fun LibraryPageContent(navController: NavController){
             for(i in 1..3){
                 SongCard(
                     onSongClick = {
-                        navController.navigate(Screen.SongPage.route) {
-
-                            popUpTo(Screen.LibraryPage.route) {
-                                saveState = true
-                            }
-
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.LibraryPage.route
+                        )
                     },
                     onMoreClick = {
                         popUpVisibility.value = true

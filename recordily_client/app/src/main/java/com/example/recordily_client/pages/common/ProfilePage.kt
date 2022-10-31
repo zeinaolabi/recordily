@@ -81,7 +81,6 @@ fun ProfileContentColumn(navController: NavController){
     ){
         SongsCards(
             title = stringResource(id = R.string.top_songs),
-            navController,
             destination = {
                 navigateTo(
                     navController = navController,
@@ -103,7 +102,6 @@ fun ProfileContentColumn(navController: NavController){
 
         SongsCards(
             title = stringResource(id = R.string.recently_played),
-            navController,
             destination = {
                 navigateTo(
                     navController = navController,

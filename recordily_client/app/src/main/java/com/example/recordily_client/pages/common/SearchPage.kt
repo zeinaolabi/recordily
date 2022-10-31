@@ -87,7 +87,6 @@ private fun SearchPageContent(navController: NavController){
 
     SongsCards(
         title = stringResource(id = R.string.suggested),
-        navController = navController,
         destination = {
             navigateTo(
                 navController = navController,

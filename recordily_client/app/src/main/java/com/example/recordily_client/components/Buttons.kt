@@ -19,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
-import com.example.recordily_client.ui.theme.backgroundColor
 
 @Composable
 fun RoundButton(text:String, onClick: () -> Unit){
@@ -80,7 +79,7 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
             offsetY = (-3.5).dp
         )
         .height(40.dp)
-        .width(120.dp),
+        .width(119.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colors.primary
         ),

@@ -20,6 +20,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -90,20 +91,18 @@ private fun SearchResult(navController: NavController){
 
         Column(modifier = Modifier.verticalScroll(ScrollState(0))){
             for(i in 1..3){
-                SongCard(onMoreClick = {
-                    popUpVisibility.value = true
-                },
+                SongCard(
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                    },
                     onSongClick = {
-                        navController.navigate(Screen.SongStatsPage.route) {
-
-                            popUpTo(Screen.SongsStatsPage.route) {
-                                saveState = true
-                            }
-
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    })
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongStatsPage.route,
+                            popUpTo = Screen.SongsStatsPage.route
+                        )
+                    }
+                )
             }
         }
     }

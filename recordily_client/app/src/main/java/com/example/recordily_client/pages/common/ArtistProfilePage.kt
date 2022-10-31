@@ -10,14 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
@@ -40,7 +34,7 @@ fun ArtistProfilePage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            ArtistPageHeader(navController)
+            ArtistPageHeader()
 
             HorizontalLine()
 
@@ -99,11 +93,12 @@ fun ArtistProfileContent(navController: NavController){
             }
         )
 
-        SongsBox(title = "Top 5 Songs", navController)
+        SongsBox(
+            title = stringResource(id = R.string.top_5_songs),
+            navController = navController)
 
         SongsCards(
             title = stringResource(id = R.string.songs),
-            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,

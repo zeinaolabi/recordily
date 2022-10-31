@@ -3,7 +3,6 @@ package com.example.recordily_client.pages.common
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -52,10 +51,29 @@ fun LandingPageContent(navController: NavController){
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ){
-        SongsBox("Suggested Songs", navController)
-        SongsBox("Top 5 Played Songs", navController)
-        ArtistsBox("Top 5 Artists", navController)
-        SongsBox("Top 5 Liked Songs", navController)
-        SongsBox("Recently Played", navController)
+        SongsBox(
+            title = stringResource(id = R.string.suggested),
+            navController = navController
+        )
+
+        SongsBox(
+            title = stringResource(id = R.string.top_5_songs),
+            navController = navController
+        )
+
+        ArtistsBox(
+            title = stringResource(id = R.string.top_5_artists),
+            navController = navController
+        )
+
+        SongsBox(
+            title = stringResource(id = R.string.top_5_liked_songs),
+            navController = navController
+        )
+
+        SongsBox(
+            title = stringResource(id = R.string.recently_played),
+            navController = navController
+        )
     }
 }

@@ -19,11 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun ArtistCard(navController: NavController, onClick: () -> (Unit)){
+fun ArtistCard(onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -44,7 +43,7 @@ fun ArtistCard(navController: NavController, onClick: () -> (Unit)){
 
 @Composable
 fun ArtistCardContent(){
-    Row(verticalAlignment = Alignment.CenterVertically,)
+    Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),

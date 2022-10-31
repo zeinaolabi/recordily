@@ -82,6 +82,9 @@
 
     <string name="album">Album</string>
     <string name="top_albums">Top 5 Album</string>
+    <string name="top_5_songs">Top 5 Played Songs</string>
+    <string name="top_5_artists">Top 5 Artists</string>
+    <string name="top_5_liked_songs">Top 5 Liked Songs</string>
 
     <string name="top_songs">Top Songs</string>
     <string name="recently_played">Recently Played</string>

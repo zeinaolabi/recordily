@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun ArtistsBox(title: String, navController: NavController){
@@ -47,7 +48,11 @@ fun ArtistsBox(title: String, navController: NavController){
         ){
             for (i in 1..5) {
                 ArtistsBoxContent{
-                    navController.navigate(Screen.ArtistProfilePage.route)
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.ArtistProfilePage.route,
+                        popUpTo = Screen.ArtistsPage.route
+                    )
                 }
             }
         }

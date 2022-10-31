@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun SongPage(navController: NavController) {
