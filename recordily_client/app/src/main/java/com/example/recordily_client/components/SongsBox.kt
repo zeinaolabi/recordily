@@ -1,14 +1,12 @@
 package com.example.recordily_client.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun SongsBox(title: String, navController: NavController){
@@ -50,16 +49,23 @@ fun SongsBox(title: String, navController: NavController){
             verticalAlignment = Alignment.CenterVertically
         ){
             for (i in 1..5) {
-                SongSquareCard()
+                SongSquareCard(onClick = {
+                    navController.navigate(Screen.SongPage.route)
+                })
             }
         }
     }
 }
 
 @Composable
-fun SongSquareCard(){
+fun SongSquareCard(onClick: () -> (Unit)){
     Column(
         modifier = Modifier
+            .bounceClick()
+            .clickable(
+                interactionSource = remember { NoRippleInteractionSource() },
+                indication = null
+            ) { onClick() }
             .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
 
     ){
