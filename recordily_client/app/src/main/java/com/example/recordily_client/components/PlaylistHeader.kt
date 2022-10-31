@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun PlaylistHeader(navController: NavController){
@@ -68,7 +70,16 @@ fun PlaylistHeaderContent(navController: NavController){
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ){
-            MediumRoundButton(text = "Edit Playlist", onClick = {})
+            MediumRoundButton(
+                text = "Edit Playlist",
+                onClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.CreatePlaylistPage.route,
+                        popUpTo = Screen.PlaylistPage.route
+                    )
+                }
+            )
         }
     }
 }

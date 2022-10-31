@@ -36,7 +36,19 @@ fun PlaylistsPage(navController: NavController){
             ){
                 PlaylistsPageContent(navController)
 
-                FloatingButton(onClick={})
+                FloatingButton(
+                    onClick={
+                        navController.navigate(Screen.CreatePlaylistPage.route) {
+
+                            popUpTo(Screen.PlaylistPage.route) {
+                                    saveState = true
+                            }
+
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
             }
         },
         bottomBar = { BottomNavigationBar(navController) }

@@ -71,8 +71,6 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
 @Composable
 fun MediumRoundButton(text:String, onClick: () -> (Unit)){
     Button(modifier = Modifier
-        .height(40.dp)
-        .width(120.dp)
         .clip(MaterialTheme.shapes.medium)
         .innerShadow(
             blur = 12.dp,
@@ -81,7 +79,11 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
             offsetX = (-5.5).dp,
             offsetY = (-3.5).dp
         )
-        .background(MaterialTheme.colors.primary),
+        .height(40.dp)
+        .width(120.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.primary
+        ),
         onClick = { onClick() })
     {
         Text(

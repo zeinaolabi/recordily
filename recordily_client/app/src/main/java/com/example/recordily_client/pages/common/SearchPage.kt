@@ -21,6 +21,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.SearchTextField
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -89,15 +90,11 @@ private fun SearchPageContent(navController: NavController){
         navController = navController,
         destination = Screen.SuggestedSongsPage.route,
         onSongClick = {
-            navController.navigate(Screen.SongPage.route) {
-
-                popUpTo(Screen.SearchPage.route) {
-                    saveState = true
-                }
-
-                launchSingleTop = true
-                restoreState = true
-            }
+            navigateTo(
+                navController = navController,
+                destination = Screen.SongPage.route,
+                popUpTo = Screen.SearchPage.route
+            )
         },
         onMoreClick = { popUpVisibility.value = true }
     )

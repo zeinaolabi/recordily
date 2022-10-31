@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -76,9 +78,18 @@ fun PlaylistPageContent(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         for(i in 1..3){
-            SongCard(onSongClick = {}){
-                popUpVisibility.value = true
-            }
+            SongCard(
+                onSongClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.SongPage.route,
+                        popUpTo = Screen.PlaylistPage.route
+                    )
+                },
+                onMoreClick = {
+                    popUpVisibility.value = true
+                }
+            )
         }
     }
 }
