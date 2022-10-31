@@ -93,9 +93,10 @@ private fun SearchResult(navController: NavController){
 
         Column(modifier = Modifier.verticalScroll(ScrollState(0))){
             for(i in 1..3){
-                SongCard(navController, onClick = {
+                SongCard(onMoreClick = {
                     popUpVisibility.value = true
-                } )
+                },
+                    onSongClick = {})
             }
         }
     }

@@ -57,6 +57,7 @@ fun SearchPageContent(navController: NavController){
         title = stringResource(id = R.string.suggested),
         navController = navController,
         destination = Screen.CommonLandingPage.route,
-        onClick = {}
+        onSongClick = {},
+        onMoreClick = {}
     )
 }

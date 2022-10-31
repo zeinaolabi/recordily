@@ -64,7 +64,8 @@ fun ArtistProfileContent(navController: NavController){
             title = stringResource(id = R.string.albums),
             navController = navController,
             destination = Screen.CommonLandingPage.route,
-            onClick = {}
+            onSongClick = {},
+            onMoreClick = {}
         )
 
         SongsBox(title = "Top 5 Songs", navController)
@@ -73,9 +74,8 @@ fun ArtistProfileContent(navController: NavController){
             title = stringResource(id = R.string.songs),
             navController = navController,
             destination = Screen.CommonLandingPage.route,
-            onClick = {}
+            onSongClick = {},
+            onMoreClick = {}
         )
-
-
     }
 }

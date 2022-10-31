@@ -76,7 +76,7 @@ fun PlaylistPageContent(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         for(i in 1..3){
-            SongCard(navController){
+            SongCard(onSongClick = {}){
                 popUpVisibility.value = true
             }
         }

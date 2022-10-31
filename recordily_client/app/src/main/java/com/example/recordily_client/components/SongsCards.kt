@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -27,7 +28,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun SongsCards(title: String, navController: NavController, destination: String, onClick: () -> (Unit)){
+fun SongsCards(title: String, navController: NavController, destination: String, onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -39,12 +40,12 @@ fun SongsCards(title: String, navController: NavController, destination: String,
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(navController, destination, onClick)
+        CardsContent(navController, destination, onSongClick ,onMoreClick)
     }
 }
 
 @Composable
-fun CardsContent(navController: NavController, destination: String, onClick: () -> (Unit)){
+fun CardsContent(navController: NavController, destination: String, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,7 +54,10 @@ fun CardsContent(navController: NavController, destination: String, onClick: () 
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         for(i in 1..3){
-            SongCard(navController, onClick = {})
+            SongCard(
+                onSongClick = onSongClick,
+                onMoreClick = {onMoreClick()}
+            )
         }
 
         SmallTealButton(stringResource(id = R.string.more), onClick = {
@@ -64,7 +68,7 @@ fun CardsContent(navController: NavController, destination: String, onClick: () 
 }
 
 @Composable
-fun SongCard(navController: NavController, onClick: () -> (Unit)){
+fun SongCard(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -75,24 +79,24 @@ fun SongCard(navController: NavController, onClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent(onClick)
+        SongCardContent(onMoreClick, onSongClick)
     }
 }
 
 @Composable
-fun SongCardContent(onClick: () -> (Unit)){
+fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        SongDetails()
+        SongDetails(onSongClick)
 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
                 .clickable{
-                    onClick()
+                    onMoreClick()
                 },
             verticalArrangement = Arrangement.Center
         ){
@@ -107,8 +111,15 @@ fun SongCardContent(onClick: () -> (Unit)){
 }
 
 @Composable
-fun SongDetails(){
-    Row(verticalAlignment = Alignment.CenterVertically)
+fun SongDetails(onSongClick: ()->(Unit)){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth(0.9f)
+            .clickable {
+                onSongClick()
+            }
+    )
     {
         Image(
             painter = painterResource(R.drawable.recordily_dark_logo),
