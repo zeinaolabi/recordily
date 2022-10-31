@@ -121,7 +121,6 @@ fun UnreleasedContentColumn(navController: NavController){
 
         AlbumsCards(
             title = "Unreleased Albums",
-            navController = navController,
             buttonDestination = {},
             onAlbumClick = {} ,
         )

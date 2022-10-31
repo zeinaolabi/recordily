@@ -20,6 +20,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val searchInput = mutableStateOf("")
 
@@ -86,7 +87,13 @@ fun PlaylistsPageContent(navController: NavController){
             .verticalScroll(rememberScrollState())
     ){
         for(i in 1..3){
-            PlaylistCard(navController)
+            PlaylistCard {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.PlaylistPage.route,
+                    popUpTo = Screen.PlaylistsPage.route
+                )
+            }
         }
     }
 }

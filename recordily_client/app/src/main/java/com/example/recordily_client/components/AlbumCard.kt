@@ -18,11 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun AlbumsCards(title: String, navController: NavController, buttonDestination: ()->(Unit), onAlbumClick: ()->(Unit)){
+fun AlbumsCards(title: String, buttonDestination: ()->(Unit), onAlbumClick: ()->(Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -34,12 +33,12 @@ fun AlbumsCards(title: String, navController: NavController, buttonDestination: 
             color = MaterialTheme.colors.onPrimary
         )
 
-        AlbumCardContent(buttonDestination, onAlbumClick)
+        AlbumsCardContent(buttonDestination, onAlbumClick)
     }
 }
 
 @Composable
-private fun AlbumCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit)){
+private fun AlbumsCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()

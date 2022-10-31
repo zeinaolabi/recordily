@@ -83,7 +83,6 @@ fun ArtistProfileContent(navController: NavController){
 
         AlbumsCards(
             title = stringResource(id = R.string.albums),
-            navController = navController,
             buttonDestination = {
                 navigateTo(
                     navController = navController,

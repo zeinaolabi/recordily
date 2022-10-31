@@ -123,17 +123,21 @@ fun ProfileContentColumn(navController: NavController){
             }
         )
 
-        SongsCards(
-            title = "Playlists",
-            navController,
+        PlaylistsCard(
+            title = stringResource(id = R.string.playlists),
             destination = {
-
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.PlaylistsPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
             },
-            onSongClick = {
-
-            } ,
-            onMoreClick = {
-                popUpVisibility.value = true
+            onPlaylistClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.PlaylistPage.route,
+                    popUpTo = Screen.ProfilePage.route
+                )
             }
         )
     }
