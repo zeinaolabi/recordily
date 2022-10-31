@@ -188,5 +188,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             UnreleasedSongsPage(navController)
         }
+
+        composable(
+            route = Screen.UnreleasedAlbumsPage.route
+        ){
+            UnreleasedAlbumsPage(navController)
+        }
     }
 }
