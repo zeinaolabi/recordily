@@ -18,7 +18,7 @@ import com.example.recordily_client.navigation.Destination
 
 @Composable
 fun CommonProfilePage(navController: NavController){
-    val profile = Destination(stringResource(R.string.profile), Screen.CommonProfilePage.route)
+    val profile = Destination(stringResource(R.string.profile), Screen.ProfilePage.route)
     val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
         profile, unreleased
@@ -51,8 +51,8 @@ fun ProfileContentColumn(navController: NavController){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
     ){
-        SongsCards("Top Songs", navController, Screen.CommonLandingPage.route, onSongClick = {}, onMoreClick = {})
-        SongsCards("Recently Played", navController, Screen.CommonLandingPage.route, onSongClick = {}, onMoreClick = {})
-        SongsCards("Playlists", navController, Screen.CommonLandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards("Top Songs", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards("Recently Played", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards("Playlists", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
     }
 }

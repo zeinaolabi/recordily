@@ -72,7 +72,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
-                    navController.navigate(Screen.CommonProfilePage.route) {
+                    navController.navigate(Screen.ProfilePage.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
                                 saveState = true

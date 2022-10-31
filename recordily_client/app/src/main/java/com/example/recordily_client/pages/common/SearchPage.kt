@@ -57,11 +57,11 @@ private fun SearchPageContent(navController: NavController){
     SongsCards(
         title = stringResource(id = R.string.suggested),
         navController = navController,
-        destination = Screen.CommonLandingPage.route,
+        destination = Screen.LandingPage.route,
         onSongClick = {
             navController.navigate(Screen.SongStatsPage.route) {
 
-                popUpTo(Screen.CommonSearchPage.route) {
+                popUpTo(Screen.SearchPage.route) {
                     saveState = true
                 }
 

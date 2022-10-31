@@ -177,7 +177,7 @@ fun TextFieldColumn(navController: NavController) {
                     visible.value = true
                     return@launch
                 }
-                navController.navigate(Screen.CommonLandingPage.route)
+                navController.navigate(Screen.LandingPage.route)
             }
 
         })

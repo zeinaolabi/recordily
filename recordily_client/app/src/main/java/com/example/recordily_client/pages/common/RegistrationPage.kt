@@ -178,7 +178,7 @@ fun RegistrationColumn(navController: NavController) {
                     setErrorMessage("Email Used", true)
                     return@launch
                 }
-                navController.navigate(Screen.CommonLandingPage.route)
+                navController.navigate(Screen.LandingPage.route)
             }
         })
     }

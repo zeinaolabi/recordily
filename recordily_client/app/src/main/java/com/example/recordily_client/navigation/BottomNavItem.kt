@@ -9,19 +9,19 @@ sealed class BottomNavItem(
     val icon: Int
 ) {
     object Home : BottomNavItem(
-        route = Screen.CommonLandingPage.route,
+        route = Screen.LandingPage.route,
         titleResId = R.string.home,
         icon = R.drawable.deviation_icon
     )
 
     object Search : BottomNavItem(
-        route = Screen.CommonSearchPage.route,
+        route = Screen.SearchPage.route,
         titleResId = R.string.search,
         icon = R.drawable.search_icon
     )
 
     object Live : BottomNavItem(
-        route = Screen.CommonLiveEventsPage.route,
+        route = Screen.LiveEventsPage.route,
         titleResId = R.string.live,
         icon = R.drawable.live_icon
     )

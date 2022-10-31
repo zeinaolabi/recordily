@@ -60,7 +60,9 @@ fun CardsContent(navController: NavController, destination: String, onSongClick:
             )
         }
 
-        SmallTealButton(stringResource(id = R.string.more), onClick = {
+        SmallTealButton(
+            text = stringResource(id = R.string.more),
+            onClick = {
             navController.navigate(destination)
         })
         

@@ -63,7 +63,7 @@ fun ArtistProfileContent(navController: NavController){
         SongsCards(
             title = stringResource(id = R.string.albums),
             navController = navController,
-            destination = Screen.CommonLandingPage.route,
+            destination = Screen.LandingPage.route,
             onSongClick = {},
             onMoreClick = {}
         )
@@ -73,7 +73,7 @@ fun ArtistProfileContent(navController: NavController){
         SongsCards(
             title = stringResource(id = R.string.songs),
             navController = navController,
-            destination = Screen.CommonLandingPage.route,
+            destination = Screen.LandingPage.route,
             onSongClick = {},
             onMoreClick = {}
         )

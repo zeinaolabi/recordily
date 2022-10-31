@@ -17,7 +17,7 @@ import com.example.recordily_client.navigation.Screen
 
 @Composable
 fun UnreleasedPage(navController: NavController) {
-    val profile = Destination(stringResource(R.string.profile), Screen.CommonProfilePage.route)
+    val profile = Destination(stringResource(R.string.profile), Screen.ProfilePage.route)
     val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
         profile, unreleased
@@ -62,7 +62,7 @@ fun AddMusicRow(navController: NavController){
             onClick = {
                 navController.navigate(Screen.RecordPage.route) {
 
-                    popUpTo(Screen.CommonProfilePage.route) {
+                    popUpTo(Screen.ProfilePage.route) {
                         saveState = true
                     }
 
@@ -77,7 +77,7 @@ fun AddMusicRow(navController: NavController){
             onClick = {
                 navController.navigate(Screen.UploadSongPage.route) {
 
-                    popUpTo(Screen.CommonProfilePage.route) {
+                    popUpTo(Screen.ProfilePage.route) {
                         saveState = true
                     }
 
@@ -92,7 +92,7 @@ fun AddMusicRow(navController: NavController){
             onClick = {
                 navController.navigate(Screen.UploadAlbumPage.route) {
 
-                    popUpTo(Screen.CommonProfilePage.route) {
+                    popUpTo(Screen.ProfilePage.route) {
                         saveState = true
                     }
 
@@ -112,6 +112,6 @@ fun UnreleasedContentColumn(navController: NavController){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
         SongsCards("Unreleased Songs", navController, Screen.UploadSongPage.route, onSongClick = {} ,onMoreClick = {})
-        SongsCards("Unreleased Albums", navController, Screen.CommonLandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards("Unreleased Albums", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
     }
 }

@@ -84,7 +84,7 @@ fun ProfileInfo(navController: NavController){
                     .clickable {
                         navController.navigate(Screen.EditProfilePage.route) {
 
-                            popUpTo(Screen.CommonProfilePage.route) {
+                            popUpTo(Screen.ProfilePage.route) {
                                 saveState = true
                             }
 

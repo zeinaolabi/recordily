@@ -29,7 +29,7 @@ import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
 
 @Composable
 fun ViewsStatsPage(navController: NavController){
-    val home = Destination(stringResource(R.string.home), Screen.CommonLandingPage.route)
+    val home = Destination(stringResource(R.string.home), Screen.LandingPage.route)
     val viewStats = Destination(stringResource(R.string.view_stats), Screen.ViewsStatsPage.route)
     val songStats = Destination(stringResource(R.string.song_stats), Screen.SongsStatsPage.route)
     val pageOptions = listOf(
