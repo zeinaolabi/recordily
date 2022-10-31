@@ -17,15 +17,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.TopNavItem
 
 @Composable
-fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController: NavController){
+fun TopNavBar(pageOptions: List<TopNavItem>, currentPage: Int, navController: NavController){
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -53,7 +54,7 @@ fun TopNavBar(pageOptions: List<Destination>, currentPage: String, navController
 }
 
 @Composable
-private fun PageOptions(pageOptions: List<Destination>, currentPage: String, navController: NavController){
+private fun PageOptions(pageOptions: List<TopNavItem>, currentPage: Int, navController: NavController){
     val secondaryColor = MaterialTheme.colors.secondary
 
     pageOptions.forEach { option ->
@@ -65,10 +66,9 @@ private fun PageOptions(pageOptions: List<Destination>, currentPage: String, nav
                 ) {
                     navController.navigate(option.route) {
 
-                        if(option.route == pageOptions[0].route){
+                        if (option.route == pageOptions[0].route) {
                             return@navigate
-                        }
-                        else{
+                        } else {
                             popUpTo(pageOptions[0].route) {
                                 saveState = true
                             }
@@ -94,7 +94,7 @@ private fun PageOptions(pageOptions: List<Destination>, currentPage: String, nav
                 }
         ){
             Text(
-                text = option.page,
+                text = stringResource(id = option.page),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,

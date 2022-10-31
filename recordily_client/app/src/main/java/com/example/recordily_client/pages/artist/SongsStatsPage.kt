@@ -14,12 +14,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 
 private val searchInput = mutableStateOf("")
@@ -41,11 +40,8 @@ fun SongsStatsPage(navController: NavController){
 @ExperimentalAnimationApi
 @Composable
 private fun SongsStatsContent(navController: NavController){
-    val home = Destination(stringResource(R.string.home), Screen.LandingPage.route)
-    val viewStats = Destination(stringResource(R.string.view_stats), Screen.ViewsStatsPage.route)
-    val songStats = Destination(stringResource(R.string.song_stats), Screen.SongsStatsPage.route)
     val pageOptions = listOf(
-        home, viewStats, songStats
+        TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
     
     Column(
@@ -56,7 +52,7 @@ private fun SongsStatsContent(navController: NavController){
 
         TopNavBar(
             pageOptions = pageOptions,
-            currentPage = "Songs",
+            currentPage = R.string.songs,
             navController = navController)
 
         SearchResult(navController)

@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.navigation.Destination
+import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 
 private val popUpVisibility = mutableStateOf(false)
@@ -30,10 +30,8 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun CommonProfilePage(navController: NavController){
-    val profile = Destination(stringResource(R.string.profile), Screen.ProfilePage.route)
-    val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
-        profile, unreleased
+        TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
 
     Box(
@@ -50,7 +48,7 @@ fun CommonProfilePage(navController: NavController){
 
             TopNavBar(
                 pageOptions = pageOptions,
-                currentPage = "Profile",
+                currentPage = R.string.profile,
                 navController = navController
             )
 

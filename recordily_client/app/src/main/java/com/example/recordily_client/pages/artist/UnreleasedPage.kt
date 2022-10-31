@@ -12,16 +12,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun UnreleasedPage(navController: NavController) {
-    val profile = Destination(stringResource(R.string.profile), Screen.ProfilePage.route)
-    val unreleased = Destination(stringResource(R.string.unreleased), Screen.UnreleasedPage.route)
     val pageOptions = listOf(
-        profile, unreleased
+        TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
 
     Scaffold(
@@ -34,7 +32,7 @@ fun UnreleasedPage(navController: NavController) {
 
                 TopNavBar(
                     pageOptions = pageOptions,
-                    currentPage = "Unreleased",
+                    currentPage = R.string.unreleased,
                     navController = navController
                 )
 

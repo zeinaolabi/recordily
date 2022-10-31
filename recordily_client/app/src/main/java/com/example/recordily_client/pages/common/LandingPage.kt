@@ -13,16 +13,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
-import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.TopNavItem
 
 @Composable
 fun CommonLandingPage(navController: NavController){
-    val home = Destination(stringResource(R.string.home), Screen.LandingPage.route)
-    val viewStats = Destination(stringResource(R.string.view_stats), Screen.ViewsStatsPage.route)
-    val songStats = Destination(stringResource(R.string.song_stats), Screen.SongsStatsPage.route)
     val pageOptions = listOf(
-        home, viewStats, songStats
+        TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
 
     Scaffold(
@@ -33,7 +29,8 @@ fun CommonLandingPage(navController: NavController){
             ){
                 TopNavBar(
                     pageOptions = pageOptions,
-                    currentPage = "Home", navController = navController
+                    currentPage = R.string.home,
+                    navController = navController
                 )
 
                 LandingPageContent(navController)
