@@ -29,7 +29,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun SongsCards(title: String, navController: NavController, destination: String, onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
+fun SongsCards(title: String, navController: NavController, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -46,7 +46,7 @@ fun SongsCards(title: String, navController: NavController, destination: String,
 }
 
 @Composable
-fun CardsContent(navController: NavController, destination: String, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+fun CardsContent(navController: NavController, destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,8 +64,9 @@ fun CardsContent(navController: NavController, destination: String, onSongClick:
         SmallTealButton(
             text = stringResource(id = R.string.more),
             onClick = {
-            navController.navigate(destination)
-        })
+                destination()
+            }
+        )
         
     }
 }

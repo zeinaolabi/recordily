@@ -51,8 +51,28 @@ fun ProfileContentColumn(navController: NavController){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
     ){
-        SongsCards("Top Songs", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
-        SongsCards("Recently Played", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
-        SongsCards("Playlists", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards(
+            title = "Top Songs",
+            navController,
+            destination = {},
+            onSongClick = {} ,
+            onMoreClick = {}
+        )
+
+        SongsCards(
+            title = "Recently Played",
+            navController,
+            destination = {},
+            onSongClick = {} ,
+            onMoreClick = {}
+        )
+
+        SongsCards(
+            title = "Playlists",
+            navController,
+            destination = {},
+            onSongClick = {} ,
+            onMoreClick = {}
+        )
     }
 }

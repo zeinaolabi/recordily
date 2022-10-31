@@ -17,12 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.navigation.Screen
 
 @Composable
-fun AlbumsBox(title: String, destination: () -> (Unit), navController: NavController){
+fun AlbumsBox(title: String, destination: () -> (Unit)){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){

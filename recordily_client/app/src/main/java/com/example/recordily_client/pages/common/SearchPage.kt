@@ -88,7 +88,12 @@ private fun SearchPageContent(navController: NavController){
     SongsCards(
         title = stringResource(id = R.string.suggested),
         navController = navController,
-        destination = Screen.SuggestedSongsPage.route,
+        destination = {
+            navigateTo(
+                navController = navController,
+                destination = Screen.SuggestedSongsPage.route,
+                popUpTo = Screen.SearchPage.route
+            )},
         onSongClick = {
             navigateTo(
                 navController = navController,

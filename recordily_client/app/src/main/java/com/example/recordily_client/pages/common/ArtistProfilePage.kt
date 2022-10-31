@@ -78,8 +78,7 @@ fun ArtistProfileContent(navController: NavController){
                     destination = Screen.AlbumPage.route,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
-            },
-            navController = navController
+            }
         )
 
         AlbumsCards(
@@ -106,9 +105,23 @@ fun ArtistProfileContent(navController: NavController){
         SongsCards(
             title = stringResource(id = R.string.songs),
             navController = navController,
-            destination = Screen.LandingPage.route,
-            onSongClick = {},
-            onMoreClick = {}
+            destination = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.ArtistSongsPage.route,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            },
+            onSongClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.SongPage.route,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            },
+            onMoreClick = {
+                popUpVisibility.value = true
+            }
         )
     }
 }

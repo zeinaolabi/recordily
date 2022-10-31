@@ -111,7 +111,19 @@ fun UnreleasedContentColumn(navController: NavController){
             .verticalScroll(rememberScrollState())
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
-        SongsCards("Unreleased Songs", navController, Screen.UploadSongPage.route, onSongClick = {} ,onMoreClick = {})
-        SongsCards("Unreleased Albums", navController, Screen.LandingPage.route, onSongClick = {}, onMoreClick = {})
+        SongsCards(
+            title = "Unreleased Songs",
+            navController,
+            destination = {},
+            onSongClick = {},
+            onMoreClick = {}
+        )
+
+        AlbumsCards(
+            title = "Unreleased Albums",
+            navController = navController,
+            buttonDestination = {},
+            onAlbumClick = {} ,
+        )
     }
 }

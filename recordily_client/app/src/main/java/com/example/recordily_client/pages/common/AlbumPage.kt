@@ -75,7 +75,7 @@ private fun AlbumPageContent(navController: NavController){
                     navigateTo(
                         navController = navController,
                         destination = Screen.SongPage.route,
-                        popUpTo = Screen.SuggestedSongsPage.route
+                        popUpTo = Screen.AlbumPage.route
                     )
                 },
                 onMoreClick = { popUpVisibility.value = true }
