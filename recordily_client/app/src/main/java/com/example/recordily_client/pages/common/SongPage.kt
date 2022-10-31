@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -17,19 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.TextField
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Destination
-import com.example.recordily_client.navigation.Screen
-import android.content.Intent
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.app.ActivityCompat
-
-import androidx.core.app.ActivityCompat.startActivityForResult
 
 @Composable
 fun SongPage(navController: NavController) {
@@ -39,53 +29,51 @@ fun SongPage(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_large)),
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.padding_medium),
+                        vertical = dimensionResource(id = R.dimen.padding_large)
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.SpaceBetween
             ){
-                SongPageContent()
+                Image(
+                    painter = painterResource(id = R.drawable.test),
+                    contentDescription = "song picture",
+                    modifier = Modifier
+                        .size(350.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
+                )
+
+                SongDetailsBox()
             }
         }
     )
 }
 
 @Composable
-private fun SongPageContent(){
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.test),
-            contentDescription = "song picture",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(CircleShape)
-        )
-
-        SongDetailsBox()
-    }
-}
-
-@Composable
 private fun SongDetailsBox(){
     Surface(
-        color = Color.Black.copy(alpha = 0.4f),
+        color = Color.Black.copy(alpha = 0.65f),
         modifier = Modifier
             .fillMaxWidth()
-            .height(280.dp)
+            .height(210.dp)
             .clip(MaterialTheme.shapes.medium)
     ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+            modifier = Modifier.padding(
+                horizontal = dimensionResource(id = R.dimen.padding_large),
+                vertical = dimensionResource(id = R.dimen.padding_medium)
+            )
         ){
             SongDetails()
         }
     }
 }
 
+//Icons by: icons by https://icons8.com
 @Composable
 private fun SongDetails(){
     Text(
@@ -104,18 +92,23 @@ private fun SongDetails(){
 
     LinearProgressIndicator(
         color = Color.White,
-        progress = 0.7f
+        progress = 0.7f,
+        modifier = Modifier
+            .fillMaxWidth()
+
     )
 
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
+        horizontalArrangement = Arrangement.End
     ){
         Text(
             text = "2:55",
             fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.White,
-            textAlign = TextAlign.End
+            color = Color.White
         )
     }
 
@@ -127,12 +120,16 @@ private fun SongDetails(){
 private fun PlayButtonRow(){
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ){
         Icon(
-            painter = painterResource(id = R.drawable.heart),
+            painter = painterResource(id = R.drawable.colored_heart),
             contentDescription = "like",
-            modifier = Modifier.size(25.dp)
+            modifier = Modifier
+                .size(25.dp)
+                .bounceClick(),
+            tint = Color.Unspecified
         )
 
         Row(
@@ -140,28 +137,36 @@ private fun PlayButtonRow(){
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
         ){
             Icon(
-                painter = painterResource(id = R.drawable.heart),
+                painter = painterResource(id = R.drawable.arrow_left),
                 contentDescription = "before",
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp),
+                tint = Color.Unspecified
             )
 
             Icon(
-                painter = painterResource(id = R.drawable.heart),
+                painter = painterResource(id = R.drawable.play_button),
                 contentDescription = "play",
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier
+                    .size(90.dp)
+                    .bounceClick(),
+                tint = Color.Unspecified
             )
 
             Icon(
-                painter = painterResource(id = R.drawable.heart),
+                painter = painterResource(id = R.drawable.arrow_right),
                 contentDescription = "after",
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp),
+                tint = Color.Unspecified
             )
         }
 
         Icon(
             painter = painterResource(id = R.drawable.add_to_playlist),
             contentDescription = "add to playlist",
-            modifier = Modifier.size(25.dp)
+            modifier = Modifier
+                .size(25.dp)
+                .bounceClick(),
+            tint = Color.Unspecified
         )
     }
 }
