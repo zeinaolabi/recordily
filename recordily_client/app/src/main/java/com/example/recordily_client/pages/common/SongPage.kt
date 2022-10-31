@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.app.ActivityCompat
 
 import androidx.core.app.ActivityCompat.startActivityForResult
@@ -63,12 +64,62 @@ private fun SongPageContent(){
                 .clip(CircleShape)
         )
 
-        SongDetails()
+        SongDetailsBox()
+    }
+}
+
+@Composable
+private fun SongDetailsBox(){
+    Surface(
+        color = Color.Black.copy(alpha = 0.4f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(280.dp)
+            .clip(MaterialTheme.shapes.medium)
+    ){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+        ){
+            SongDetails()
+        }
     }
 }
 
 @Composable
 private fun SongDetails(){
+    Text(
+        text = "Song name",
+        fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White
+    )
+
+    Text(
+        text = "Artist name",
+        fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+        fontWeight = FontWeight.Medium,
+        color = Color.White
+    )
+
+    LinearProgressIndicator(
+        color = Color.White,
+        progress = 0.7f
+    )
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Text(
+            text = "2:55",
+            fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.White,
+            textAlign = TextAlign.End
+        )
+    }
+
+    PlayButtonRow()
 
 }
 
