@@ -47,8 +47,7 @@ fun SearchTextField(input: MutableState<String>) {
     TextField(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
-            .padding(dimensionResource(id = R.dimen.padding_medium)),
+            .clip(MaterialTheme.shapes.small),
         value = input.value,
         leadingIcon = {
             Icon(

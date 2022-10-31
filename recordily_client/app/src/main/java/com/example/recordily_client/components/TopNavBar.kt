@@ -94,7 +94,8 @@ fun PageOptions(pageOptions: List<Destination>, currentPage: String, navControll
                 text = option.page,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                color = MaterialTheme.colors.onPrimary
             )
         }
     }

@@ -88,16 +88,21 @@ fun SongCardContent(onClick: () -> (Unit)){
     ){
         SongDetails()
 
-        Icon(
-            painter = painterResource(id = R.drawable.more),
-            contentDescription = "more",
+        Column(
             modifier = Modifier
-                .size(20.dp)
+                .fillMaxHeight()
                 .clickable{
                     onClick()
                 },
-            tint = MaterialTheme.colors.onPrimary
-        )
+            verticalArrangement = Arrangement.Center
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.more),
+                contentDescription = "more",
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colors.onPrimary
+            )
+        }
     }
 }
 

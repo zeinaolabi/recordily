@@ -57,7 +57,7 @@ fun PlaylistPage(navController: NavController){
         AnimatedVisibility(
             visible = popUpVisibility.value,
             enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(popUpVisibility)
         }
