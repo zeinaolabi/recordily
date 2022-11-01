@@ -6,5 +6,5 @@ data class RegistrationResponse(
     val id: Int,
     val token: String,
     val updated_at: String,
-    val user_type_id: String
+    val user_type_id: Int
 )
