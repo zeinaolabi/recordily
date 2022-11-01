@@ -217,5 +217,11 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             SettingsPage(navController)
         }
+
+        composable(
+            route = Screen.ResetPasswordPage.route
+        ){
+            ResetPasswordPage(navController)
+        }
     }
 }
