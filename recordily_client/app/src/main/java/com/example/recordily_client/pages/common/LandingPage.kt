@@ -10,13 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.TopNavItem
+import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun CommonLandingPage(navController: NavController){
+    val loginViewModel : LoginViewModel = viewModel()
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
@@ -27,11 +30,13 @@ fun CommonLandingPage(navController: NavController){
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                TopNavBar(
-                    pageOptions = pageOptions,
-                    currentPage = R.string.home,
-                    navController = navController
-                )
+                if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
+                    TopNavBar(
+                        pageOptions = pageOptions,
+                        currentPage = R.string.home,
+                        navController = navController
+                    )
+                }
 
                 LandingPageContent(navController)
             }
