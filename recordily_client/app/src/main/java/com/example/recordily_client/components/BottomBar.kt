@@ -14,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.recordily_client.navigation.BottomNavItem
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun BottomNavigationBar(
@@ -45,15 +47,11 @@ fun BottomNavigationBar(
                 },
                 selected = currentRoute == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navigateTo(
+                        navController = navController,
+                        destination = item.route,
+                        popUpTo = Screen.LandingPage.route
+                    )
                 }
             )
         }

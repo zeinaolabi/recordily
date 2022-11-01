@@ -13,7 +13,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -77,7 +76,7 @@ fun RegistrationPage(navController: NavController) {
 @Composable
 private fun RegistrationContent(navController: NavController) {
     val image =
-        if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
+        if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_white_logo
     val logo: Painter = painterResource(id = image)
 
     Column(
@@ -191,7 +190,7 @@ private fun SignInRow(navController: NavController) {
     ) {
         Text(
             text = stringResource(R.string.sign_in) + " ",
-            color = Color.White,
+            color = MaterialTheme.colors.onPrimary,
             fontSize = dimensionResource(R.dimen.font_small).value.sp
         )
 
@@ -210,16 +209,17 @@ private fun SignInRow(navController: NavController) {
 private fun UserTypesRow() {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(id = R.dimen.padding_large),
+                horizontal = dimensionResource(id = R.dimen.padding_medium),
                 vertical = dimensionResource(id = R.dimen.padding_small)
             )
     ){
         Text(
             text = stringResource(R.string.signupas),
-            color = Color.White
+            color = MaterialTheme.colors.onPrimary
         )
 
         RadioButtons()
@@ -233,7 +233,8 @@ private fun RadioButtons(){
 
     radioOptions.forEach { text ->
         Row(
-            Modifier.selectable(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.selectable(
                 selected = (text == selectedOption),
                 onClick = {
                     onOptionSelected(text)
@@ -248,12 +249,12 @@ private fun RadioButtons(){
                 },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = MaterialTheme.colors.secondary,
-                    unselectedColor = Color.White
+                    unselectedColor = MaterialTheme.colors.onPrimary
                 )
             )
             Text(
                 text = text,
-                color = Color.White
+                color = MaterialTheme.colors.onPrimary
             )
         }
     }

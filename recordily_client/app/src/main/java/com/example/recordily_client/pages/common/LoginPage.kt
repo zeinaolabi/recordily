@@ -1,5 +1,9 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -70,7 +74,7 @@ fun LoginPage(navController: NavController) {
 @ExperimentalAnimationApi
 @Composable
 private fun BoxContent(navController: NavController) {
-    val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_light_logo
+    val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_white_logo
     val logo: Painter = painterResource(id = image)
 
     Column(
@@ -116,12 +120,13 @@ private fun BoxContent(navController: NavController) {
     }
 }
 
+@SuppressLint("CommitPrefEdits")
 @Composable
 private fun TextFieldColumn(navController: NavController) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
-    val userViewModel : LoginViewModel = viewModel()
+    val loginViewModel : LoginViewModel = viewModel()
 //    val loginResponse = userViewModel.loginResultLiveData.observeAsState()
 //    if (loginResponse.value?.token !== "") {
 //        navController.navigate(Screen.CommonLandingPage.route)
@@ -173,11 +178,12 @@ private fun TextFieldColumn(navController: NavController) {
                     password.value
                 )
 
-                if (!userViewModel.login(request)){
+                if (!loginViewModel.login(request)){
                     errorMessage.value = "Invalid Email or Password"
                     visible.value = true
                     return@launch
                 }
+
                 navController.navigate(Screen.LandingPage.route)
             }
 
@@ -193,7 +199,7 @@ fun CreateAccountRow(navController: NavController) {
     ) {
         Text(
             text = stringResource(R.string.create_account) + " ",
-            color = Color.White,
+            color = MaterialTheme.colors.onPrimary,
             fontSize = dimensionResource(R.dimen.font_small).value.sp
         )
 

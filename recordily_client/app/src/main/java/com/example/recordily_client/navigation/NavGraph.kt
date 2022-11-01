@@ -1,22 +1,33 @@
 package com.example.recordily_client.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.recordily_client.pages.artist.*
 import com.example.recordily_client.pages.common.*
+import com.example.recordily_client.view_models.LoginViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(navController: NavHostController){
+    val loginViewModel: LoginViewModel = viewModel()
+    val destination = if(loginViewModel.sharedPreferences.getString("token", "") != ""){
+        Screen.LandingPage.route
+    }
+    else{
+        Screen.LoginPage.route
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.LandingPage.route
+        startDestination = destination
     ){
         composable(
             route = Screen.LoginPage.route,

@@ -39,7 +39,7 @@ fun TextField(input: MutableState<String>, text: String, visibility: Boolean) {
             focusedLabelColor = MaterialTheme.colors.secondary,
             unfocusedLabelColor = colorResource(R.color.darker_gray),
             cursorColor = MaterialTheme.colors.secondary,
-            textColor = Color.White,
+            textColor = MaterialTheme.colors.onPrimary,
             unfocusedIndicatorColor = MaterialTheme.colors.secondary,
             focusedIndicatorColor = MaterialTheme.colors.secondary,
             disabledLabelColor = MaterialTheme.colors.secondary
