@@ -35,4 +35,18 @@ class LoginViewModel(application: Application): AndroidViewModel(application){
             false
         }
     }
+
+    fun logout(): Boolean {
+        return try {
+            editor.remove("id")
+            editor.remove("token")
+            editor.remove("user_type_id")
+            editor.clear()
+            editor.commit()
+
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }
