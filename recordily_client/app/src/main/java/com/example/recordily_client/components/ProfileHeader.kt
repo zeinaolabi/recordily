@@ -20,10 +20,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun ProfileHeader(navController: NavController){
@@ -49,6 +51,8 @@ fun ProfileHeader(navController: NavController){
 
 @Composable
 private fun ProfileInfo(navController: NavController){
+    val loginViewModel : LoginViewModel = viewModel()
+    
     Column(
         modifier = Modifier
             .height(110.dp)
@@ -82,6 +86,7 @@ private fun ProfileInfo(navController: NavController){
                 tint = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+                    .size(25.dp)
                     .clickable {
                         navigateTo(
                             navController = navController,
@@ -92,14 +97,17 @@ private fun ProfileInfo(navController: NavController){
             )
 
             Icon(
-                imageVector = Icons.Default.Settings,
+                painter = painterResource(id = R.drawable.logout),
                 contentDescription = "settings",
                 tint = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.clickable {
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable {
+                    loginViewModel.logout()
                     navigateTo(
                         navController = navController,
-                        destination = Screen.SettingsPage.route,
-                        popUpTo = Screen.ProfilePage.route
+                        destination = Screen.LoginPage.route,
+                        popUpTo = Screen.LoginPage.route
                     )
                 }
             )
