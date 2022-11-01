@@ -1,9 +1,6 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -13,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -35,6 +31,7 @@ import com.example.recordily_client.validation.isValidPassword
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import com.example.recordily_client.components.TextField
+import com.example.recordily_client.navigation.navigateTo
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
@@ -112,8 +109,7 @@ private fun BoxContent(navController: NavController) {
             Text(
                 text = errorMessage.value,
                 color = MaterialTheme.colors.primary,
-                fontWeight = FontWeight.Bold,
-
+                fontWeight = FontWeight.Bold
             )
         }
 
@@ -162,7 +158,13 @@ private fun TextFieldColumn(navController: NavController) {
             modifier = Modifier
                 .padding(top = dimensionResource(R.dimen.padding_very_small))
                 .align(Alignment.End)
-                .clickable { })
+                .clickable {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.ResetPasswordPage.route,
+                        popUpTo = Screen.LoginPage.route
+                    )
+                })
 
         RoundButton(text = stringResource(R.string.login), onClick = {
 
@@ -184,7 +186,7 @@ private fun TextFieldColumn(navController: NavController) {
                     return@launch
                 }
 
-                navController.navigate(Screen.LandingPage.route)
+                navController.clearBackStack(Screen.LandingPage.route)
             }
 
         })

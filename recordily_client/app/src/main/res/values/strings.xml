@@ -93,6 +93,8 @@
     <string name="unreleased_songs">Unreleased Songs</string>
 
     <string name="logout">Logout</string>
+    <string name="submit">Submit</string>
+    <string name="reset_password">Reset Password</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
