@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun ProfileHeader(navController: NavController){
@@ -82,15 +83,11 @@ private fun ProfileInfo(navController: NavController){
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
                     .clickable {
-                        navController.navigate(Screen.EditProfilePage.route) {
-
-                            popUpTo(Screen.ProfilePage.route) {
-                                saveState = true
-                            }
-
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.EditProfilePage.route,
+                            popUpTo = Screen.ProfilePage.route
+                        )
                     }
             )
 
@@ -98,7 +95,13 @@ private fun ProfileInfo(navController: NavController){
                 imageVector = Icons.Default.Settings,
                 contentDescription = "settings",
                 tint = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.clickable {}
+                modifier = Modifier.clickable {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.SettingsPage.route,
+                        popUpTo = Screen.ProfilePage.route
+                    )
+                }
             )
         }
     }
