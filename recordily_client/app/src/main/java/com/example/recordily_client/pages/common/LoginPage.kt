@@ -186,7 +186,11 @@ private fun TextFieldColumn(navController: NavController) {
                     return@launch
                 }
 
-                navController.clearBackStack(Screen.LandingPage.route)
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.LandingPage.route,
+                    popUpTo = Screen.LandingPage.route
+                )
             }
 
         })
