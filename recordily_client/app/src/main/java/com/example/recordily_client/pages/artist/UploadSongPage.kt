@@ -165,6 +165,7 @@ private fun PickAudioRow(){
             fileName.value = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
             val file = File(dir, fileName.value)
 
+            chunks = splitFile(file)
         }
     }
 
@@ -192,4 +193,27 @@ private fun PickAudioRow(){
         })
 
     }
+}
+
+fun splitFile(file: File?): List<ByteArrayOutputStream>{
+    val dataList: MutableList<ByteArrayOutputStream> = mutableListOf()
+    try {
+        val sizeOfFiles = 100000
+        val buffer = ByteArray(sizeOfFiles)
+        FileInputStream(file).use { fileInputStream ->
+            BufferedInputStream(fileInputStream).use { bufferInputStream ->
+                var bytesAmount: Int
+                while (bufferInputStream.read(buffer).also { bytesAmount = it } > 0) {
+                    ByteArrayOutputStream().use { out ->
+                        out.write(buffer, 0, bytesAmount)
+                        out.flush()
+                        dataList.add(out)
+                    }
+                }
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return dataList
 }
