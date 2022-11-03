@@ -6,12 +6,11 @@ use App\Http\Requests\UploadSongRequest;
 use App\Models\Like;
 use App\Models\Play;
 use App\Models\Song;
-use DirectoryIterator;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use League\CommonMark\Util\ArrayCollection;
 
 class SongController extends Controller
 {
@@ -91,63 +90,29 @@ class SongController extends Controller
         return response()->json($allSongs);
     }
 
-    function getTopPlayedSongs(): JsonResponse{
+    function getTopPlayedSongs(int $limit): JsonResponse{
 
-        $topSongs = Play::select('song_id', DB::raw('count(*) as plays'))
-            ->groupBy('song_id')
-            ->orderBy('plays', 'desc')
-            ->limit(5)
-            ->pluck('song_id');
+        $topSongs = Play::getTopSongs("plays", $limit, "plays");
 
-        $result = [];
-        foreach ($topSongs as $topSong){
-            $result[] = Song::find($topSong);
-        }
-
-//        $topSongs = Play::select('song_id', DB::raw('count(*) as plays'))
-//            ->groupBy('song_id')
-//            ->orderBy('plays', 'desc')
-//            ->limit(5)
-//            ->pluck('song_id');
-//
-//        $result[] = Song::query()->whereIn($topSongs);
-//
-//        return response()->json($result);
+        $result = $this->saveSongs($topSongs);
 
         return response()->json($result);
     }
 
-    function getTopLikedSongs(): JsonResponse{
+    function getTopLikedSongs(int $limit): JsonResponse{
+        $topSongs = Like::getTopSongs("likes", $limit, "likes");
 
-        $topSongs = Like::select('song_id', DB::raw('count(*) as likes'))
-            ->groupBy('song_id')
-            ->orderBy('likes', 'desc')
-            ->limit(5)
-            ->pluck('song_id');
-
-        $result = [];
-        foreach ($topSongs as $topSong){
-            $result[] = Song::find($topSong);
-        }
+        $result = $this->saveSongs($topSongs);
 
         return response()->json($result);
     }
 
-    function getFiveRecentlyPlayed(): JsonResponse{
+    function getFiveRecentlyPlayed(int $limit): JsonResponse{
+        $topSongs = Play::getTopSongs("likes", $limit, "created_by");
 
-        $topSongs = Play::select('song_id', DB::raw('count(*) as likes'))
-            ->groupBy('song_id')
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->pluck('song_id');
-
-        $result = [];
-        foreach ($topSongs as $topSong){
-            $result[] = Song::find($topSong);
-        }
+        $result = $this->saveSongs($topSongs);
 
         return response()->json($result);
     }
-
 
 }
