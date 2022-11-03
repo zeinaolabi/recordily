@@ -90,7 +90,13 @@ private fun UploadSongContent(){
     PickAudioRow()
 
     MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
-
+        val id = loginViewModel.sharedPreferences.getInt("id", -1)
+        var i = 0
+        chunks.forEach {
+            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", it.toByteArray(), chunks.size, i)
+            uploadSongViewModel.uploadSong(uploadSongRequest)
+            i++
+        }
     }
     )
 }
