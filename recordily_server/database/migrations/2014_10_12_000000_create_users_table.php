@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->default("");
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('biography', 150)->default("");
-            $table->string('profile_picture')->default("");
+            $table->string('biography', 150)->nullable();
+            $table->string('profile_picture')->nullable();
             $table->string('user_type_id');
             $table->timestamps();
         });
