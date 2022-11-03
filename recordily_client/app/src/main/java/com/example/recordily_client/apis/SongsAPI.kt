@@ -20,4 +20,6 @@ interface SongsAPI {
     @GET("top_played_songs/{limit}")
     suspend fun getTopPlayedSongs(@Path("limit") limit: Int): List<SongResponse>
 
+    @POST("upload_song")
+    suspend fun uploadSong(@Body uploadSongRequest: UploadSongRequest): Boolean
 }
