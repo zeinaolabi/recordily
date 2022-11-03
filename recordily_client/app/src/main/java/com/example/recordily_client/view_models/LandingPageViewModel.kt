@@ -21,6 +21,10 @@ class LandingPageViewModel(application: Application): AndroidViewModel(applicati
     val topLikedResultLiveData : LiveData<List<SongResponse>>
         get() = topLikedResult
 
+    private val suggestedResult = MutableLiveData<List<SongResponse>>()
+    val suggestedResultLiveData : LiveData<List<SongResponse>>
+        get() = suggestedResult
+
     fun getTopPlayed(limit: Int) {
         viewModelScope.launch {
             topPlayedResult.postValue(songService.getTopPlayed(limit))
@@ -30,6 +34,12 @@ class LandingPageViewModel(application: Application): AndroidViewModel(applicati
     fun getTopLiked(limit: Int) {
         viewModelScope.launch {
             topPlayedResult.postValue(songService.getTopLiked(limit))
+        }
+    }
+
+    fun getSuggested(limit: Int) {
+        viewModelScope.launch {
+            topPlayedResult.postValue(songService.getSuggested(limit))
         }
     }
 }
