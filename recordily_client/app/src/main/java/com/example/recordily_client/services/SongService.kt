@@ -21,4 +21,7 @@ class SongService {
         return RetrofitInstance.songApi.getRecentlyPlayedSongs(limit)
     }
 
+    suspend fun getTopPlayed(limit: Int): List<SongResponse>{
+        return RetrofitInstance.songApi.getTopPlayedSongs(limit)
+    }
 }
