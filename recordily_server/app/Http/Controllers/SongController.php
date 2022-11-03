@@ -50,6 +50,39 @@ class SongController extends Controller
 //        ], 201);
     }
 
+    function getSongs(): JsonResponse
+    {
+        $allSongs = Song::all();
+
+        return response()->json($allSongs);
+    }
+
+    function getTopPlayedSongs(): JsonResponse{
+
+        $topSongs = Play::select('song_id', DB::raw('count(*) as plays'))
+            ->groupBy('song_id')
+            ->orderBy('plays', 'desc')
+            ->limit(5)
+            ->pluck('song_id');
+
+        $result = [];
+        foreach ($topSongs as $topSong){
+            $result[] = Song::find($topSong);
+        }
+
+//        $topSongs = Play::select('song_id', DB::raw('count(*) as plays'))
+//            ->groupBy('song_id')
+//            ->orderBy('plays', 'desc')
+//            ->limit(5)
+//            ->pluck('song_id');
+//
+//        $result[] = Song::query()->whereIn($topSongs);
+//
+//        return response()->json($result);
+
+        return response()->json($result);
+    }
+
 
 
 }
