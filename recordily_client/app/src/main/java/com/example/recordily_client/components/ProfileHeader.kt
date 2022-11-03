@@ -10,7 +10,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -98,17 +97,17 @@ private fun ProfileInfo(navController: NavController){
 
             Icon(
                 painter = painterResource(id = R.drawable.logout),
-                contentDescription = "settings",
+                contentDescription = "logout",
                 tint = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
-                    loginViewModel.logout()
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.LoginPage.route,
-                        popUpTo = Screen.LoginPage.route
-                    )
+                        loginViewModel.logout()
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.LoginPage.route,
+                            popUpTo = Screen.LoginPage.route
+                        )
                 }
             )
         }
