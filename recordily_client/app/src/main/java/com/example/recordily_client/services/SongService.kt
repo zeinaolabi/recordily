@@ -13,5 +13,9 @@ class SongService {
         return RetrofitInstance.songApi.suggestedSongs(limit)
     }
 
+    suspend fun getTopLiked(limit: Int): List<SongResponse>{
+        return RetrofitInstance.songApi.getTopLikedSongs(limit)
+    }
+
 
 }
