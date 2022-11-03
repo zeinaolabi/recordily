@@ -21,4 +21,7 @@ Route::get('/reset-password/{token}',[ForgotPasswordController::class, "resetPas
 Route::post('upload_song',[SongController::class, "uploadSong"]);
 Route::get('get_songs',[SongController::class, "getSongs"]);
 Route::get('play_song',[SongController::class, "playSong"]);
-Route::get('top_played_songs',[SongController::class, "getTopPlayedSongs"]);
+Route::get('top_played_songs/{limit}',[SongController::class, "getTopPlayedSongs"]);
+Route::get('top_liked_songs/{limit}',[SongController::class, "getTopLikedSongs"]);
+Route::get('recently_played_songs/{limit}',[SongController::class, "getRecentlyPlayed"]);
+Route::get('suggested_songs/{limit}',[SongController::class, "getSuggestedSongs"]);
