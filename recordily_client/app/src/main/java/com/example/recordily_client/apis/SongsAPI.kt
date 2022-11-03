@@ -5,11 +5,10 @@ import com.example.recordily_client.responses.SongResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface SongsAPI {
-    @GET("top_played_songs")
-    suspend fun topSongs(): List<SongResponse>
+    @GET("suggested_songs/{limit}")
+    suspend fun suggestedSongs(@Path("limit") limit: Int): List<SongResponse>
 
-    @POST("upload_song")
-    suspend fun uploadSong(@Body uploadSongRequest: UploadSongRequest): Boolean
 }
