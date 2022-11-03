@@ -99,5 +99,21 @@ class SongController extends Controller
         return response()->json($result);
     }
 
+    function getFiveRecentlyPlayed(): JsonResponse{
+
+        $topSongs = Play::select('song_id', DB::raw('count(*) as likes'))
+            ->groupBy('song_id')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->pluck('song_id');
+
+        $result = [];
+        foreach ($topSongs as $topSong){
+            $result[] = Song::find($topSong);
+        }
+
+        return response()->json($result);
+    }
+
 
 }
