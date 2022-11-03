@@ -107,12 +107,20 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getFiveRecentlyPlayed(int $limit): JsonResponse{
-        $topSongs = Play::getTopSongs("likes", $limit, "created_by");
+    function getRecentlyPlayed(int $limit): JsonResponse{
+        $topSongs = Play::getRecentlyPlayed($limit);
 
         $result = $this->saveSongs($topSongs);
 
         return response()->json($result);
+    }
+
+    function saveSongs($song_ids): array{
+        $result = [];
+        foreach ($song_ids as $song_id){
+            $result[] = Song::find($song_id);
+        }
+        return $result;
     }
 
 }
