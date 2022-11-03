@@ -83,15 +83,13 @@ class SongController extends Controller
 //        ], 201);
     }
 
-    function getSongs(): JsonResponse
-    {
+    function getSongs(): JsonResponse{
         $allSongs = Song::all();
 
         return response()->json($allSongs);
     }
 
     function getTopPlayedSongs(int $limit): JsonResponse{
-
         $topSongs = Play::getTopSongs("plays", $limit, "plays");
 
         $result = $this->saveSongs($topSongs);
@@ -115,6 +113,12 @@ class SongController extends Controller
         return response()->json($result);
     }
 
+    function getSuggestedSongs(int $limit): JsonResponse{
+        $suggestedSongs = Song::all()->random($limit);
+
+        return response()->json($suggestedSongs);
+    }
+
     function saveSongs($song_ids): array{
         $result = [];
         foreach ($song_ids as $song_id){
@@ -122,5 +126,4 @@ class SongController extends Controller
         }
         return $result;
     }
-
 }
