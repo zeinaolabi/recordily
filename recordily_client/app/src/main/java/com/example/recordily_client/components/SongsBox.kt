@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,9 +18,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.view_models.LandingPageViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun SongsBox(title: String, navController: NavController){
@@ -56,6 +60,7 @@ fun SongsBox(title: String, navController: NavController){
 
 @Composable
 private fun SongSquareCard(onClick: () -> (Unit)){
+
     Column(
         modifier = Modifier
             .bounceClick()

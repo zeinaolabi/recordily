@@ -58,30 +58,22 @@ private fun AddMusicRow(navController: NavController){
         MediumRoundButton(
             text = stringResource(id = R.string.record),
             onClick = {
-                navController.navigate(Screen.RecordPage.route) {
-
-                    popUpTo(Screen.ProfilePage.route) {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.RecordPage.route,
+                    popUpTo = Screen.UnreleasedPage.route
+                )
             }
         )
 
         MediumRoundButton(
             text = stringResource(id = R.string.upload_song),
             onClick = {
-                navController.navigate(Screen.UploadSongPage.route) {
-
-                    popUpTo(Screen.ProfilePage.route) {
-                        saveState = true
-                    }
-
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UploadSongPage.route,
+                    popUpTo = Screen.UnreleasedPage.route
+                )
             }
         )
 
@@ -91,7 +83,7 @@ private fun AddMusicRow(navController: NavController){
                 navigateTo(
                     navController = navController,
                     destination = Screen.UploadAlbumPage.route,
-                    popUpTo = Screen.ProfilePage.route
+                    popUpTo = Screen.UnreleasedPage.route
                 )
             }
         )

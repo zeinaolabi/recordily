@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -15,6 +16,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.TopNavItem
+import com.example.recordily_client.view_models.LandingPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
@@ -47,6 +49,13 @@ fun CommonLandingPage(navController: NavController){
 
 @Composable
 private fun LandingPageContent(navController: NavController){
+
+    val landingPageViewModel : LandingPageViewModel = viewModel()
+    landingPageViewModel.getSongsList()
+
+    val loginResponse = landingPageViewModel.songResultLiveData.observeAsState()
+    loginResponse.value?.get(0)?.name
+
     Column(
         modifier = Modifier
             .verticalScroll(ScrollState(0))

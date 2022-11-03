@@ -1,5 +1,7 @@
 package com.example.recordily_client.pages.artist
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -21,8 +23,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.res.colorResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.recordily_client.view_models.UploadSongViewModel
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import java.lang.Exception
+import android.os.Environment
+import android.util.Log
+import androidx.compose.ui.text.style.TextOverflow
+import com.example.recordily_client.requests.UploadSongRequest
+import com.example.recordily_client.view_models.LoginViewModel
+import java.io.*
 
 private val songName = mutableStateOf("")
+private val fileName = mutableStateOf("")
+private var chunks: List<ByteArrayOutputStream> = mutableListOf()
 
 @Composable
 fun UploadSongPage(navController: NavController) {
@@ -51,6 +67,8 @@ fun UploadSongPage(navController: NavController) {
 @Composable
 private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
+    val uploadSongViewModel: UploadSongViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
 
     Image(
         painter = painterResource(id = logo),
@@ -70,8 +88,11 @@ private fun UploadSongContent(){
     DropDownAlbumMenu()
 
     PickAudioRow()
-    
-    MediumRoundButton(text = stringResource(id = R.string.save), onClick = {})
+
+    MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
+
+    }
+    )
 }
 
 @Composable
@@ -136,28 +157,39 @@ private fun DropDownAlbumMenu(){
 
 @Composable
 private fun PickAudioRow(){
+    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val intent = result.data
+            val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+
+            fileName.value = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
+            val file = File(dir, fileName.value)
+
+        }
+    }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxWidth(0.9f)
     ){
-        Row{
-            Text(
-                text = stringResource(id = R.string.upload_new_song),
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.onPrimary
-            )
 
-            Text(
-                text = "File name",
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.onPrimary
-            )
-        }
+        Text(
+            text = stringResource(id = R.string.upload_new_song) + " " + fileName.value,
+            fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.fillMaxWidth(0.6f),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
 
-        SmallTealButton(text = "Upload", onClick = {})
+        SmallTealButton(text = "Upload", onClick = {
+
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "audio/mpeg"
+            startForResult.launch(intent)
+        })
 
     }
 }
