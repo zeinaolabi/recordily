@@ -16,7 +16,7 @@ class UploadSongRequest extends FormRequest
         return [
             'name' => 'required|string',
             'image' => 'required',
-            'file' => 'required',
+            'file' => 'required'
 //            'album_id' => 'required|int'
         ];
     }
