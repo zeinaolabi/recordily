@@ -83,6 +83,21 @@ class SongController extends Controller
         return response()->json($result);
     }
 
+    function getTopLikedSongs(): JsonResponse{
+
+        $topSongs = Like::select('song_id', DB::raw('count(*) as likes'))
+            ->groupBy('song_id')
+            ->orderBy('likes', 'desc')
+            ->limit(5)
+            ->pluck('song_id');
+
+        $result = [];
+        foreach ($topSongs as $topSong){
+            $result[] = Song::find($topSong);
+        }
+
+        return response()->json($result);
+    }
 
 
 }
