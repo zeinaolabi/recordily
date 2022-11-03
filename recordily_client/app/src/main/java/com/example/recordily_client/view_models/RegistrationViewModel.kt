@@ -1,17 +1,16 @@
 package com.example.recordily_client.view_models
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.recordily_client.repositories.RegistrationRepository
 import com.example.recordily_client.requests.RegistrationRequest
+import com.example.recordily_client.services.UserService
 
 class RegistrationViewModel: ViewModel() {
 
-    private val repository = RegistrationRepository()
+    private val service = UserService()
 
     suspend fun register(registrationRequest: RegistrationRequest): Boolean {
         return try {
-            repository.register(registrationRequest)
+            service.register(registrationRequest)
             true
         } catch (exception: Throwable) {
             false

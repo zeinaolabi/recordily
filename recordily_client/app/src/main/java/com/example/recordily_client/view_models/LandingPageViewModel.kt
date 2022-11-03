@@ -11,18 +11,25 @@ import kotlinx.coroutines.launch
 
 class LandingPageViewModel(application: Application): AndroidViewModel(application){
 
-    private val songsResult = MutableLiveData<List<SongResponse>>()
-
-    val songResultLiveData : LiveData<List<SongResponse>>
-        get() = songsResult
-
     private val songService = SongService()
 
-    fun getSongsList()
-    {
-        viewModelScope.launch {
-            songsResult.postValue(songService.getTopPlayed())
-        }
+    private val topPlayedResult = MutableLiveData<List<SongResponse>>()
+    val topPlayedResultLiveData : LiveData<List<SongResponse>>
+        get() = topPlayedResult
 
+    private val topLikedResult = MutableLiveData<List<SongResponse>>()
+    val topLikedResultLiveData : LiveData<List<SongResponse>>
+        get() = topLikedResult
+
+    fun getTopPlayed(limit: Int) {
+        viewModelScope.launch {
+            topPlayedResult.postValue(songService.getTopPlayed(limit))
+        }
+    }
+
+    fun getTopLiked(limit: Int) {
+        viewModelScope.launch {
+            topPlayedResult.postValue(songService.getTopLiked(limit))
+        }
     }
 }
