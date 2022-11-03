@@ -11,4 +11,7 @@ interface SongsAPI {
     @GET("suggested_songs/{limit}")
     suspend fun suggestedSongs(@Path("limit") limit: Int): List<SongResponse>
 
+    @GET("recently_played_songs/{limit}")
+    suspend fun getRecentlyPlayedSongs(@Path("limit") limit: Int): List<SongResponse>
+
 }
