@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('follower_id');
             $table->foreignId('followed_id');
             $table->timestamps();
-            $table->unique( array('follower_id','followed_id') );
+            $table->unique(['follower_id','followed_id']);
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('playlist_id');
             $table->foreignId('song_id');
             $table->timestamps();
-            $table->unique( array('playlist_id','song_id') );
+            $table->unique( ['playlist_id','song_id']);
         });
     }
 
