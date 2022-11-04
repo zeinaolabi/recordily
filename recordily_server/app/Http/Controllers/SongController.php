@@ -6,11 +6,10 @@ use App\Http\Requests\UploadSongRequest;
 use App\Models\Like;
 use App\Models\Play;
 use App\Models\Song;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use League\CommonMark\Util\ArrayCollection;
 
 class SongController extends Controller
 {
@@ -116,14 +115,38 @@ class SongController extends Controller
     function getSuggestedSongs(int $limit): JsonResponse{
         $suggestedSongs = Song::all()->random($limit);
 
+        $this->getUserName($suggestedSongs);
+
         return response()->json($suggestedSongs);
+    }
+
+    function searchForSong(string $input): JsonResponse{
+        $result = (object) [
+            'artists' => User::where('name', 'like', '%' . $input . '%')->get(),
+            'songs' => Song::where('name', 'like', '%' . $input . '%')->get()
+        ];
+
+        $this->getUserName($result->songs);
+
+        return response()->json($result);
     }
 
     function saveSongs($song_ids): array{
         $result = [];
         foreach ($song_ids as $song_id){
-            $result[] = Song::find($song_id);
+            $song = Song::find($song_id);
+            $song->artist_name = $song->user->name;
+            unset($song->user);
+            $result[] = $song;
         }
+
         return $result;
+    }
+
+    function getUserName($songs){
+        foreach ($songs as $song) {
+            $song->artist_name = $song->user->name;
+            unset($song->user);
+        }
     }
 }
