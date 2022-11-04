@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UploadSongRequest;
 use App\Models\Like;
 use App\Models\Play;
+use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -131,12 +133,22 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getLikedSongs(int $user_id): JsonResponse{
-        $liked_songs = Like::where('user_id', $user_id)->pluck('song_id');
+    function getLikedSongs(): JsonResponse{
+        $id = Auth::id();
+
+        $liked_songs = Like::where('user_id', $id)->pluck('song_id');
 
         $result = $this->saveSongs($liked_songs);
 
         return response()->json($result);
+    }
+
+    function getPlaylists(): JsonResponse{
+        $id = Auth::id();
+
+        $playlists = Playlist::where('user_id', $id)->get();
+
+        return response()->json($playlists);
     }
 
     function saveSongs($song_ids): array{
@@ -149,6 +161,14 @@ class SongController extends Controller
         }
 
         return $result;
+    }
+
+    function likeSong(){
+        Playlist::create([
+            'user_id' => 1,
+            'name' => 2,
+            'picture' => "test"
+        ]);
     }
 
     function getArtistName($songs){
