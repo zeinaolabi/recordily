@@ -95,7 +95,9 @@ private fun ArtistProfileContent(navController: NavController){
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
-            navController = navController)
+            navController = navController,
+            data = null
+        )
 
         SongsCards(
             title = stringResource(id = R.string.songs),

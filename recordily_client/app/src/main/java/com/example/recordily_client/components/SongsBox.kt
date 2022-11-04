@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,15 +17,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.view_models.LandingPageViewModel
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.responses.SongResponse
 
 @Composable
-fun SongsBox(title: String, navController: NavController){
+fun SongsBox(title: String, navController: NavController, data: List<SongResponse>?){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -49,17 +46,20 @@ fun SongsBox(title: String, navController: NavController){
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
         ){
-            for (i in 1..5) {
-                SongSquareCard(onClick = {
-                    navController.navigate(Screen.SongPage.route)
-                })
+            if (data != null) {
+                for (element in data) {
+                    SongSquareCard(
+                        onClick = { navController.navigate(Screen.SongPage.route) },
+                        data = element
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun SongSquareCard(onClick: () -> (Unit)){
+private fun SongSquareCard(onClick: () -> (Unit), data: SongResponse){
 
     Column(
         modifier = Modifier
@@ -81,14 +81,14 @@ private fun SongSquareCard(onClick: () -> (Unit)){
         )
 
         Text(
-            text = "Song title",
+            text = data.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             color = MaterialTheme.colors.onPrimary
         )
 
         Text(
-            text = "Artist name",
+            text = data.artist_name,
             fontWeight = FontWeight.Medium,
             fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             color = MaterialTheme.colors.onPrimary

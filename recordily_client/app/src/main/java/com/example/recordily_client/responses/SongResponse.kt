@@ -11,5 +11,6 @@ data class SongResponse(
     val time_length: Int,
     val type: String,
     val updated_at: String,
-    val user_id: Int
+    val user_id: Int,
+    val artist_name: String
 )

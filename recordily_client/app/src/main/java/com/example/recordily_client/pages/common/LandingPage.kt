@@ -25,6 +25,13 @@ fun CommonLandingPage(navController: NavController){
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
+    val limit = 5
+    val landingPageViewModel : LandingPageViewModel = viewModel()
+
+    landingPageViewModel.getTopPlayed(limit)
+    landingPageViewModel.getRecentlyPlayed(limit)
+    landingPageViewModel.getSuggested(limit)
+    landingPageViewModel.getTopLiked(limit)
 
     Scaffold(
         topBar = { Header(navController) },
@@ -51,10 +58,11 @@ fun CommonLandingPage(navController: NavController){
 private fun LandingPageContent(navController: NavController){
 
     val landingPageViewModel : LandingPageViewModel = viewModel()
-    landingPageViewModel.getSongsList()
 
-    val loginResponse = landingPageViewModel.songResultLiveData.observeAsState()
-    loginResponse.value?.get(0)?.name
+    val getTopPlayedResponse = landingPageViewModel.topPlayedResultLiveData.observeAsState()
+    val getRecentlyPlayedResponse = landingPageViewModel.recentlyPlayedResultLiveData.observeAsState()
+    val getSuggestedResponse = landingPageViewModel.suggestedResultLiveData.observeAsState()
+    val getTopLikedResponse = landingPageViewModel.topLikedResultLiveData.observeAsState()
 
     Column(
         modifier = Modifier
@@ -64,12 +72,14 @@ private fun LandingPageContent(navController: NavController){
     ){
         SongsBox(
             title = stringResource(id = R.string.suggested),
-            navController = navController
+            navController = navController,
+            data = getSuggestedResponse.value
         )
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
-            navController = navController
+            navController = navController,
+            data = getTopPlayedResponse.value
         )
 
         ArtistsBox(
@@ -79,12 +89,14 @@ private fun LandingPageContent(navController: NavController){
 
         SongsBox(
             title = stringResource(id = R.string.top_5_liked_songs),
-            navController = navController
+            navController = navController,
+            data = getTopLikedResponse.value
         )
 
         SongsBox(
             title = stringResource(id = R.string.recently_played),
-            navController = navController
+            navController = navController,
+            data = getRecentlyPlayedResponse.value
         )
     }
 }
