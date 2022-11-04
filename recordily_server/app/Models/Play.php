@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Ramsey\Collection\Collection;
+use Illuminate\Support\Collection;
 
 class Play extends BaseModel
 {
@@ -19,5 +19,9 @@ class Play extends BaseModel
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->pluck('song_id');
+    }
+
+    public function song(){
+        return $this->belongsTo(Song::class, 'song_id');
     }
 }

@@ -13,4 +13,8 @@ class Like extends BaseModel
         'user_id',
         'song_id'
     ];
+
+    public function song(){
+        return $this->belongsTo(Song::class, 'song_id');
+    }
 }
