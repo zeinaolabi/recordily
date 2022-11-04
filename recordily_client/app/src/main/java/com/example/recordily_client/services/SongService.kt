@@ -2,6 +2,7 @@ package com.example.recordily_client.services
 
 import com.example.recordily_client.apis.RetrofitInstance
 import com.example.recordily_client.requests.UploadSongRequest
+import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
 
 class SongService {
@@ -23,5 +24,9 @@ class SongService {
 
     suspend fun getTopPlayed(limit: Int): List<SongResponse>{
         return RetrofitInstance.songApi.getTopPlayedSongs(limit)
+    }
+
+    suspend fun getSearchResult(input: String): SearchResponse{
+        return RetrofitInstance.songApi.searchForSong(input)
     }
 }
