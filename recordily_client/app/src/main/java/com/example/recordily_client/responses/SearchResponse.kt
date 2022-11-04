@@ -1,6 +1,6 @@
 package com.example.recordily_client.responses
 
 data class SearchResponse(
-    val artists: List<Any>,
-    val songs: List<Song>
+    val artists: List<ArtistResponse>,
+    val songs: List<SongResponse>
 )

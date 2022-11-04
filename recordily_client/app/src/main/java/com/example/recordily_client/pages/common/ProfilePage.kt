@@ -25,6 +25,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -87,6 +88,9 @@ private fun ProfileContentColumn(navController: NavController){
     ){
         SongsCards(
             title = stringResource(id = R.string.top_songs),
+            data = listOf(SongResponse(1,"",1,"","","",1,
+                1,"","",1,"")
+            ),
             destination = {
                 navigateTo(
                     navController = navController,
@@ -108,6 +112,10 @@ private fun ProfileContentColumn(navController: NavController){
 
         SongsCards(
             title = stringResource(id = R.string.recently_played),
+            data = listOf(
+                SongResponse(1,"",1,"","","",1,
+                1,"","",1,"")
+            ),
             destination = {
                 navigateTo(
                     navController = navController,

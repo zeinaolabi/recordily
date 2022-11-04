@@ -17,6 +17,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
+import com.example.recordily_client.responses.ArtistResponse
 
 private val searchInput = mutableStateOf("")
 
@@ -66,6 +67,7 @@ private fun ArtistsPageContent(navController: NavController){
     ){
         for(i in 1..3){
             ArtistCard(
+                data = ArtistResponse("", "", "", 1, "", "", "", 1),
                 onClick = {
                 navController.navigate(Screen.ArtistProfilePage.route) {
                     popUpTo(Screen.ArtistsPage.route) {

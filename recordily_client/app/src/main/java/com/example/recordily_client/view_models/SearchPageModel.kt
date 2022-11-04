@@ -18,9 +18,19 @@ class SearchPageViewModel(application: Application): AndroidViewModel(applicatio
     val searchResultLiveData : LiveData<SearchResponse>
         get() = searchResult
 
+    private val suggestedResult = MutableLiveData<List<SongResponse>>()
+    val suggestedResultLiveData : LiveData<List<SongResponse>>
+        get() = suggestedResult
+
     fun getSearchResult(input: String) {
         viewModelScope.launch {
             searchResult.postValue(songService.getSearchResult(input))
+        }
+    }
+
+    fun getSuggestedResult(limit: Int) {
+        viewModelScope.launch {
+            suggestedResult.postValue(songService.getSuggested(limit))
         }
     }
 

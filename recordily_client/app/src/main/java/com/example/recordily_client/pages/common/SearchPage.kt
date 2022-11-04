@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,8 @@ import com.example.recordily_client.components.SearchTextField
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.SearchResponse
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.SearchPageViewModel
 
 private val searchInput = mutableStateOf("")
@@ -32,14 +36,6 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
-    val searchPageViewModel: SearchPageViewModel = viewModel()
-
-    searchPageViewModel.searchResultLiveData.observeAsState()
-
-    if(searchInput.value != ""){
-        searchPageViewModel.getSearchResult(searchInput.value)
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,23 +82,43 @@ fun CommonSearchPage(navController: NavController){
 @ExperimentalAnimationApi
 @Composable
 private fun SearchPageContent(navController: NavController){
+    val limit = 3
+    val searchPageViewModel: SearchPageViewModel = viewModel()
+
+    val searchResult = searchPageViewModel.searchResultLiveData.observeAsState()
+    val suggestedResult = searchPageViewModel.suggestedResultLiveData.observeAsState()
+
     Text(
         text = stringResource(id = R.string.discover_songs),
         fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
         fontWeight = FontWeight.ExtraBold,
         color = MaterialTheme.colors.onPrimary,
-        )
+    )
 
     SearchTextField(searchInput)
 
+    if(searchInput.value == ""){
+        searchPageViewModel.getSuggestedResult(limit)
+        SuggestedContent(navController, suggestedResult.value)
+    }
+    else{
+        searchPageViewModel.getSearchResult(searchInput.value)
+        SearchResultContent(navController, searchResult.value)
+    }
+}
+
+@Composable
+private fun SuggestedContent(navController: NavController, data: List<SongResponse>?){
     SongsCards(
         title = stringResource(id = R.string.suggested),
+        data = data,
         destination = {
             navigateTo(
                 navController = navController,
                 destination = Screen.SuggestedSongsPage.route,
                 popUpTo = Screen.SearchPage.route
-            )},
+            )
+        },
         onSongClick = {
             navigateTo(
                 navController = navController,
@@ -112,4 +128,42 @@ private fun SearchPageContent(navController: NavController){
         },
         onMoreClick = { popUpVisibility.value = true }
     )
+}
+
+@Composable
+private fun SearchResultContent(navController: NavController, data: SearchResponse?){
+    Column(
+        modifier = Modifier.verticalScroll(ScrollState(0))
+    ){
+        if (data != null) {
+            for(artist in data.artists){
+                ArtistCard(
+                    data = artist,
+                    onClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.ArtistProfilePage.route,
+                            popUpTo = Screen.SearchPage.route
+                        )
+                    }
+                )
+            }
+
+            for(song in data.songs){
+                SongCard(
+                    data = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.PlaylistPage.route
+                        )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                    }
+                )
+            }
+        }
+    }
 }

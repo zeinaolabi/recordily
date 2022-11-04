@@ -13,7 +13,6 @@ class LoginViewModel(application: Application): AndroidViewModel(application){
     private val context = getApplication<Application>().applicationContext
     private val service = UserService()
 
-
     @SuppressLint("RestrictedApi")
     val sharedPreferences: SharedPreferences = context.getSharedPreferences("login", 0)
     private var editor: SharedPreferences.Editor = sharedPreferences.edit()

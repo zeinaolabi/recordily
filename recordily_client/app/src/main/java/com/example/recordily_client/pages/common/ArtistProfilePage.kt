@@ -17,6 +17,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.SongResponse
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -101,6 +102,9 @@ private fun ArtistProfileContent(navController: NavController){
 
         SongsCards(
             title = stringResource(id = R.string.songs),
+            data = listOf(SongResponse(1,"",1,"","","",1,
+                1,"","",1,"")
+            ),
             destination = {
                 navigateTo(
                     navController = navController,

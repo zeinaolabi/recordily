@@ -20,9 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.ArtistResponse
 
 @Composable
-fun ArtistCard(onClick: () -> (Unit)){
+fun ArtistCard(data: ArtistResponse, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -37,12 +38,12 @@ fun ArtistCard(onClick: () -> (Unit)){
             ){ onClick() },
         verticalAlignment = Alignment.CenterVertically
     ){
-        ArtistCardContent()
+        ArtistCardContent(data)
     }
 }
 
 @Composable
-private fun ArtistCardContent(){
+private fun ArtistCardContent(data: ArtistResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
@@ -55,7 +56,7 @@ private fun ArtistCardContent(){
         )
 
         Text(
-            text = "Artist name",
+            text = data.name,
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))

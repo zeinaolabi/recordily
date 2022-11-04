@@ -18,6 +18,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.SongResponse
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -78,6 +79,10 @@ private fun LibraryPageContent(navController: NavController){
         ){
             for(i in 1..3){
                 SongCard(
+                    data =
+                        SongResponse(1,"",1,"","","",1,
+                        1,"","",1,"")
+                    ,
                     onSongClick = {
                         navigateTo(
                             navController = navController,

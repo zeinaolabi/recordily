@@ -20,9 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.SongResponse
 
 @Composable
-fun SongsCards(title: String, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
+fun SongsCards(title: String, data: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -34,12 +35,12 @@ fun SongsCards(title: String, destination: ()->(Unit), onSongClick: ()->(Unit),o
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(destination, onSongClick ,onMoreClick)
+        CardsContent(data, destination, onSongClick ,onMoreClick)
     }
 }
 
 @Composable
-private fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun CardsContent(data: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,11 +48,14 @@ private fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onMor
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            SongCard(
-                onSongClick = onSongClick,
-                onMoreClick = {onMoreClick()}
-            )
+        if (data != null) {
+            for(song in data){
+                SongCard(
+                    data = song,
+                    onSongClick = onSongClick,
+                    onMoreClick = {onMoreClick()}
+                )
+            }
         }
 
         SmallTealButton(
@@ -65,7 +69,7 @@ private fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onMor
 }
 
 @Composable
-fun SongCard(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+fun SongCard(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -76,18 +80,18 @@ fun SongCard(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent(onSongClick, onMoreClick)
+        SongCardContent(data, onSongClick, onMoreClick)
     }
 }
 
 @Composable
-private fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun SongCardContent(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        SongDetails(onSongClick)
+        SongDetails(data, onSongClick)
 
         Column(
             modifier = Modifier
@@ -108,7 +112,7 @@ private fun SongCardContent(onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
 }
 
 @Composable
-private fun SongDetails(onSongClick: ()->(Unit)){
+private fun SongDetails(data: SongResponse, onSongClick: ()->(Unit)){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -134,14 +138,14 @@ private fun SongDetails(onSongClick: ()->(Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = "Song title",
+                text = data.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary
             )
 
             Text(
-                text = "Artist name",
+                text = data.artist_name,
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 color = MaterialTheme.colors.onPrimary
