@@ -1,16 +1,12 @@
 package com.example.recordily_client.view_models
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 
-class SearchPageViewModel(application: Application): AndroidViewModel(application){
+class SearchPageViewModel: ViewModel(){
 
     private val songService = SongService()
 
