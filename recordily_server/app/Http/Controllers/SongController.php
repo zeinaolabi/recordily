@@ -83,7 +83,7 @@ class SongController extends Controller
     }
 
     function getSongs(): JsonResponse{
-        $allSongs = Song::all();
+        $allSongs = User::all();
 
         return response()->json($allSongs);
     }
@@ -115,7 +115,7 @@ class SongController extends Controller
     function getSuggestedSongs(int $limit): JsonResponse{
         $suggestedSongs = Song::all()->random($limit);
 
-        $this->getUserName($suggestedSongs);
+        $this->getArtistName($suggestedSongs);
 
         return response()->json($suggestedSongs);
     }
@@ -126,7 +126,15 @@ class SongController extends Controller
             'songs' => Song::where('name', 'like', '%' . $input . '%')->get()
         ];
 
-        $this->getUserName($result->songs);
+        $this->getArtistName($result->songs);
+
+        return response()->json($result);
+    }
+
+    function getLikedSongs(int $user_id): JsonResponse{
+        $liked_songs = Like::where('user_id', $user_id)->pluck('song_id');
+
+        $result = $this->saveSongs($liked_songs);
 
         return response()->json($result);
     }
@@ -143,7 +151,7 @@ class SongController extends Controller
         return $result;
     }
 
-    function getUserName($songs){
+    function getArtistName($songs){
         foreach ($songs as $song) {
             $song->artist_name = $song->user->name;
             unset($song->user);
