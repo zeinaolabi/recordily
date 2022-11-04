@@ -26,5 +26,6 @@ Route::get('top_liked_songs/{limit}',[SongController::class, "getTopLikedSongs"]
 Route::get('recently_played_songs/{limit}',[SongController::class, "getRecentlyPlayed"]);
 Route::get('suggested_songs/{limit}',[SongController::class, "getSuggestedSongs"]);
 Route::get('search/{input}',[SongController::class, "searchForSong"]);
-Route::get('liked_songs/{user_id}',[SongController::class, "getLikedSongs"]);
+Route::get('liked_songs',[SongController::class, "getLikedSongs"]);
 Route::get('like',[SongController::class, "likeSong"]);
+Route::get('playlists',[SongController::class, "getPlaylists"]);
