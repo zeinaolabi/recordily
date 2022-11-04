@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -8,10 +9,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
@@ -19,6 +22,8 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LikesPageViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -26,6 +31,13 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun LibraryPage(navController: NavController){
+    val loginViewModel: LoginViewModel = viewModel()
+    val likesPageViewModel: LikesPageViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    likesPageViewModel.getLikedSongs(token)
+
+    val songsLiked = likesPageViewModel.likedSongsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -37,7 +49,7 @@ fun LibraryPage(navController: NavController){
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            LibraryPageContent(navController)
+            LibraryPageContent(navController, songsLiked.value)
         }
 
         AnimatedVisibility(
@@ -54,7 +66,7 @@ fun LibraryPage(navController: NavController){
 }
 
 @Composable
-private fun LibraryPageContent(navController: NavController){
+private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?){
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
@@ -77,24 +89,26 @@ private fun LibraryPageContent(navController: NavController){
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
         ){
-            for(i in 1..3){
-                SongCard(
-                    data =
-                        SongResponse(1,"",1,"","","",1,
-                        1,"","",1,"")
-                    ,
-                    onSongClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.LibraryPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                    }
-                )
+
+            if (songsLiked != null) {
+                for(song in songsLiked){
+                    Log.i("song", song.toString())
+                    SongCard(
+                        data = song,
+                        onSongClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route,
+                                popUpTo = Screen.LibraryPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                        }
+                    )
+                }
             }
+
         }
 
         Row(
