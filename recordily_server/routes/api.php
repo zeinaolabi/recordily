@@ -25,3 +25,4 @@ Route::get('top_played_songs/{limit}',[SongController::class, "getTopPlayedSongs
 Route::get('top_liked_songs/{limit}',[SongController::class, "getTopLikedSongs"]);
 Route::get('recently_played_songs/{limit}',[SongController::class, "getRecentlyPlayed"]);
 Route::get('suggested_songs/{limit}',[SongController::class, "getSuggestedSongs"]);
+Route::get('search/{input}',[SongController::class, "searchForSong"]);
