@@ -3,6 +3,7 @@ package com.example.recordily_client.apis
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface SongsAPI {
@@ -24,6 +25,10 @@ interface SongsAPI {
     @GET("liked_songs")
     suspend fun getLikedSongs(@Header("Authorization") token: String): List<SongResponse>
 
+    @Multipart
     @POST("upload_song")
-    suspend fun uploadSong(@Body uploadSongRequest: UploadSongRequest): Boolean
+    suspend fun uploadSong(
+        @Part("metadata") uploadSongRequest: UploadSongRequest,
+        @Part file: MultipartBody.Part
+    )
 }

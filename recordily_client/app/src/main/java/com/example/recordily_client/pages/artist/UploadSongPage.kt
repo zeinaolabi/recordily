@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.*
@@ -28,17 +29,26 @@ import com.example.recordily_client.view_models.UploadSongViewModel
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import java.lang.Exception
 import android.os.Environment
-import android.util.Log
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.view_models.LoginViewModel
-import java.io.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.FileOutputStream
+
+import java.io.File
+
+import java.io.BufferedInputStream
+
+import java.io.FileInputStream
+import kotlin.collections.ArrayList
+
 
 private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
-private var chunks: List<ByteArrayOutputStream> = mutableListOf()
+private var chunks: File = File("")
 
 @Composable
 fun UploadSongPage(navController: NavController) {
@@ -64,6 +74,7 @@ fun UploadSongPage(navController: NavController) {
     )
 }
 
+@SuppressLint("UsableSpace")
 @Composable
 private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
@@ -91,14 +102,22 @@ private fun UploadSongContent(){
 
     MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
         val id = loginViewModel.sharedPreferences.getInt("id", -1)
-        var i = 0
-        chunks.forEach {
-            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", it.toByteArray(), chunks.size, i)
-            uploadSongViewModel.uploadSong(uploadSongRequest)
-            i++
+
+        val files = splitFile(chunks)
+        val songID = System.currentTimeMillis().toString() + id
+
+
+        files.forEachIndexed { index, file ->
+            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", files.size, index, songID)
+
+            uploadSongViewModel.uploadSong(
+                uploadSongRequest,
+                MultipartBody.Part.createFormData("file", songName.value, RequestBody.create("audio/*".toMediaTypeOrNull(), file))
+            )
+
+//            file.delete()
         }
-    }
-    )
+    })
 }
 
 @Composable
@@ -171,7 +190,8 @@ private fun PickAudioRow(){
             fileName.value = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
             val file = File(dir, fileName.value)
 
-            chunks = splitFile(file)
+            chunks = file
+
         }
     }
 
@@ -201,25 +221,55 @@ private fun PickAudioRow(){
     }
 }
 
-fun splitFile(file: File?): List<ByteArrayOutputStream>{
-    val dataList: MutableList<ByteArrayOutputStream> = mutableListOf()
-    try {
-        val sizeOfFiles = 100000
-        val buffer = ByteArray(sizeOfFiles)
-        FileInputStream(file).use { fileInputStream ->
-            BufferedInputStream(fileInputStream).use { bufferInputStream ->
-                var bytesAmount: Int
-                while (bufferInputStream.read(buffer).also { bytesAmount = it } > 0) {
-                    ByteArrayOutputStream().use { out ->
-                        out.write(buffer, 0, bytesAmount)
-                        out.flush()
-                        dataList.add(out)
-                    }
-                }
+fun splitFile(file: File): ArrayList<File> {
+    var partCounter = 1 //I like to name parts from 001, 002, 003, ...
+    //you can change it to 0 if you want 000, 001, ...
+
+    val sizeOfFiles = 1024 * 5 // 1MB
+    val buffer = ByteArray(sizeOfFiles)
+    val fileName: String = file.getName()
+
+    val fileList = ArrayList<File>()
+    //try-with-resources to ensure closing stream
+    FileInputStream(file).use { fis ->
+        BufferedInputStream(fis).use { bis ->
+
+            var bytesAmount = 0
+            while (bis.read(buffer).also { it -> bytesAmount = it } > 0) {
+                //write each chunk of data into separate file with different number in name
+                val filePartName = String.format("%s.%03d", fileName, partCounter++)
+                val newFile = File(file.parent, filePartName)
+                newFile.createNewFile()
+                FileOutputStream(newFile).use { out -> out.write(buffer, 0, bytesAmount) }
+
+
+                fileList.add(newFile)
             }
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
-    return dataList
+
+    return fileList
 }
+
+//fun splitFile(file: File?): List<ByteArrayOutputStream>{
+//    val dataList: MutableList<ByteArrayOutputStream> = mutableListOf()
+//    try {
+//        val sizeOfFiles = 100000
+//        val buffer = ByteArray(sizeOfFiles)
+//        FileInputStream(file).use { fileInputStream ->
+//            BufferedInputStream(fileInputStream).use { bufferInputStream ->
+//                var bytesAmount: Int
+//                while (bufferInputStream.read(buffer).also { bytesAmount = it } > 0) {
+//                    ByteArrayOutputStream().use { out ->
+//                        out.write(buffer, 0, bytesAmount)
+//                        out.flush()
+//                        dataList.add(out)
+//                    }
+//                }
+//            }
+//        }
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//    }
+//    return dataList
+//}

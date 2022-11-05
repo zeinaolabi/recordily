@@ -4,10 +4,11 @@ import com.example.recordily_client.apis.RetrofitInstance
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
+import okhttp3.MultipartBody
 
 class SongService {
-    suspend fun uploadSong(uploadSongRequest: UploadSongRequest): Boolean {
-        return RetrofitInstance.songApi.uploadSong(uploadSongRequest)
+    suspend fun uploadSong(uploadSongRequest: UploadSongRequest, file: MultipartBody.Part) {
+        return RetrofitInstance.songApi.uploadSong(uploadSongRequest, file)
     }
 
     suspend fun getSuggested(limit: Int): List<SongResponse>{

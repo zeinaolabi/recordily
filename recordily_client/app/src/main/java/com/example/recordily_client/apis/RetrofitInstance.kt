@@ -11,14 +11,13 @@ object RetrofitInstance {
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.1.111/api/")
+        .baseUrl("http://192.168.1.106/api/")
         .client(getLoggingHttpClient())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
     val userAPI: AuthAPI = retrofit.create(AuthAPI::class.java)
     val songApi: SongsAPI = retrofit.create(SongsAPI::class.java)
-
 
     private fun getLoggingHttpClient(): OkHttpClient{
         val client = OkHttpClient.Builder()

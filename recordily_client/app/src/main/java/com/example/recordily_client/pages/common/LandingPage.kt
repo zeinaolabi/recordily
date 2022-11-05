@@ -1,11 +1,13 @@
 package com.example.recordily_client.pages.common
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,14 +57,12 @@ fun CommonLandingPage(navController: NavController){
 }
 
 @Composable
-private fun LandingPageContent(navController: NavController){
+private fun LandingPageContent(navController: NavController, landingPageViewModel : LandingPageViewModel = viewModel()){
 
-    val landingPageViewModel : LandingPageViewModel = viewModel()
-
-    val getTopPlayedResponse = landingPageViewModel.topPlayedResultLiveData.observeAsState()
-    val getRecentlyPlayedResponse = landingPageViewModel.recentlyPlayedResultLiveData.observeAsState()
-    val getSuggestedResponse = landingPageViewModel.suggestedResultLiveData.observeAsState()
-    val getTopLikedResponse = landingPageViewModel.topLikedResultLiveData.observeAsState()
+    val getTopPlayedResponse by landingPageViewModel.topPlayedResultLiveData.observeAsState()
+    val getRecentlyPlayedResponse by landingPageViewModel.recentlyPlayedResultLiveData.observeAsState()
+    val getSuggestedResponse by landingPageViewModel.suggestedResultLiveData.observeAsState()
+    val getTopLikedResponse by landingPageViewModel.topLikedResultLiveData.observeAsState()
 
     Column(
         modifier = Modifier
@@ -73,13 +73,14 @@ private fun LandingPageContent(navController: NavController){
         SongsBox(
             title = stringResource(id = R.string.suggested),
             navController = navController,
-            data = getSuggestedResponse.value
+            data = getSuggestedResponse
         )
+        Log.i("test123", getSuggestedResponse?.count().toString())
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
             navController = navController,
-            data = getTopPlayedResponse.value
+            data = getTopPlayedResponse
         )
 
         ArtistsBox(
@@ -90,13 +91,13 @@ private fun LandingPageContent(navController: NavController){
         SongsBox(
             title = stringResource(id = R.string.top_5_liked_songs),
             navController = navController,
-            data = getTopLikedResponse.value
+            data = getTopLikedResponse
         )
 
         SongsBox(
             title = stringResource(id = R.string.recently_played),
             navController = navController,
-            data = getRecentlyPlayedResponse.value
+            data = getRecentlyPlayedResponse
         )
     }
 }

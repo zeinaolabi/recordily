@@ -39,7 +39,7 @@ class LandingPageViewModel: ViewModel(){
 
     fun getSuggested(limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getSuggested(limit))
+            suggestedResult.postValue(songService.getSuggested(limit))
         }
     }
 

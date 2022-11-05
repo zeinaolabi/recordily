@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 
 @SuppressLint("StaticFieldLeak")
 class UploadSongViewModel(application: Application): AndroidViewModel(application) {
@@ -15,9 +16,9 @@ class UploadSongViewModel(application: Application): AndroidViewModel(applicatio
     val context: Context = getApplication<Application>().applicationContext
     private val service = SongService()
 
-    fun uploadSong(uploadSongRequest: UploadSongRequest){
+    fun uploadSong(uploadSongRequest: UploadSongRequest, file: MultipartBody.Part){
         viewModelScope.launch {
-            service.uploadSong(uploadSongRequest)
+            service.uploadSong(uploadSongRequest, file)
         }
     }
 }

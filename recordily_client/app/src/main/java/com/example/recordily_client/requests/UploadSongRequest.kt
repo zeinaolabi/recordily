@@ -4,7 +4,7 @@ data class UploadSongRequest(
     val user_id: Int,
     val name: String,
     val image: String,
-    val file: ByteArray,
     val chunks_size: Int,
-    val chunk_num: Int
+    val chunk_num: Int,
+    val song_id: String
 )
