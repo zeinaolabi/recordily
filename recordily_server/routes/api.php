@@ -28,4 +28,5 @@ Route::get('suggested_songs/{limit}',[SongController::class, "getSuggestedSongs"
 Route::get('search/{input}',[SongController::class, "searchForSong"]);
 Route::get('liked_songs',[SongController::class, "getLikedSongs"]);
 Route::get('like',[SongController::class, "likeSong"]);
-Route::get('playlists',[SongController::class, "getPlaylists"]);
+Route::get('get_playlists',[SongController::class, "getPlaylists"]);
+Route::get('get_playlist_songs/{playlist_id}',[SongController::class, "getPlaylistSongs"]);
