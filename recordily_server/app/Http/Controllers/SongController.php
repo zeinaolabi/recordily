@@ -33,15 +33,6 @@ class SongController extends Controller
             File::makeDirectory($song_path);
         }
 
-//        $chunks = Storage::disk('public')->allFiles("uploads/" . $request->user_id . '/');
-//        var_dump($chunks);
-//
-//        $chunks = new DirectoryIterator($path);
-//        var_dump(count($chunks));
-//        foreach ($chunks as $chunk) {
-//            var_dump($chunk['pathName']);
-//        }
-
         try {
             $song = $request->file('file')->getContent();
             file_put_contents($song_path . $metadata['chunk_num'], $song);
@@ -151,24 +142,6 @@ class SongController extends Controller
         $liked_songs = Like::where('user_id', $id)->pluck('song_id');
 
         $result = $this->saveSongs($liked_songs);
-
-        return response()->json($result);
-    }
-
-    public function getPlaylists(): JsonResponse
-    {
-        $id = Auth::id();
-
-        $playlists = Playlist::where('user_id', $id)->get();
-
-        return response()->json($playlists);
-    }
-
-    public function getPlaylistSongs(int $playlist_id): JsonResponse
-    {
-        $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
-
-        $result = $this->saveSongs($songs);
 
         return response()->json($result);
     }
