@@ -1,0 +1,26 @@
+name: Recordily Server Code Quality
+on: [push]
+
+jobs:
+  run-code-quality-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP with composer v2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+
+      - name: install composer dependencies
+        run: |
+          cd recordily_server/
+          composer install
+
+      - name: run phpcs
+        run: |
+          cd recordily_server/
+          ./vendor/bin/phpcs --standard=PSR12 app/
+
