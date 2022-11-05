@@ -8,30 +8,30 @@ import okhttp3.MultipartBody
 
 class SongService {
     suspend fun uploadSong(uploadSongRequest: UploadSongRequest, file: MultipartBody.Part) {
-        return RetrofitInstance.songApi.uploadSong(uploadSongRequest, file)
+        return RetrofitInstance.songAPI.uploadSong(uploadSongRequest, file)
     }
 
     suspend fun getSuggested(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songApi.suggestedSongs(limit)
+        return RetrofitInstance.songAPI.suggestedSongs(limit)
     }
 
     suspend fun getTopLiked(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songApi.getTopLikedSongs(limit)
+        return RetrofitInstance.songAPI.getTopLikedSongs(limit)
     }
 
     suspend fun getRecentlyPlayed(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songApi.getRecentlyPlayedSongs(limit)
+        return RetrofitInstance.songAPI.getRecentlyPlayedSongs(limit)
     }
 
     suspend fun getTopPlayed(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songApi.getTopPlayedSongs(limit)
+        return RetrofitInstance.songAPI.getTopPlayedSongs(limit)
     }
 
     suspend fun getSearchResult(input: String): SearchResponse{
-        return RetrofitInstance.songApi.searchForSong(input)
+        return RetrofitInstance.songAPI.searchForSong(input)
     }
 
     suspend fun getLikedSongs(token: String): List<SongResponse>{
-        return RetrofitInstance.songApi.getLikedSongs(token)
+        return RetrofitInstance.songAPI.getLikedSongs(token)
     }
 }
