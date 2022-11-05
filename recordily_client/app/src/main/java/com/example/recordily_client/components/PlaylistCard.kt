@@ -19,9 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.PlaylistResponse
 
 @Composable
-fun PlaylistsCard(title: String, destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+fun PlaylistsCard(title: String, playlists: List<PlaylistResponse>?, destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -33,12 +34,12 @@ fun PlaylistsCard(title: String, destination: ()->(Unit), onPlaylistClick: ()->(
             color = MaterialTheme.colors.onPrimary
         )
 
-        PlaylistsCardContent(destination, onPlaylistClick)
+        PlaylistsCardContent(playlists, destination, onPlaylistClick)
     }
 }
 
 @Composable
-private fun PlaylistsCardContent(destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,8 +47,15 @@ private fun PlaylistsCardContent(destination: ()->(Unit), onPlaylistClick: ()->(
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            PlaylistCard(onPlaylistClick)
+        if (playlists != null) {
+            for(playlist in playlists){
+                PlaylistCard(
+                    playlist = playlist,
+                    onPlaylistClick = {
+                        onPlaylistClick()
+                    }
+                )
+            }
         }
 
         SmallTealButton(
@@ -61,7 +69,7 @@ private fun PlaylistsCardContent(destination: ()->(Unit), onPlaylistClick: ()->(
 }
 
 @Composable
-fun PlaylistCard(onPlaylistClick: () -> (Unit)){
+fun PlaylistCard(playlist: PlaylistResponse, onPlaylistClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -79,12 +87,12 @@ fun PlaylistCard(onPlaylistClick: () -> (Unit)){
         ,
         verticalAlignment = Alignment.CenterVertically
     ){
-        PlaylistCardContent()
+        PlaylistCardContent(playlist)
     }
 }
 
 @Composable
-private fun PlaylistCardContent(){
+private fun PlaylistCardContent(playlist: PlaylistResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
@@ -97,7 +105,7 @@ private fun PlaylistCardContent(){
         )
 
         Text(
-            text = "Playlist Title",
+            text = playlist.name,
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),

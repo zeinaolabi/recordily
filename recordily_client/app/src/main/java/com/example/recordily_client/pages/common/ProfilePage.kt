@@ -25,6 +25,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -137,6 +138,10 @@ private fun ProfileContentColumn(navController: NavController){
 
         PlaylistsCard(
             title = stringResource(id = R.string.playlists),
+            playlists = listOf(
+                PlaylistResponse("", 1, "", "", "", 1)
+            )
+            ,
             destination = {
                 navigateTo(
                     navController = navController,

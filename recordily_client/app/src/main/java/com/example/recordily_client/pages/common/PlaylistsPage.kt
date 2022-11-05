@@ -9,17 +9,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.view_models.LikesPageViewModel
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PlaylistsViewModel
 
 private val searchInput = mutableStateOf("")
 
 @Composable
 fun PlaylistsPage(navController: NavController){
+    val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val playlistsViewModel: PlaylistsViewModel = viewModel()
+
+    playlistsViewModel.getPlaylists(token)
+
+    val playlists = playlistsViewModel.playlistResultLiveData.value
 
     Scaffold(
         content = {
@@ -29,7 +41,7 @@ fun PlaylistsPage(navController: NavController){
                     .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                PlaylistsPageContent(navController)
+                PlaylistsPageContent(navController, playlists)
 
                 FloatingButton(
                     onClick={
@@ -51,7 +63,7 @@ fun PlaylistsPage(navController: NavController){
 }
 
 @Composable
-private fun PlaylistsPageContent(navController: NavController){
+private fun PlaylistsPageContent(navController: NavController, playlists: List<PlaylistResponse>?){
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
@@ -77,12 +89,17 @@ private fun PlaylistsPageContent(navController: NavController){
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
     ){
-        for(i in 1..3){
-            PlaylistCard {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.PlaylistPage.route,
-                    popUpTo = Screen.PlaylistsPage.route
+        if (playlists != null) {
+            for(playlist in playlists){
+                PlaylistCard(
+                    playlist = playlist,
+                    onPlaylistClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.PlaylistPage.route,
+                            popUpTo = Screen.PlaylistsPage.route
+                        )
+                    }
                 )
             }
         }
