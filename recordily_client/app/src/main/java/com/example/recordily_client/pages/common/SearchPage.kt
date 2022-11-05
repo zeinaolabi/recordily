@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -36,6 +37,11 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
+    val limit = 3
+    val searchPageViewModel: SearchPageViewModel = viewModel()
+
+    searchPageViewModel.getSuggestedResult(limit)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +61,7 @@ fun CommonSearchPage(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
-                SearchPageContent(navController)
+                SearchPageContent(navController, searchPageViewModel)
             }
 
             Row(
@@ -81,12 +87,10 @@ fun CommonSearchPage(navController: NavController){
 
 @ExperimentalAnimationApi
 @Composable
-private fun SearchPageContent(navController: NavController){
-    val limit = 3
-    val searchPageViewModel: SearchPageViewModel = viewModel()
+private fun SearchPageContent(navController: NavController, searchPageViewModel: SearchPageViewModel){
+    val searchResult by searchPageViewModel.searchResultLiveData.observeAsState()
+    val suggestedResult by searchPageViewModel.suggestedResultLiveData.observeAsState()
 
-    val searchResult = searchPageViewModel.searchResultLiveData.observeAsState()
-    val suggestedResult = searchPageViewModel.suggestedResultLiveData.observeAsState()
 
     Text(
         text = stringResource(id = R.string.discover_songs),
@@ -97,13 +101,11 @@ private fun SearchPageContent(navController: NavController){
 
     SearchTextField(searchInput)
 
-    if(searchInput.value == ""){
-        searchPageViewModel.getSuggestedResult(limit)
-        SuggestedContent(navController, suggestedResult.value)
-    }
-    else{
+    if (searchInput.value == "") {
+        SuggestedContent(navController, suggestedResult)
+    } else {
         searchPageViewModel.getSearchResult(searchInput.value)
-        SearchResultContent(navController, searchResult.value)
+        SearchResultContent(navController, searchResult)
     }
 }
 
