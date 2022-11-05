@@ -6,58 +6,61 @@ use App\Http\Requests\UploadSongRequest;
 use App\Models\Like;
 use App\Models\Play;
 use App\Models\Playlist;
+use App\Models\PlaylistHasSong;
 use App\Models\Song;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class SongController extends Controller
 {
-    function uploadSong(UploadSongRequest $request): bool{
-//        if (! $request->hasFile('audio')) {
-//            return response()->json([
-//                "status" => "File Not Found"
-//            ], 400);
-//        }
+    function uploadSong(Request $request): bool{
+        $metadata = json_decode($request->get('metadata'), true);
 
-        $path = public_path() . '/uploads/' . $request->user_id . '/';
+        $path = public_path() . '/uploads/' . $metadata['user_id'] . '/';
+        $song_path = $path . $metadata['song_id'] . '/';
 
         if(!File::exists($path)){
-            File::makeDirectory($path,0775, true);
+            File::makeDirectory($path);
         }
 
-//        try {
-//            $song = $request->file;
-//            $song_path = $path . '/' . $request->chunk_num;
-//            file_put_contents($song_path, $song);
-////            $audio = new Mp3Info($song, true);
-//        }catch (Exception $e) {
-//            return false;
-//        }
+        if(!File::exists($song_path)){
+            File::makeDirectory($song_path);
+        }
 
 //        $chunks = Storage::disk('public')->allFiles("uploads/" . $request->user_id . '/');
 //        var_dump($chunks);
-
+//
 //        $chunks = new DirectoryIterator($path);
 //        var_dump(count($chunks));
 //        foreach ($chunks as $chunk) {
 //            var_dump($chunk['pathName']);
 //        }
 
-        $chunks = Storage::disk('uploads')->files($request->user_id);
-
-        if(count($chunks) == $request->chunk_size){
-            $files = [];
-            for($i =0; $i < count($chunks); $i++){
-                $files[] = file_get_contents($path . $i);
-            }
-            file_put_contents($path . '/'. uniqid(), $files);
+        try {
+            $song = $request->file('file')->getContent();
+            file_put_contents($song_path . $metadata['chunk_num'], $song);
+//            $audio = new Mp3Info($song, true);
+        }catch (Exception $e) {
+            return false;
         }
 
+        $chunks = Storage::disk('uploads')->files($metadata['user_id'] . '/' . $metadata['song_id']);
 
+        if(count($chunks) == $metadata['chunks_size']){
+            for($i =0 ; $i < count($chunks); $i++){
+                $contents = file_get_contents($song_path . $i);
+                file_put_contents($song_path . $metadata['song_id'], $contents, FILE_APPEND);
+                File::delete($song_path . $i);
+            }
+        }
 
+        return true;
+//
 //        if(count($chunks) == $request->chunk_size){
 //            $audioFile = "";
 //            foreach ($chunks as $chunk){
@@ -66,6 +69,7 @@ class SongController extends Controller
 //            var_dump($chunk);
 //            file_put_contents($path . '/'. uniqid(), $audioFile);
 //        }
+
 
 //        Song::create([
 //            'name' => $request->name,
@@ -151,6 +155,14 @@ class SongController extends Controller
         return response()->json($playlists);
     }
 
+    function getPlaylistSongs(int $playlist_id): JsonResponse{
+        $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
+
+        $result = $this->saveSongs($songs);
+
+        return response()->json($result);
+    }
+
     function saveSongs($song_ids): array{
         $result = [];
         foreach ($song_ids as $song_id){
@@ -161,14 +173,6 @@ class SongController extends Controller
         }
 
         return $result;
-    }
-
-    function likeSong(){
-        Playlist::create([
-            'user_id' => 1,
-            'name' => 2,
-            'picture' => "test"
-        ]);
     }
 
     function getArtistName($songs){
