@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlaylistHasSong extends Model
 {
-    protected $collection = "playlist_has_songs";
-
     use HasFactory;
+
+    protected $collection = "playlist_has_songs";
 
     protected $fillable = [
         'playlist_id',

@@ -18,17 +18,18 @@ use Illuminate\Support\Facades\Storage;
 
 class SongController extends Controller
 {
-    function uploadSong(Request $request): bool{
+    public function uploadSong(Request $request): bool
+    {
         $metadata = json_decode($request->get('metadata'), true);
 
         $path = public_path() . '/uploads/' . $metadata['user_id'] . '/';
         $song_path = $path . $metadata['song_id'] . '/';
 
-        if(!File::exists($path)){
+        if (!File::exists($path)) {
             File::makeDirectory($path);
         }
 
-        if(!File::exists($song_path)){
+        if (!File::exists($song_path)) {
             File::makeDirectory($song_path);
         }
 
@@ -45,14 +46,14 @@ class SongController extends Controller
             $song = $request->file('file')->getContent();
             file_put_contents($song_path . $metadata['chunk_num'], $song);
 //            $audio = new Mp3Info($song, true);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 
         $chunks = Storage::disk('uploads')->files($metadata['user_id'] . '/' . $metadata['song_id']);
 
-        if(count($chunks) == $metadata['chunks_size']){
-            for($i =0 ; $i < count($chunks); $i++){
+        if (count($chunks) == $metadata['chunks_size']) {
+            for ($i = 0; $i < count($chunks); $i++) {
                 $contents = file_get_contents($song_path . $i);
                 file_put_contents($song_path . $metadata['song_id'], $contents, FILE_APPEND);
                 File::delete($song_path . $i);
@@ -88,13 +89,15 @@ class SongController extends Controller
 //        ], 201);
     }
 
-    function getSongs(): JsonResponse{
+    public function getSongs(): JsonResponse
+    {
         $allSongs = User::all();
 
         return response()->json($allSongs);
     }
 
-    function getTopPlayedSongs(int $limit): JsonResponse{
+    public function getTopPlayedSongs(int $limit): JsonResponse
+    {
         $topSongs = Play::getTopSongs("plays", $limit, "plays");
 
         $result = $this->saveSongs($topSongs);
@@ -102,7 +105,8 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getTopLikedSongs(int $limit): JsonResponse{
+    public function getTopLikedSongs(int $limit): JsonResponse
+    {
         $topSongs = Like::getTopSongs("likes", $limit, "likes");
 
         $result = $this->saveSongs($topSongs);
@@ -110,7 +114,8 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getRecentlyPlayed(int $limit): JsonResponse{
+    public function getRecentlyPlayed(int $limit): JsonResponse
+    {
         $topSongs = Play::getRecentlyPlayed($limit);
 
         $result = $this->saveSongs($topSongs);
@@ -118,7 +123,8 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getSuggestedSongs(int $limit): JsonResponse{
+    public function getSuggestedSongs(int $limit): JsonResponse
+    {
         $suggestedSongs = Song::all()->random($limit);
 
         $this->getArtistName($suggestedSongs);
@@ -126,7 +132,8 @@ class SongController extends Controller
         return response()->json($suggestedSongs);
     }
 
-    function searchForSong(string $input): JsonResponse{
+    public function searchForSong(string $input): JsonResponse
+    {
         $result = (object) [
             'artists' => User::where('name', 'like', '%' . $input . '%')->get(),
             'songs' => Song::where('name', 'like', '%' . $input . '%')->get()
@@ -137,7 +144,8 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getLikedSongs(): JsonResponse{
+    public function getLikedSongs(): JsonResponse
+    {
         $id = Auth::id();
 
         $liked_songs = Like::where('user_id', $id)->pluck('song_id');
@@ -147,7 +155,8 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function getPlaylists(): JsonResponse{
+    public function getPlaylists(): JsonResponse
+    {
         $id = Auth::id();
 
         $playlists = Playlist::where('user_id', $id)->get();
@@ -155,7 +164,8 @@ class SongController extends Controller
         return response()->json($playlists);
     }
 
-    function getPlaylistSongs(int $playlist_id): JsonResponse{
+    public function getPlaylistSongs(int $playlist_id): JsonResponse
+    {
         $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
 
         $result = $this->saveSongs($songs);
@@ -163,9 +173,10 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    function saveSongs($song_ids): array{
+    private function saveSongs($song_ids): array
+    {
         $result = [];
-        foreach ($song_ids as $song_id){
+        foreach ($song_ids as $song_id) {
             $song = Song::find($song_id);
             $song->artist_name = $song->user->name;
             unset($song->user);
@@ -175,7 +186,8 @@ class SongController extends Controller
         return $result;
     }
 
-    function getArtistName($songs){
+    private function getArtistName($songs)
+    {
         foreach ($songs as $song) {
             $song->artist_name = $song->user->name;
             unset($song->user);

@@ -23,7 +23,8 @@ class ForgotPasswordController extends Controller
             : back()->withErrors(['email' => __($status)]);
     }
 
-    function resetPassword(Request $request): RedirectResponse{
+    public function resetPassword(Request $request): RedirectResponse
+    {
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',

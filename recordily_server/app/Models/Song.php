@@ -20,15 +20,18 @@ class Song extends Model
         'album_id'
     ];
 
-    public function likes(){
+    public function likes()
+    {
         return $this->hasMany(Like::class, 'user_id');
     }
 
-    public function plays(){
+    public function plays()
+    {
         return $this->hasMany(Play::class, 'user_id');
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id')->select('name');
     }
 }

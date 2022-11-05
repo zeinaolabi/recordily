@@ -14,14 +14,16 @@ class Play extends BaseModel
         'song_id'
     ];
 
-    public static function getRecentlyPlayed(int $limit): Collection{
+    public static function getRecentlyPlayed(int $limit): Collection
+    {
         return self::select('song_id')
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->pluck('song_id');
     }
 
-    public function song(){
+    public function song()
+    {
         return $this->belongsTo(Song::class, 'song_id');
     }
 }

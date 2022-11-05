@@ -15,8 +15,8 @@ class Playlist extends Model
         'user_id'
     ];
 
-    public function song(){
+    public function song()
+    {
         return $this->hasMany(Song::class, 'song_id');
     }
-
 }
