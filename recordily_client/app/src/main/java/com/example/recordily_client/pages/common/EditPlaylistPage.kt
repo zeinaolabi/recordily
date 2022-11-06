@@ -46,7 +46,6 @@ import java.io.File
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
-private val playlistName = mutableStateOf("")
 private var image: File = File("")
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
@@ -98,7 +97,7 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
     }
 
     val coroutineScope = rememberCoroutineScope()
-    playlistName.value = playlist.name
+    val playlistName = remember { mutableStateOf(playlist.name) }
 
     Image(
         painter = if(imgBitmap.value != null) {
@@ -173,11 +172,9 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
                     return@launch
                 }
 
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.PlaylistsPage.route,
-                    popUpTo = Screen.LibraryPage.route
-                )
+                navController.navigate(Screen.PlaylistsPage.route) {
+                    popUpTo(0)
+                }
 
             }
         }
