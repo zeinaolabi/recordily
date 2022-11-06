@@ -220,5 +220,12 @@ fun SetupNavGraph(navController: NavHostController){
         ){
             ResetPasswordPage(navController)
         }
+
+        composable(
+            route = Screen.EditPlaylistPage.route + "/{playlist_id}",
+            arguments = listOf(navArgument("playlist_id") { type = NavType.StringType })
+        ){  backStackEntry ->
+            backStackEntry.arguments?.getString("playlist_id")?.let { EditPlaylistPage(navController, it) }
+        }
     }
 }
