@@ -7,8 +7,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.recordily_client.pages.artist.*
 import com.example.recordily_client.pages.common.*
 import com.example.recordily_client.view_models.LoginViewModel
@@ -111,9 +113,10 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.PlaylistPage.route
-        ){
-            PlaylistPage(navController)
+            route = Screen.PlaylistPage.route + "/{playlist_id}",
+            arguments = listOf(navArgument("playlist_id") { type = NavType.StringType })
+        ){  backStackEntry ->
+            backStackEntry.arguments?.getString("playlist_id")?.let { PlaylistPage(navController, it) }
         }
 
         composable(
