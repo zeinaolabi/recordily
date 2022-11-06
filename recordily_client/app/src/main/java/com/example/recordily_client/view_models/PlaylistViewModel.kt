@@ -4,23 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.services.PlaylistService
 import kotlinx.coroutines.launch
 
-class PlaylistsViewModel: ViewModel() {
-
+class PlaylistViewModel: ViewModel() {
     private val playlistService = PlaylistService()
 
-    private val playlistResult = MutableLiveData<List<PlaylistResponse>>()
-    val playlistResultLiveData : LiveData<List<PlaylistResponse>>
-        get() = playlistResult
+    private val playlistSongsResult = MutableLiveData<List<SongResponse>>()
+    val playlistSongsResultLiveData : LiveData<List<SongResponse>>
+        get() = playlistSongsResult
 
-    fun getPlaylists(token: String) {
+    fun getPlaylistSongs(token: String, playlist_id: String){
         viewModelScope.launch {
-            playlistResult.postValue(playlistService.getPlaylists(token))
+            playlistSongsResult.postValue(playlistService.getPlaylistSongs(token, playlist_id))
         }
     }
-
 }
