@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Playlist extends Model
 {
@@ -37,11 +38,9 @@ class Playlist extends Model
         return true;
     }
 
-    public static function searchPlaylist(int $id, string $input): array
+    public static function searchPlaylist(int $id, string $input): Collection
     {
-        return Playlist::where(
-            ['user_id', $id],
-            ['name', 'like', '%' . $input . '%']
-        )->get();
+        return self::where('user_id', '=', $id)
+            ->where('name', 'like', '%' . $input . '%')->get();
     }
 }

@@ -48,10 +48,12 @@ class User extends Authenticatable implements JWTSubject
     {
         $hashed = Hash::make($password);
 
-        return User::create([
+        return User::create(
+            [
             'email' => $email,
             'password' => $hashed,
             'user_type_id' => $type
-        ]);
+            ]
+        );
     }
 }
