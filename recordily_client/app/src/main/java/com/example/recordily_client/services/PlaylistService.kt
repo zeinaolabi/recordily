@@ -29,4 +29,8 @@ class PlaylistService {
     suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part){
         return RetrofitInstance.playlistAPI.editPlaylist(token, playlist_id, name, image)
     }
+
+    suspend fun searchForPlaylist(token: String, input: String): List<PlaylistResponse> {
+        return RetrofitInstance.playlistAPI.searchForPlaylist(token, input)
+    }
 }
