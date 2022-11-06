@@ -29,7 +29,7 @@ fun ArtistPageHeader(){
             painter = painterResource(id = R.drawable.recordily_dark_logo),
             contentDescription = "playlist picture",
             modifier = Modifier
-                .size(110.dp)
+                .size(125.dp)
                 .clip(CircleShape)
                 .border(3.dp, MaterialTheme.colors.secondary, CircleShape),
             contentScale = ContentScale.Crop
@@ -43,7 +43,7 @@ fun ArtistPageHeader(){
 private fun ArtistHeaderContent(){
     Column(
         modifier = Modifier
-            .height(110.dp)
+            .height(125.dp)
             .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ){

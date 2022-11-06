@@ -38,7 +38,7 @@ fun ProfileHeader(navController: NavController){
             painter = painterResource(id = R.drawable.profile_picture),
             contentDescription = "profile picture",
             modifier = Modifier
-                .size(110.dp)
+                .size(125.dp)
                 .clip(CircleShape)
                 .border(3.dp, MaterialTheme.colors.secondary, CircleShape),
             contentScale = ContentScale.Crop
@@ -54,7 +54,7 @@ private fun ProfileInfo(navController: NavController){
     
     Column(
         modifier = Modifier
-            .height(110.dp)
+            .height(125.dp)
             .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ){
