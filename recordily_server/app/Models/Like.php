@@ -18,4 +18,11 @@ class Like extends BaseModel
     {
         return $this->belongsTo(Song::class, 'song_id');
     }
+
+    public static function searchLikedSongs(int $id, string $input): array
+    {
+        return Like::where('likes.user_id', $id)
+            ->join("songs", "likes.song_id", "=", "songs.id")
+            ->where('name', 'like', '%' . $input . '%')->get();
+    }
 }
