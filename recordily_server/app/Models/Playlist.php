@@ -36,4 +36,12 @@ class Playlist extends Model
 
         return true;
     }
+
+    public static function searchPlaylist(int $id, string $input): array
+    {
+        return Playlist::where(
+            ['user_id', $id],
+            ['name', 'like', '%' . $input . '%']
+        )->get();
+    }
 }
