@@ -106,6 +106,22 @@ class PlaylistController extends Controller
         return response()->json('successfully edited', 201);
     }
 
+    public function deletePlaylist(int $playlist_id): JsonResponse
+    {
+        $playlist = Playlist::find($playlist_id);
+
+        if (!$playlist)
+        {
+            return response()->json('Playlist not found', 204);
+        }
+
+        if (!$playlist->delete()){
+            return response()->json('Unsuccessful delete attempt', 204);
+        }
+
+        return response()->json('Successfully deleted', 200);
+    }
+
     private function saveSongs($song_ids): array
     {
         $result = [];
