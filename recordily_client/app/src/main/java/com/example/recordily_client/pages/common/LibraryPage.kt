@@ -49,7 +49,7 @@ fun LibraryPage(navController: NavController){
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            LibraryPageContent(navController, songsLiked.value)
+            LibraryPageContent(navController, songsLiked.value, token, likesPageViewModel)
         }
 
         AnimatedVisibility(
@@ -66,10 +66,8 @@ fun LibraryPage(navController: NavController){
 }
 
 @Composable
-private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?){
-    val pageOptions = listOf(
-        TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
-    )
+private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?, token: String, likesPageViewModel: LikesPageViewModel){
+    val searchResult = likesPageViewModel.likedSongsResultLiveData.observeAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -79,43 +77,86 @@ private fun LibraryPageContent(navController: NavController, songsLiked: List<So
             navController = navController
         )
 
-        TopNavBar(
-            pageOptions = pageOptions,
-            currentPage = R.string.likes,
-            navController = navController
-        )
+        if(searchInput.value == ""){
+            LikedSongs(navController, songsLiked)
+        } else {
+            likesPageViewModel.searchLikedSongs(token, searchInput.value)
+            SearchResult(navController, searchResult.value)
+        }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
-        ){
+    }
+}
 
-            if (songsLiked != null) {
-                for(song in songsLiked){
-                    Log.i("song", song.toString())
-                    SongCard(
-                        data = song,
-                        onSongClick = {
-                            navigateTo(
-                                navController = navController,
-                                destination = Screen.SongPage.route,
-                                popUpTo = Screen.LibraryPage.route
-                            )
-                        },
-                        onMoreClick = {
-                            popUpVisibility.value = true
-                        }
-                    )
-                }
+@Composable
+private fun LikedSongs(navController: NavController, songsLiked: List<SongResponse>?){
+    val pageOptions = listOf(
+        TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
+    )
+
+    TopNavBar(
+        pageOptions = pageOptions,
+        currentPage = R.string.likes,
+        navController = navController
+    )
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+    ){
+
+        if (songsLiked != null) {
+            for(song in songsLiked){
+                Log.i("song", song.toString())
+                SongCard(
+                    data = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.LibraryPage.route
+                        )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                    }
+                )
             }
-
         }
 
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.Bottom
-        ){
-            BottomNavigationBar(navController)
+    }
+
+    Row(
+        modifier = Modifier.fillMaxHeight(),
+        verticalAlignment = Alignment.Bottom
+    ){
+        BottomNavigationBar(navController)
+    }
+}
+
+@Composable
+private fun SearchResult(navController: NavController, songsLiked: List<SongResponse>?){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
+    ){
+        if (songsLiked != null) {
+            for(song in songsLiked){
+                Log.i("song", song.toString())
+                SongCard(
+                    data = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.LibraryPage.route
+                        )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                    }
+                )
+            }
         }
+
     }
 }
