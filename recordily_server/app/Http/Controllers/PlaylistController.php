@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditPlaylistRequest;
 use App\Http\Requests\PlaylistRequest;
 use App\Models\Playlist;
 use App\Models\PlaylistHasSong;
@@ -11,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
-use Psy\Util\Json;
 
 class PlaylistController extends Controller
 {
@@ -74,7 +74,36 @@ class PlaylistController extends Controller
             return response()->json('unsuccessfully attempt', 400);
         }
 
-        return response()->json($picture->extension(), 201);
+        return response()->json('successfully created', 201);
+    }
+
+    public function editPlaylist(EditPlaylistRequest $request): JsonResponse
+    {
+        $id = Auth::id();
+
+        $playlist = Playlist::find(str_replace('"', '', $request->get('playlist_id')));
+
+        if ($request->file('picture'))
+        {
+            try {
+                $picture = $request->file('picture');
+
+                $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
+                file_put_contents(public_path() . $picture_path, $picture->getContent());
+
+                $playlist->picture = URL::to($picture_path);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e], 400);
+            }
+        }
+
+        $playlist->name = $request->get('name') ? str_replace('"', '', $request->get('name')) : $playlist->name;
+
+        if (!$playlist->save()) {
+            return response()->json('unsuccessfully attempt', 400);
+        }
+
+        return response()->json('successfully edited', 201);
     }
 
     private function saveSongs($song_ids): array
