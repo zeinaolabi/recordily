@@ -19,4 +19,19 @@ class Playlist extends Model
     {
         return $this->hasMany(Song::class, 'song_id');
     }
+
+    public static function createPlaylist(int $id, string $name, string $picture): bool
+    {
+        $isCreated = Playlist::create([
+            'user_id' => $id,
+            'name' => $name,
+            'picture' => $picture
+        ]);
+
+        if(!$isCreated){
+            return false;
+        }
+
+        return true;
+    }
 }
