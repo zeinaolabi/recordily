@@ -28,6 +28,8 @@ fun PlaylistHeader(navController: NavController){
             horizontal = dimensionResource(id = R.dimen.padding_medium)
         )
     ){
+
+//        rememberAsyncImagePainter("https://www.example.com/image.jpg")
         Image(
             painter = painterResource(id = R.drawable.recordily_dark_logo),
             contentDescription = "playlist picture",

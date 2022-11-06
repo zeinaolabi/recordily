@@ -88,6 +88,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.5.3"
 
     implementation 'com.github.jaikeerthick:Composable-Graphs:v1.0'
+    implementation("io.coil-kt:coil-compose:2.1.0")
 
 
 }
