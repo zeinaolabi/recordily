@@ -14,11 +14,15 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.getPlaylistSongs(token, playlist_id)
     }
 
+    suspend fun getPlaylist(token: String, playlist_id: String): PlaylistResponse {
+        return RetrofitInstance.playlistAPI.getPlaylist(token, playlist_id)
+    }
+
     suspend fun addPlaylist(token: String, name: String, image: MultipartBody.Part){
         return RetrofitInstance.playlistAPI.addPlaylist(token, name, image)
     }
 
-    suspend fun getPlaylist(token: String, playlist_id: String): PlaylistResponse {
-        return RetrofitInstance.playlistAPI.getPlaylist(token, playlist_id)
+    suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part){
+        return RetrofitInstance.playlistAPI.editPlaylist(token, playlist_id, name, image)
     }
 }
