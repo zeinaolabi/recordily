@@ -122,6 +122,15 @@ class PlaylistController extends Controller
         return response()->json('Successfully deleted', 200);
     }
 
+    public function searchPlaylists(string $input): JsonResponse
+    {
+        $id = Auth::id();
+
+        $search_playlist = Playlist::searchPlaylist($id, $input);
+
+        return response()->json($search_playlist);
+    }
+
     private function saveSongs($song_ids): array
     {
         $result = [];
