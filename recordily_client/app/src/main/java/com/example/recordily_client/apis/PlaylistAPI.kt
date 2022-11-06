@@ -22,4 +22,13 @@ interface PlaylistAPI {
         @Part("name") name: String,
         @Part file: MultipartBody.Part
     )
+
+    @Multipart
+    @POST("edit_playlist")
+    suspend fun editPlaylist(
+        @Header("Authorization") token: String,
+        @Part("playlist_id") playlist_id: String,
+        @Part("name") name: String,
+        @Part file: MultipartBody.Part
+    )
 }
