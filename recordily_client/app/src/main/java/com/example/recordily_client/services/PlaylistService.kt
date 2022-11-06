@@ -18,6 +18,10 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.getPlaylist(token, playlist_id)
     }
 
+    suspend fun deletePlaylist(token: String, playlist_id: String) {
+        return RetrofitInstance.playlistAPI.deletePlaylist(token, playlist_id)
+    }
+
     suspend fun addPlaylist(token: String, name: String, image: MultipartBody.Part){
         return RetrofitInstance.playlistAPI.addPlaylist(token, name, image)
     }
