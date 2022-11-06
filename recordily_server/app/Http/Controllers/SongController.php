@@ -150,6 +150,7 @@ class SongController extends Controller
         $id = Auth::id();
 
         $search_liked = Like::searchLikedSongs($id, $input);
+        $this->getArtistName($search_liked);
 
         return response()->json($search_liked);
     }
