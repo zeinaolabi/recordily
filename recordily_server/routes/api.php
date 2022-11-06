@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\SongController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,6 @@ Route::get('suggested_songs/{limit}',[SongController::class, "getSuggestedSongs"
 Route::get('search/{input}',[SongController::class, "searchForSong"]);
 Route::get('liked_songs',[SongController::class, "getLikedSongs"]);
 Route::get('like',[SongController::class, "likeSong"]);
-Route::get('get_playlists',[SongController::class, "getPlaylists"]);
-Route::get('get_playlist_songs/{playlist_id}',[SongController::class, "getPlaylistSongs"]);
+Route::get('get_playlists',[PlaylistController::class, "getPlaylists"]);
+Route::get('get_playlist_songs/{playlist_id}',[PlaylistController::class, "getPlaylistSongs"]);
+Route::post('add_playlist',[PlaylistController::class, "addPlaylist"]);
