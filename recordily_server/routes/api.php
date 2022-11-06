@@ -34,3 +34,6 @@ Route::get('get_playlist_songs/{playlist_id}',[PlaylistController::class, "getPl
 Route::post('add_playlist',[PlaylistController::class, "addPlaylist"]);
 Route::get('get_playlist/{playlist_id}',[PlaylistController::class, "getPlaylistInfo"]);
 Route::post('edit_playlist',[PlaylistController::class, "editPlaylist"]);
+Route::get('delete_playlist/{playlist_id}',[PlaylistController::class, "deletePlaylist"]);
+Route::get('search_liked_songs/{input}',[SongController::class, "searchLikedSongs"]);
+Route::get('search_playlists/{input}',[PlaylistController::class, "searchPlaylists"]);
