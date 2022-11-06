@@ -12,6 +12,9 @@ interface PlaylistAPI {
     @GET("get_playlist_songs/{playlist_id}")
     suspend fun getPlaylistSongs(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): List<SongResponse>
 
+    @GET("get_playlist/{playlist_id}")
+    suspend fun getPlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): PlaylistResponse
+
     @Multipart
     @POST("add_playlist")
     suspend fun addPlaylist(
