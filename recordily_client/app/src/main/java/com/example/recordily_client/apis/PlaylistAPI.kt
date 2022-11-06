@@ -18,6 +18,9 @@ interface PlaylistAPI {
     @GET("delete_playlist/{playlist_id}")
     suspend fun deletePlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String)
 
+    @GET("search_playlists/{input}")
+    suspend fun searchForPlaylist(@Header("Authorization") token: String, @Path("input") input: String): List<PlaylistResponse>
+
     @Multipart
     @POST("add_playlist")
     suspend fun addPlaylist(
