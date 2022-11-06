@@ -79,7 +79,7 @@ private fun PlaylistHeaderContent(navController: NavController, playlist: Playli
                 onClick = {
                     navigateTo(
                         navController = navController,
-                        destination = Screen.CreatePlaylistPage.route,
+                        destination = Screen.EditPlaylistPage.route + '/' + playlist.id,
                         popUpTo = Screen.PlaylistPage.route
                     )
                 }
