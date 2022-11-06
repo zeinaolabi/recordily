@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ fun PlaylistsPage(navController: NavController){
 
     playlistsViewModel.getPlaylists(token)
 
-    val playlists = playlistsViewModel.playlistResultLiveData.value
+    val playlists = playlistsViewModel.playlistResultLiveData.observeAsState()
 
     Scaffold(
         content = {
@@ -41,7 +42,7 @@ fun PlaylistsPage(navController: NavController){
                     .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                PlaylistsPageContent(navController, playlists)
+                PlaylistsPageContent(navController, playlists.value)
 
                 FloatingButton(
                     onClick={
@@ -96,7 +97,7 @@ private fun PlaylistsPageContent(navController: NavController, playlists: List<P
                     onPlaylistClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.PlaylistPage.route,
+                            destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
                             popUpTo = Screen.PlaylistsPage.route
                         )
                     }
