@@ -5,8 +5,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -101,7 +103,10 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+        modifier = Modifier
+            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .fillMaxHeight(.85f)
+            .verticalScroll(ScrollState(0))
     ){
 
         if (songsLiked != null) {

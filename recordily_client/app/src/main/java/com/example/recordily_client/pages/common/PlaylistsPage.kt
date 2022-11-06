@@ -1,7 +1,8 @@
 package com.example.recordily_client.pages.common
 
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -18,7 +19,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
-import com.example.recordily_client.view_models.LikesPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistsViewModel
 
@@ -34,40 +34,35 @@ fun PlaylistsPage(navController: NavController){
 
     val playlists = playlistsViewModel.playlistResultLiveData.observeAsState()
 
-    Scaffold(
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                PlaylistsPageContent(navController, playlists.value)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ){
+        Column(
+            modifier = Modifier
+                .padding(top = dimensionResource(id = R.dimen.padding_large))
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+            PlaylistsPageContent(navController, playlists.value, playlistsViewModel, token)
+        }
+
+        FloatingButton(
+            onClick={
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.CreatePlaylistPage.route,
+                    popUpTo = Screen.PlaylistPage.route
+                )
             }
-
-            FloatingButton(
-                onClick={
-                    navController.navigate(Screen.CreatePlaylistPage.route) {
-
-                        popUpTo(Screen.PlaylistPage.route) {
-                            saveState = true
-                        }
-
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            )
-        },
-        bottomBar = { BottomNavigationBar(navController) }
-    )
+        )
+    }
 }
 
 @Composable
-private fun PlaylistsPageContent(navController: NavController, playlists: List<PlaylistResponse>?){
-    val pageOptions = listOf(
-        TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
-    )
+private fun PlaylistsPageContent(navController: NavController, playlists: List<PlaylistResponse>?, playlistsViewModel: PlaylistsViewModel, token: String){
+    val searchResult = playlistsViewModel.searchForPlaylistResultLiveData.observeAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -77,19 +72,67 @@ private fun PlaylistsPageContent(navController: NavController, playlists: List<P
             navController = navController
         )
 
-        TopNavBar(
-            pageOptions = pageOptions,
-            currentPage = R.string.playlists,
-            navController = navController
-        )
+        if(searchInput.value == ""){
+            Playlists(navController, playlists)
+        }
+        else{
+            playlistsViewModel.searchForPlaylist(token, searchInput.value)
+            SearchResult(navController, searchResult.value)
+        }
+
     }
+}
+
+@Composable
+private fun Playlists(navController: NavController, playlists: List<PlaylistResponse>?){
+    val pageOptions = listOf(
+        TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
+    )
+
+    TopNavBar(
+        pageOptions = pageOptions,
+        currentPage = R.string.playlists,
+        navController = navController
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.padding_medium))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_large))
-            .verticalScroll(rememberScrollState())
+            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .fillMaxHeight(.85f)
+            .verticalScroll(ScrollState(0))
+    ){
+
+        if (playlists != null) {
+            for(playlist in playlists){
+                PlaylistCard(
+                    playlist = playlist,
+                    onPlaylistClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
+                            popUpTo = Screen.PlaylistsPage.route
+                        )
+                    }
+                )
+            }
+        }
+
+    }
+
+    Row(
+        modifier = Modifier.fillMaxHeight(),
+        verticalAlignment = Alignment.Bottom
+    ){
+        BottomNavigationBar(navController)
+    }
+}
+
+@Composable
+private fun SearchResult(navController: NavController, playlists: List<PlaylistResponse>?){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
         if (playlists != null) {
             for(playlist in playlists){
@@ -105,5 +148,9 @@ private fun PlaylistsPageContent(navController: NavController, playlists: List<P
                 )
             }
         }
+
     }
 }
+
+
+
