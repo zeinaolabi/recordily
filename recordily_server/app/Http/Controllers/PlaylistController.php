@@ -83,8 +83,7 @@ class PlaylistController extends Controller
 
         $playlist = Playlist::find(str_replace('"', '', $request->get('playlist_id')));
 
-        if ($request->file('picture'))
-        {
+        if ($request->file('picture')) {
             try {
                 $picture = $request->file('picture');
 
@@ -110,12 +109,11 @@ class PlaylistController extends Controller
     {
         $playlist = Playlist::find($playlist_id);
 
-        if (!$playlist)
-        {
+        if (!$playlist) {
             return response()->json('Playlist not found', 204);
         }
 
-        if (!$playlist->delete()){
+        if (!$playlist->delete()) {
             return response()->json('Unsuccessful delete attempt', 204);
         }
 
