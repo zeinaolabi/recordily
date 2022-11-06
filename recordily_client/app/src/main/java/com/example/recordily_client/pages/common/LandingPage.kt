@@ -75,7 +75,6 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
             navController = navController,
             data = getSuggestedResponse
         )
-        Log.i("test123", getSuggestedResponse?.count().toString())
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),

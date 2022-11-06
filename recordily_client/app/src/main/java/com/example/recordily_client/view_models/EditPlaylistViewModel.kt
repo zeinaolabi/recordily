@@ -30,4 +30,13 @@ class EditPlaylistViewModel: ViewModel() {
             false
         }
     }
+
+    suspend fun deletePlaylist(token: String, playlist_id: String): Boolean {
+        return try {
+            service.deletePlaylist(token, playlist_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }
