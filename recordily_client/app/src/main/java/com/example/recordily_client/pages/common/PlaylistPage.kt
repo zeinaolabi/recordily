@@ -21,6 +21,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PlaylistViewModel
 import com.example.recordily_client.view_models.PlaylistsViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -30,11 +31,13 @@ private val popUpVisibility = mutableStateOf(false)
 fun PlaylistPage(navController: NavController, playlist_id: String){
 
     val loginViewModel: LoginViewModel = viewModel()
-    val playlistsViewModel: PlaylistsViewModel = viewModel()
+    val playlistViewModel: PlaylistViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    playlistsViewModel.getPlaylistSongs(token, playlist_id)
+    playlistViewModel.getPlaylistSongs(token, playlist_id)
+    playlistViewModel.getPlaylist(token, playlist_id)
 
-    val songs = playlistsViewModel.playlistSongsResultLiveData.observeAsState()
+    val songs = playlistViewModel.playlistSongsResultLiveData.observeAsState()
+    val playlist = playlistViewModel.playlistResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -47,8 +50,9 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.playlists))
 
-            PlaylistHeader(navController)
-
+            if(playlist.value != null) {
+                PlaylistHeader(navController, playlist.value!!)
+            }
             HorizontalLine()
 
             PlaylistPageContent(navController, songs.value)

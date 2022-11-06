@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -16,50 +17,58 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.PlaylistResponse
 
 @Composable
-fun PlaylistHeader(navController: NavController){
+fun PlaylistHeader(navController: NavController, playlist: PlaylistResponse){
+    Log.i("image", playlist.picture)
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
             horizontal = dimensionResource(id = R.dimen.padding_medium)
         )
     ){
-
-//        rememberAsyncImagePainter("https://www.example.com/image.jpg")
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter =
+            if(playlist.picture != ""){
+                rememberAsyncImagePainter(playlist.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "playlist picture",
             modifier = Modifier
-                .size(110.dp)
+                .size(125.dp)
                 .clip(CircleShape)
                 .border(3.dp, MaterialTheme.colors.secondary, CircleShape),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds
         )
 
-        PlaylistHeaderContent(navController)
+        PlaylistHeaderContent(navController, playlist)
     }
 }
 
 @Composable
-private fun PlaylistHeaderContent(navController: NavController){
+private fun PlaylistHeaderContent(navController: NavController, playlist: PlaylistResponse){
     Column(
         modifier = Modifier
-            .height(110.dp)
+            .height(125.dp)
             .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ){
 
         Text(
-            text = "Playlist Title",
+            text = playlist.name,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
             color = MaterialTheme.colors.onPrimary
         )
+
 
         Row(
             horizontalArrangement = Arrangement.End,

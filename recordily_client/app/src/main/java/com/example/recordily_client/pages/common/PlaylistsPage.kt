@@ -88,6 +88,7 @@ private fun PlaylistsPageContent(navController: NavController, playlists: List<P
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_medium))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_large))
             .verticalScroll(rememberScrollState())
     ){
         if (playlists != null) {
