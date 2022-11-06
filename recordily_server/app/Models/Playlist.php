@@ -22,13 +22,15 @@ class Playlist extends Model
 
     public static function createPlaylist(int $id, string $name, string $picture): bool
     {
-        $isCreated = Playlist::create([
+        $isCreated = Playlist::create(
+            [
             'user_id' => $id,
             'name' => $name,
             'picture' => $picture
-        ]);
+            ]
+        );
 
-        if(!$isCreated){
+        if (!$isCreated) {
             return false;
         }
 

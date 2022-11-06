@@ -33,3 +33,4 @@ Route::get('get_playlists',[PlaylistController::class, "getPlaylists"]);
 Route::get('get_playlist_songs/{playlist_id}',[PlaylistController::class, "getPlaylistSongs"]);
 Route::post('add_playlist',[PlaylistController::class, "addPlaylist"]);
 Route::get('get_playlist/{playlist_id}',[PlaylistController::class, "getPlaylistInfo"]);
+Route::post('edit_playlist',[PlaylistController::class, "editPlaylist"]);

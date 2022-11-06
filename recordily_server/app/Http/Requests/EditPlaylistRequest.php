@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PlaylistRequest extends FormRequest
+class EditPlaylistRequest extends FormRequest
 {
     public function authorize()
     {
@@ -14,8 +14,8 @@ class PlaylistRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'picture' => 'required|file'
+            'name' => 'string',
+            'picture' => 'file'
         ];
     }
 }
