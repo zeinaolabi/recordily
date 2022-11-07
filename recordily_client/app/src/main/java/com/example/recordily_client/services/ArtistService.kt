@@ -3,6 +3,7 @@ package com.example.recordily_client.services
 import com.example.recordily_client.apis.RetrofitInstance
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.SongResponse
 
 class ArtistService {
     suspend fun followedArtists(token: String): List<ArtistResponse>{
@@ -31,5 +32,9 @@ class ArtistService {
 
     suspend fun getAlbums(token: String, artist_id: String, limit: Int): List<AlbumResponse>{
         return RetrofitInstance.artistAPI.getAlbums(token, artist_id, limit)
+    }
+
+    suspend fun getArtistTopSongs(token: String, artist_id: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.artistAPI.getArtistTopSongs(token, artist_id, limit)
     }
 }
