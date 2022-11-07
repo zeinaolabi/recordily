@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Play extends BaseModel
 {
@@ -21,6 +22,17 @@ class Play extends BaseModel
             ->limit($limit)
             ->pluck('song_id');
     }
+
+    public static function getUserTopSongs(int $id, int $limit): Collection
+    {
+        return self::select('song_id', DB::raw('count(*) as plays'))
+            ->groupBy('song_id')
+            ->where('user_id', $id)
+            ->orderBy('plays', 'desc')
+            ->limit($limit)
+            ->pluck('song_id');
+    }
+
 
     public function song()
     {
