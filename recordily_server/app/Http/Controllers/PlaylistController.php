@@ -132,8 +132,8 @@ class PlaylistController extends Controller
     private function saveSongs($song_ids): array
     {
         $result = [];
-        foreach ($song_ids as $song_id) {
-            $song = Song::find($song_id);
+        $songs = Song::whereIn('id', $song_ids)->get();
+        foreach ($songs as $song) {
             $song->artist_name = $song->user->name;
             unset($song->user);
             $result[] = $song;
