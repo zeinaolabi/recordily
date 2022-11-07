@@ -22,24 +22,24 @@ class AlbumController extends Controller
     {
         $songs = Song::where('album_id', $album_id)->get();
 
-        foreach ($songs as $song){
+        foreach ($songs as $song) {
             $song->picture = URL::to($song->picture);
         }
 
         return response()->json($songs);
     }
-//    public function createAlbum(): JsonResponse
-//    {
-//        $isCreated = Album::create([
-//            'user_id' => 8,
-//            'picture' => 'test',
-//            'name' => 'test'
-//        ]);
-//
-//        if(!$isCreated){
-//            return response()->json('not created');
-//        }
-//
-//        return response()->json(' created');
-//    }
+    //    public function createAlbum(): JsonResponse
+    //    {
+    //        $isCreated = Album::create([
+    //            'user_id' => 8,
+    //            'picture' => 'test',
+    //            'name' => 'test'
+    //        ]);
+    //
+    //        if(!$isCreated){
+    //            return response()->json('not created');
+    //        }
+    //
+    //        return response()->json(' created');
+    //    }
 }
