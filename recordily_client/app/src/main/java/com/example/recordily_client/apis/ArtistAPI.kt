@@ -1,7 +1,7 @@
 package com.example.recordily_client.apis
 
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.responses.SongResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -9,10 +9,10 @@ import retrofit2.http.Path
 
 interface ArtistAPI {
     @GET("auth/followed_artists")
-    suspend fun followedArtists(@Header("Authorization") token: String): List<ArtistResponse>
+    suspend fun followedArtists(@Header("Authorization") token: String): List<UserResponse>
 
     @GET("auth/get_artist_info/{artist_id}")
-    suspend fun getArtist(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): ArtistResponse
+    suspend fun getArtist(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): UserResponse
 
     @GET("auth/get_artist_followers/{artist_id}")
     suspend fun getArtistFollowers(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
@@ -27,7 +27,7 @@ interface ArtistAPI {
     suspend fun unfollow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 
     @GET("auth/search_followed_artist/{input}")
-    suspend fun searchFollowedArtists(@Header("Authorization") token: String, @Path("input") input: String): List<ArtistResponse>
+    suspend fun searchFollowedArtists(@Header("Authorization") token: String, @Path("input") input: String): List<UserResponse>
 
     @GET("auth/get_artist_albums/{artist_id}/{limit}")
     suspend fun getAlbums(
