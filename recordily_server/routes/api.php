@@ -49,3 +49,4 @@ Route::get('get_artist_albums/{artist_id}/{limit}',[ArtistController::class, "ge
 Route::get('get_album_info/{album_id}',[AlbumController::class, "getAlbum"]);
 Route::get('get_album_songs/{album_id}',[AlbumController::class, "getAlbumSongs"]);
 Route::get('get_artist_top_songs/{artist_id}/{limit}',[ArtistController::class, "getArtistTopSongs"]);
+Route::get('get_artist_followers/{artist_id}',[ArtistController::class, "getArtistFollowers"]);
