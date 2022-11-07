@@ -76,6 +76,11 @@ class ArtistController extends Controller
         return response()->json($artist);
     }
 
+    public function getArtistFollowers(int $artist_id): int
+    {
+        return Follow::where('followed_id', $artist_id)->count();
+    }
+
     public function getArtistAlbums(int $artist_id, int $limit): JsonResponse
     {
         $albums = Album::getAlbums($artist_id, $limit);
