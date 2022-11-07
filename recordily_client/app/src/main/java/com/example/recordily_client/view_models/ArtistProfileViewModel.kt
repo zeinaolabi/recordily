@@ -34,6 +34,10 @@ class ArtistProfileViewModel: ViewModel() {
     val artistTopSongsResultLiveData : LiveData<List<SongResponse>>
         get() = artistTopSongsResult
 
+    private val artistSongsResult = MutableLiveData<List<SongResponse>>()
+    val artistSongsResultLiveData : LiveData<List<SongResponse>>
+        get() = artistSongsResult
+
     fun getArtist(token: String, artist_id: String){
         viewModelScope.launch {
             artistInfoResult.postValue(service.getArtist(token, artist_id))
@@ -61,6 +65,12 @@ class ArtistProfileViewModel: ViewModel() {
     fun getArtistTopSongs(token: String, artist_id: String, limit: Int){
         viewModelScope.launch {
             artistTopSongsResult.postValue(service.getArtistTopSongs(token, artist_id, limit))
+        }
+    }
+
+    fun getArtistSongs(token: String, artist_id: String, limit: Int){
+        viewModelScope.launch {
+            artistSongsResult.postValue(service.getArtistSongs(token, artist_id, limit))
         }
     }
 

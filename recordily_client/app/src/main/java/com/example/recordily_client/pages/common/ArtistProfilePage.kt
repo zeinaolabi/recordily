@@ -40,12 +40,14 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     artistProfileViewModel.isFollowed(token, artist_id)
     artistProfileViewModel.getAlbums(token, artist_id, limit)
     artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
+    artistProfileViewModel.getArtistSongs(token, artist_id, limit)
 
     val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
     val isFollowed = artistProfileViewModel.isFollowedResultLiveData.observeAsState()
     val albums = artistProfileViewModel.albumsResultLiveData.observeAsState()
     val topSongs = artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
+    val songs = artistProfileViewModel.artistSongsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -64,8 +66,8 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            if(albums.value != null && topSongs.value != null){
-                ArtistProfileContent(navController, albums.value!!, topSongs.value!!)
+            if(albums.value != null && topSongs.value != null && songs.value != null){
+                ArtistProfileContent(navController, albums.value!!, topSongs.value!!, songs.value!!)
             }
         }
 
@@ -83,7 +85,12 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 }
 
 @Composable
-private fun ArtistProfileContent(navController: NavController, albums: List<AlbumResponse>, topSongs: List<SongResponse>){
+private fun ArtistProfileContent(
+    navController: NavController,
+    albums: List<AlbumResponse>,
+    topSongs: List<SongResponse>,
+    songs: List<SongResponse>
+){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -128,9 +135,7 @@ private fun ArtistProfileContent(navController: NavController, albums: List<Albu
 
         SongsCards(
             title = stringResource(id = R.string.songs),
-            data = listOf(SongResponse(1,"",1,"","","",1,
-                1,"","",1,"")
-            ),
+            songs = songs,
             destination = {
                 navigateTo(
                     navController = navController,

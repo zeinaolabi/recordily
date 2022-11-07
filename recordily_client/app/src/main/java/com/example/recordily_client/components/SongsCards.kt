@@ -23,7 +23,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.SongResponse
 
 @Composable
-fun SongsCards(title: String, data: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
+fun SongsCards(title: String, songs: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -35,12 +35,12 @@ fun SongsCards(title: String, data: List<SongResponse>?, destination: ()->(Unit)
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(data, destination, onSongClick ,onMoreClick)
+        CardsContent(songs, destination, onSongClick ,onMoreClick)
     }
 }
 
 @Composable
-private fun CardsContent(data: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,10 +48,10 @@ private fun CardsContent(data: List<SongResponse>?, destination: ()->(Unit), onS
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if (data != null) {
-            for(song in data){
+        if (songs != null) {
+            for(song in songs){
                 SongCard(
-                    data = song,
+                    song = song,
                     onSongClick = onSongClick,
                     onMoreClick = {onMoreClick()}
                 )
@@ -69,7 +69,7 @@ private fun CardsContent(data: List<SongResponse>?, destination: ()->(Unit), onS
 }
 
 @Composable
-fun SongCard(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+fun SongCard(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -80,18 +80,18 @@ fun SongCard(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Un
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent(data, onSongClick, onMoreClick)
+        SongCardContent(song, onSongClick, onMoreClick)
     }
 }
 
 @Composable
-private fun SongCardContent(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        SongDetails(data, onSongClick)
+        SongDetails(song, onSongClick)
 
         Column(
             modifier = Modifier
@@ -112,7 +112,7 @@ private fun SongCardContent(data: SongResponse, onSongClick: ()->(Unit), onMoreC
 }
 
 @Composable
-private fun SongDetails(data: SongResponse, onSongClick: ()->(Unit)){
+private fun SongDetails(song: SongResponse, onSongClick: ()->(Unit)){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -138,14 +138,14 @@ private fun SongDetails(data: SongResponse, onSongClick: ()->(Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = data.name,
+                text = song.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary
             )
 
             Text(
-                text = data.artist_name,
+                text = song.artist_name,
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 color = MaterialTheme.colors.onPrimary
