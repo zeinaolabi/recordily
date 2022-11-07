@@ -5,13 +5,18 @@ import com.example.recordily_client.responses.LoginResponse
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.requests.RegistrationRequest
 import com.example.recordily_client.responses.RegistrationResponse
+import com.example.recordily_client.responses.UserResponse
 
 class UserService{
     suspend fun login(loginRequest: LoginRequest): LoginResponse {
-        return RetrofitInstance.userAPI.login(loginRequest)
+        return RetrofitInstance.authAPI.login(loginRequest)
     }
 
     suspend fun register(registrationRequest: RegistrationRequest): RegistrationResponse {
-        return RetrofitInstance.userAPI.register(registrationRequest)
+        return RetrofitInstance.authAPI.register(registrationRequest)
+    }
+
+    suspend fun getUserInfo(token: String): UserResponse {
+        return RetrofitInstance.userAPI.getUserInfo(token)
     }
 }
