@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Play;
+use App\Models\Song;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -53,13 +54,35 @@ class UserController extends Controller
     public function getUserTopSongs(int $limit)
     {
         $id = Auth::id();
-
         $songs = Play::getUserTopSongs($id, $limit);
 
-        $this->getArtistName($songs);
-        $this->getPicture($songs);
+        $this->saveSongs($songs);
 
         return response()->json($songs);
+    }
+
+    public function getRecentlyPlayed(int $limit): JsonResponse
+    {
+        $id = Auth::id();
+        $topSongs = Play::getRecentlyPlayed($id, $limit);
+
+        $result = $this->saveSongs($topSongs);
+
+        return response()->json($result);
+    }
+
+    private function saveSongs($song_ids): array
+    {
+        $result = [];
+        $songs = Song::whereIn('id', $song_ids)->get();
+        foreach ($songs as $song) {
+            $song->artist_name = $song->user->name;
+            $song->picture = URL::to($song->picture);
+            unset($song->user);
+            $result[] = $song;
+        }
+
+        return $result;
     }
 
     private function getPicture(Collection $array)

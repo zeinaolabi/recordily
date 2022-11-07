@@ -101,15 +101,6 @@ class SongController extends Controller
         return response()->json($result);
     }
 
-    public function getRecentlyPlayed(int $limit): JsonResponse
-    {
-        $topSongs = Play::getRecentlyPlayed($limit);
-
-        $result = $this->saveSongs($topSongs);
-
-        return response()->json($result);
-    }
-
     public function getSuggestedSongs(int $limit): JsonResponse
     {
         $suggestedSongs = Song::all()->random($limit);

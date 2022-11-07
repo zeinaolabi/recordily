@@ -15,9 +15,10 @@ class Play extends BaseModel
         'song_id'
     ];
 
-    public static function getRecentlyPlayed(int $limit): Collection
+    public static function getRecentlyPlayed(int $id, int $limit): Collection
     {
         return self::select('song_id')
+            ->where('user_id', $id)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->pluck('song_id');
