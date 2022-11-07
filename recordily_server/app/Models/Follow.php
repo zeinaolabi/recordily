@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 
@@ -44,4 +45,14 @@ class Follow extends Model
 
         return true;
     }
+
+    public static function followArtist(int $id, int $artist_id): self
+    {
+        return self::create([
+            'follower_id' => $id,
+            'followed_id' => $artist_id
+        ]);
+
+    }
+
 }
