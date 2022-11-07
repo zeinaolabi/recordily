@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.ArtistResponse
 import com.example.recordily_client.services.ArtistService
 import kotlinx.coroutines.launch
@@ -24,6 +25,10 @@ class ArtistProfileViewModel: ViewModel() {
     val isFollowedResultLiveData : LiveData<Boolean>
         get() = isFollowedResult
 
+    private val albumsResult = MutableLiveData<List<AlbumResponse>>()
+    val albumsResultLiveData : LiveData<List<AlbumResponse>>
+        get() = albumsResult
+
     fun getArtist(token: String, artist_id: String){
         viewModelScope.launch {
             artistInfoResult.postValue(service.getArtist(token, artist_id))
@@ -39,6 +44,12 @@ class ArtistProfileViewModel: ViewModel() {
     fun isFollowed(token: String, artist_id: String){
         viewModelScope.launch {
             isFollowedResult.postValue(service.isFollowed(token, artist_id))
+        }
+    }
+
+    fun getAlbums(token: String, artist_id: String, limit: Int){
+        viewModelScope.launch {
+            albumsResult.postValue(service.getAlbums(token, artist_id, limit))
         }
     }
 

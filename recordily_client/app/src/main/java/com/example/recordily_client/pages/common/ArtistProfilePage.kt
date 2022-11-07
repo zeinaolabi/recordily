@@ -19,6 +19,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.ArtistProfileViewModel
 import com.example.recordily_client.view_models.LoginViewModel
@@ -28,6 +29,7 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun ArtistProfilePage(navController: NavController, artist_id: String){
+    val limit = 3
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
@@ -35,10 +37,12 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     artistProfileViewModel.getArtistFollowers(token, artist_id)
     artistProfileViewModel.getArtist(token, artist_id)
     artistProfileViewModel.isFollowed(token, artist_id)
+    artistProfileViewModel.getAlbums(token, artist_id, limit)
 
     val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
     val isFollowed = artistProfileViewModel.isFollowedResultLiveData.observeAsState()
+    val albums = artistProfileViewModel.albumsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -57,8 +61,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            ArtistProfileContent(navController)
-
+            albums.value?.let { ArtistProfileContent(navController, it) }
         }
 
         AnimatedVisibility(
@@ -71,12 +74,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
                 isPlaylist = false
             )
         }
-
     }
 }
 
 @Composable
-private fun ArtistProfileContent(navController: NavController){
+private fun ArtistProfileContent(navController: NavController, albums: List<AlbumResponse>){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -96,6 +98,7 @@ private fun ArtistProfileContent(navController: NavController){
 
         AlbumsCards(
             title = stringResource(id = R.string.albums),
+            albums = albums,
             buttonDestination = {
                 navigateTo(
                     navController = navController,

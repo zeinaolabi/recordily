@@ -18,6 +18,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -67,7 +68,9 @@ private fun AlbumsPageContent(navController: NavController){
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
         for(i in 1..3){
-            AlbumCard(onAlbumClick = {
+            AlbumCard(
+                album = AlbumResponse("", 0, "", "", "", 0, ""),
+                onAlbumClick = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.AlbumPage.route,
