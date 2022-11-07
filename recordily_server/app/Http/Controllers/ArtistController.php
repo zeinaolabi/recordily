@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Follow;
+use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -72,5 +74,19 @@ class ArtistController extends Controller
         }
 
         return response()->json($artist);
+    }
+
+    public function getArtistAlbums(int $artist_id, int $limit): JsonResponse
+    {
+        $albums = Album::getAlbums($artist_id, $limit);
+
+        return response()->json($albums);
+    }
+
+    public function getArtistSongs(int $artist_id, int $limit): JsonResponse
+    {
+        $songs = Song::getArtistSongs($artist_id, $limit);
+
+        return response()->json($songs);
     }
 }
