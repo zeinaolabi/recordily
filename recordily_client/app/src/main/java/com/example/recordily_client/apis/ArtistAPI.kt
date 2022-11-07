@@ -13,4 +13,7 @@ interface ArtistAPI {
     @GET("get_artist_info/{artist_id}")
     suspend fun getArtist(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): ArtistResponse
 
+    @GET("get_artist_followers/{artist_id}")
+    suspend fun getArtistFollowers(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
+
 }
