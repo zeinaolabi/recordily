@@ -60,15 +60,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            if(artistInfo.value != null && artistFollowers.value != null && isFollowed.value != null){
-                ArtistPageHeader(artistInfo.value!!, artistFollowers.value!!, isFollowed.value!!, token)
-            }
+            ArtistPageHeader(artistInfo.value, artistFollowers.value, isFollowed.value, token)
 
             HorizontalLine()
 
-            if(albums.value != null && topSongs.value != null && songs.value != null){
-                ArtistProfileContent(navController, albums.value!!, topSongs.value!!, songs.value!!)
-            }
+            ArtistProfileContent(navController, albums.value, topSongs.value, songs.value, artist_id)
         }
 
         AnimatedVisibility(
@@ -87,9 +83,10 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 @Composable
 private fun ArtistProfileContent(
     navController: NavController,
-    albums: List<AlbumResponse>,
-    topSongs: List<SongResponse>,
-    songs: List<SongResponse>
+    albums: List<AlbumResponse>?,
+    topSongs: List<SongResponse>?,
+    songs: List<SongResponse>?,
+    artist_id: String
 ){
     Column(
         modifier = Modifier
@@ -108,24 +105,26 @@ private fun ArtistProfileContent(
             }
         )
 
-        AlbumsCards(
-            title = stringResource(id = R.string.albums),
-            albums = albums,
-            buttonDestination = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumsPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            },
-            onAlbumClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            }
-        )
+        if (albums != null) {
+            AlbumsCards(
+                title = stringResource(id = R.string.albums),
+                albums = albums,
+                buttonDestination = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.AlbumsPage.route + '/' + artist_id,
+                        popUpTo = Screen.ArtistProfilePage.route
+                    )
+                },
+                onAlbumClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.AlbumPage.route,
+                        popUpTo = Screen.ArtistProfilePage.route
+                    )
+                }
+            )
+        }
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),

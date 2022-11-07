@@ -113,7 +113,7 @@ private fun SearchPageContent(navController: NavController, searchPageViewModel:
 private fun SuggestedContent(navController: NavController, data: List<SongResponse>?){
     SongsCards(
         title = stringResource(id = R.string.suggested),
-        data = data,
+        songs = data,
         destination = {
             navigateTo(
                 navController = navController,
@@ -153,7 +153,7 @@ private fun SearchResultContent(navController: NavController, data: SearchRespon
 
             for(song in data.songs){
                 SongCard(
-                    data = song,
+                    song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,

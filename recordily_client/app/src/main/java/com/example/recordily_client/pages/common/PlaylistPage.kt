@@ -83,7 +83,7 @@ private fun PlaylistPageContent(navController: NavController, songs: List<SongRe
         if (songs != null) {
             for(song in songs){
                 SongCard(
-                    data = song,
+                    song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,

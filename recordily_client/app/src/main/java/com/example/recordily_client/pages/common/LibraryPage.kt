@@ -113,7 +113,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
             for(song in songsLiked){
                 Log.i("song", song.toString())
                 SongCard(
-                    data = song,
+                    song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,
@@ -148,7 +148,7 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
             for(song in songsLiked){
                 Log.i("song", song.toString())
                 SongCard(
-                    data = song,
+                    song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,

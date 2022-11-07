@@ -43,7 +43,7 @@ fun ArtistsPage(navController: NavController) {
                     .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                followedArtistsResult.value?.let { it -> ArtistsPageContent(navController, it) }
+                ArtistsPageContent(navController, followedArtistsResult.value)
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
@@ -51,7 +51,7 @@ fun ArtistsPage(navController: NavController) {
 }
 
 @Composable
-private fun ArtistsPageContent(navController: NavController, artists: List<ArtistResponse>){
+private fun ArtistsPageContent(navController: NavController, artists: List<ArtistResponse>?){
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
@@ -77,17 +77,19 @@ private fun ArtistsPageContent(navController: NavController, artists: List<Artis
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
     ){
-        for(artist in artists){
-            ArtistCard(
-                artist = artist,
-                onClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
-                        popUpTo = Screen.ArtistsPage.route
-                    )
-                }
-            )
+        if (artists != null) {
+            for(artist in artists){
+                ArtistCard(
+                    artist = artist,
+                    onClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
+                            popUpTo = Screen.ArtistsPage.route
+                        )
+                    }
+                )
+            }
         }
     }
 }

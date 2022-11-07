@@ -24,7 +24,7 @@ import com.example.recordily_client.view_models.ArtistProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Boolean, token: String){
+fun ArtistPageHeader(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -33,8 +33,8 @@ fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowe
     ){
         Image(
             painter =
-            if(artistInfo.profile_picture != ""){
-                rememberAsyncImagePainter(artistInfo.profile_picture)
+            if(artistInfo?.profile_picture != ""){
+                rememberAsyncImagePainter(artistInfo?.profile_picture)
             }
             else{
                 painterResource(id = R.drawable.profile_picture)
@@ -52,7 +52,7 @@ fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowe
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Boolean, token: String){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
 
     val coroutinesScope = rememberCoroutineScope()
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
@@ -65,13 +65,15 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
     ){
 
         Column{
-            Text(
-                text = artistInfo.name,
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
-                color = MaterialTheme.colors.onPrimary
-            )
+            artistInfo?.name?.let {
+                Text(
+                    text = it,
+                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
 
             Text(
                 text = "$artistFollowers Followers",
@@ -86,17 +88,17 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
             modifier = Modifier.fillMaxWidth()
         ){
             MediumRoundButton(
-                text = if(isFollowed) "Unfollow" else "Follow",
+                text = if(isFollowed == true) "Unfollow" else "Follow",
                 onClick =
                 {
                     coroutinesScope.launch {
-                        if(isFollowed){
-                            artistProfileViewModel.unfollow(token, artistInfo.id.toString())
+                        if(isFollowed == true){
+                            artistProfileViewModel.unfollow(token, artistInfo?.id.toString())
                         }
                         else{
-                            artistProfileViewModel.follow(token, artistInfo.id.toString())
+                            artistProfileViewModel.follow(token, artistInfo?.id.toString())
                         }
-                        artistProfileViewModel.isFollowed(token, artistInfo.id.toString())
+                        artistProfileViewModel.isFollowed(token, artistInfo?.id.toString())
                     }
                 }
             )
