@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -42,3 +43,9 @@ Route::get('followed_artists',[ArtistController::class, "getFollowedArtists"]);
 Route::get('follow/{artist_id}',[ArtistController::class, "followArtist"]);
 Route::get('is_followed/{artist_id}',[ArtistController::class, "isFollowed"]);
 Route::get('unfollow/{artist_id}',[ArtistController::class, "unfollowArtist"]);
+Route::get('get_artist_info/{artist_id}',[ArtistController::class, "getArtistInfo"]);
+Route::get('create_album',[AlbumController::class, "createAlbum"]);
+Route::get('get_artist_albums/{artist_id}/{limit}',[ArtistController::class, "getArtistAlbums"]);
+Route::get('get_album_info/{album_id}',[AlbumController::class, "getAlbum"]);
+Route::get('get_album_songs/{album_id}',[AlbumController::class, "getAlbumSongs"]);
+Route::get('get_artist_top_songs/{artist_id}/{limit}',[ArtistController::class, "getArtistTopSongs"]);
