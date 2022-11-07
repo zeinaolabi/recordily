@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Play;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 
 class UserController extends Controller
 {
-   public function getUserInfo(): JsonResponse
-   {
-       $id = Auth::id();
+    public function getUserInfo(): JsonResponse
+    {
+        $id = Auth::id();
 
-       $user = User::find($id);
+        $user = User::find($id);
 
-       return response()->json($user);
-   }
+        return response()->json($user);
+    }
 
     public function editProfile(Request $request): JsonResponse
     {
@@ -46,5 +48,32 @@ class UserController extends Controller
         }
 
         return response()->json('successfully edited', 201);
+    }
+
+    public function getUserTopSongs(int $limit)
+    {
+        $id = Auth::id();
+
+        $songs = Play::getUserTopSongs($id, $limit);
+
+        $this->getArtistName($songs);
+        $this->getPicture($songs);
+
+        return response()->json($songs);
+    }
+
+    private function getPicture(Collection $array)
+    {
+        foreach ($array as $data) {
+            $data->picture = URL::to($data->picture);
+        }
+    }
+
+    private function getArtistName($array)
+    {
+        foreach ($array as $data) {
+            $data->artist_name = $data->user->name;
+            unset($data->user);
+        }
     }
 }
