@@ -24,7 +24,7 @@ import com.example.recordily_client.view_models.ArtistProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int, token: String){
+fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Boolean, token: String){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -52,7 +52,7 @@ fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowe
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int, token: String){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Boolean, token: String){
 
     val coroutinesScope = rememberCoroutineScope()
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
@@ -86,15 +86,17 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
             modifier = Modifier.fillMaxWidth()
         ){
             MediumRoundButton(
-                text = if(isFollowed == 1) "Unfollow" else "Follow",
+                text = if(isFollowed) "Unfollow" else "Follow",
                 onClick =
                 {
                     coroutinesScope.launch {
-//                        if(isFollowed == 1){
-//
-//                        }
-                        artistProfileViewModel.follow(token, artistInfo.id.toString())
-
+                        if(isFollowed){
+                            artistProfileViewModel.unfollow(token, artistInfo.id.toString())
+                        }
+                        else{
+                            artistProfileViewModel.follow(token, artistInfo.id.toString())
+                        }
+                        artistProfileViewModel.isFollowed(token, artistInfo.id.toString())
                     }
                 }
             )

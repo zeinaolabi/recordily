@@ -20,8 +20,8 @@ class ArtistProfileViewModel: ViewModel() {
     val artistFollowersResultLiveData : LiveData<Int>
         get() = artistFollowersResult
 
-    private val isFollowedResult = MutableLiveData<Int>()
-    val isFollowedResultLiveData : LiveData<Int>
+    private val isFollowedResult = MutableLiveData<Boolean>()
+    val isFollowedResultLiveData : LiveData<Boolean>
         get() = isFollowedResult
 
     fun getArtist(token: String, artist_id: String){
@@ -45,6 +45,15 @@ class ArtistProfileViewModel: ViewModel() {
     suspend fun follow(token: String, artist_id: String): Boolean {
         return try {
             service.follow(token, artist_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
+
+    suspend fun unfollow(token: String, artist_id: String): Boolean {
+        return try {
+            service.unfollow(token, artist_id)
             true
         } catch (exception: Throwable) {
             false
