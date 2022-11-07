@@ -115,7 +115,7 @@ private fun UploadSongContent(){
                 MultipartBody.Part.createFormData("file", songName.value, RequestBody.create("audio/*".toMediaTypeOrNull(), file))
             )
 
-//            file.delete()
+            file.delete()
         }
     })
 }
@@ -222,26 +222,24 @@ private fun PickAudioRow(){
 }
 
 fun splitFile(file: File): ArrayList<File> {
-    var partCounter = 1 //I like to name parts from 001, 002, 003, ...
-    //you can change it to 0 if you want 000, 001, ...
+    var partCounter = 1
 
-    val sizeOfFiles = 1024 * 5 // 1MB
+    val sizeOfFiles = 1024 * 100
     val buffer = ByteArray(sizeOfFiles)
     val fileName: String = file.getName()
 
     val fileList = ArrayList<File>()
-    //try-with-resources to ensure closing stream
     FileInputStream(file).use { fis ->
         BufferedInputStream(fis).use { bis ->
 
             var bytesAmount = 0
             while (bis.read(buffer).also { it -> bytesAmount = it } > 0) {
-                //write each chunk of data into separate file with different number in name
+
+                //Write each chunk of data into separate file with different number in name
                 val filePartName = String.format("%s.%03d", fileName, partCounter++)
                 val newFile = File(file.parent, filePartName)
                 newFile.createNewFile()
                 FileOutputStream(newFile).use { out -> out.write(buffer, 0, bytesAmount) }
-
 
                 fileList.add(newFile)
             }
@@ -250,26 +248,3 @@ fun splitFile(file: File): ArrayList<File> {
 
     return fileList
 }
-
-//fun splitFile(file: File?): List<ByteArrayOutputStream>{
-//    val dataList: MutableList<ByteArrayOutputStream> = mutableListOf()
-//    try {
-//        val sizeOfFiles = 100000
-//        val buffer = ByteArray(sizeOfFiles)
-//        FileInputStream(file).use { fileInputStream ->
-//            BufferedInputStream(fileInputStream).use { bufferInputStream ->
-//                var bytesAmount: Int
-//                while (bufferInputStream.read(buffer).also { bytesAmount = it } > 0) {
-//                    ByteArrayOutputStream().use { out ->
-//                        out.write(buffer, 0, bytesAmount)
-//                        out.flush()
-//                        dataList.add(out)
-//                    }
-//                }
-//            }
-//        }
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//    }
-//    return dataList
-//}

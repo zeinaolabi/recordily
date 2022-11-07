@@ -17,9 +17,9 @@ class PlaylistsViewModel: ViewModel() {
     val playlistResultLiveData : LiveData<List<PlaylistResponse>>
         get() = playlistResult
 
-    private val playlistSongsResult = MutableLiveData<List<SongResponse>>()
-    val playlistSongsResultLiveData : LiveData<List<SongResponse>>
-        get() = playlistSongsResult
+    private val searchForPlaylistResult = MutableLiveData<List<PlaylistResponse>>()
+    val searchForPlaylistResultLiveData : LiveData<List<PlaylistResponse>>
+        get() = searchForPlaylistResult
 
     fun getPlaylists(token: String) {
         viewModelScope.launch {
@@ -27,9 +27,9 @@ class PlaylistsViewModel: ViewModel() {
         }
     }
 
-    fun getPlaylistSongs(token: String, playlist_id: String){
+    fun searchForPlaylist(token: String, input: String) {
         viewModelScope.launch {
-            playlistSongsResult.postValue(playlistService.getPlaylistSongs(token, playlist_id))
+            searchForPlaylistResult.postValue(playlistService.searchForPlaylist(token, input))
         }
     }
 

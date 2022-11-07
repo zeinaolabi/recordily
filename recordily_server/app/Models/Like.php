@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Like extends BaseModel
 {
@@ -17,5 +18,18 @@ class Like extends BaseModel
     public function song()
     {
         return $this->belongsTo(Song::class, 'song_id');
+    }
+
+    public static function searchLikedSongs(int $id, string $input): Collection
+    {
+        return Song::whereIn(
+            'id',
+            function ($query) use ($id) {
+                $query
+                    ->select('song_id')
+                    ->from(with(new Like())->getTable())
+                    ->where('user_id', $id);
+            }
+        )->where('name', 'like', '%' . $input . '%')->get();
     }
 }

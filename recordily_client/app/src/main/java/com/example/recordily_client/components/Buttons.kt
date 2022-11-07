@@ -151,6 +151,7 @@ fun FloatingButton(onClick: () -> (Unit)){
                     horizontal = dimensionResource(id = R.dimen.padding_medium),
                     vertical = dimensionResource(id = R.dimen.padding_very_large)
                 )
+                .padding(bottom = dimensionResource(id = R.dimen.padding_large))
                 .align(Alignment.BottomEnd),
             backgroundColor = MaterialTheme.colors.primary,
             onClick = {onClick()}

@@ -89,7 +89,7 @@ private fun SearchResult(navController: NavController){
         Column(modifier = Modifier.verticalScroll(ScrollState(0))){
             for(i in 1..3){
                 SongCard(
-                    data = SongResponse(1,"",1,"","","",1,
+                    song = SongResponse(1,"",1,"","","",1,
                     1,"","",1,""),
                     onMoreClick = {
                         popUpVisibility.value = true

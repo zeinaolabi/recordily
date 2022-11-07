@@ -34,7 +34,10 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.padding_medium),
+                vertical = dimensionResource(id = R.dimen.padding_medium)
+            )
     ){
         TextField(
             modifier = Modifier

@@ -15,11 +15,19 @@ class LikesPageViewModel: ViewModel(){
     val likedSongsResultLiveData : LiveData<List<SongResponse>>
         get() = likedSongsResult
 
+    private val searchResult = MutableLiveData<List<SongResponse>>()
+    val searchResultResultLiveData : LiveData<List<SongResponse>>
+        get() = searchResult
+
     fun getLikedSongs(token:String){
         viewModelScope.launch {
             likedSongsResult.postValue(songService.getLikedSongs(token))
         }
     }
 
-
+    fun searchLikedSongs(token:String, input: String){
+        viewModelScope.launch {
+            searchResult.postValue(songService.searchLikedSongs(token, input))
+        }
+    }
 }

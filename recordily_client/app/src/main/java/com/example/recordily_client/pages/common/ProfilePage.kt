@@ -89,7 +89,7 @@ private fun ProfileContentColumn(navController: NavController){
     ){
         SongsCards(
             title = stringResource(id = R.string.top_songs),
-            data = listOf(SongResponse(1,"",1,"","","",1,
+            songs = listOf(SongResponse(1,"",1,"","","",1,
                 1,"","",1,"")
             ),
             destination = {
@@ -113,7 +113,7 @@ private fun ProfileContentColumn(navController: NavController){
 
         SongsCards(
             title = stringResource(id = R.string.recently_played),
-            data = listOf(
+            songs = listOf(
                 SongResponse(1,"",1,"","","",1,
                 1,"","",1,"")
             ),

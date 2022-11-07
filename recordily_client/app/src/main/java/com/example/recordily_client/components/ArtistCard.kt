@@ -19,15 +19,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.ArtistResponse
 
 @Composable
-fun ArtistCard(data: ArtistResponse, onClick: () -> (Unit)){
+fun ArtistCard(artist: ArtistResponse, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
-            .height(60.dp)
+            .height(65.dp)
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
@@ -38,25 +39,30 @@ fun ArtistCard(data: ArtistResponse, onClick: () -> (Unit)){
             ){ onClick() },
         verticalAlignment = Alignment.CenterVertically
     ){
-        ArtistCardContent(data)
+        ArtistCardContent(artist)
     }
 }
 
 @Composable
-private fun ArtistCardContent(data: ArtistResponse){
+private fun ArtistCardContent(artist: ArtistResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter = if(artist.profile_picture != ""){
+                rememberAsyncImagePainter(artist.profile_picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "logo",
             modifier = Modifier
-                .size(50.dp)
+                .size(55.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
 
         Text(
-            text = data.name,
+            text = artist.name,
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))

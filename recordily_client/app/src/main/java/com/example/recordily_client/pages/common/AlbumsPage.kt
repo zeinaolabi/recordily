@@ -8,22 +8,36 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.view_models.AlbumsViewModel
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PlaylistViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun AlbumsPage(navController: NavController){
+fun AlbumsPage(navController: NavController, artist_id: String){
+    val limit = 40
+    val loginViewModel: LoginViewModel = viewModel()
+    val albumViewModel: AlbumsViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    albumViewModel.getAlbums(token, artist_id, limit)
+
+    val albums = albumViewModel.albumsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +56,7 @@ fun AlbumsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                AlbumsPageContent(navController)
+                AlbumsPageContent(navController, albums.value)
             }
         }
 
@@ -60,20 +74,19 @@ fun AlbumsPage(navController: NavController){
 }
 
 @Composable
-private fun AlbumsPageContent(navController: NavController){
+private fun AlbumsPageContent(navController: NavController, albums: List<AlbumResponse>?){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(i in 1..3){
-            AlbumCard(onAlbumClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
+        if (albums != null) {
+            for(album in albums){
+                AlbumCard(
+                    album = album,
+                    navController = navController
                 )
-            })
+            }
         }
 
     }

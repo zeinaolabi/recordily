@@ -72,7 +72,7 @@ private fun SuggestedSongsContent(navController: NavController){
     ){
         for(i in 1..3){
             SongCard(
-                data =
+                song =
                     SongResponse(1,"",1,"","","",1,
                     1,"","",1,"")
                 ,

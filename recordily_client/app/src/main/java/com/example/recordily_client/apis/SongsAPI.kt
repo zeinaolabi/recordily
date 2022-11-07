@@ -25,6 +25,9 @@ interface SongsAPI {
     @GET("liked_songs")
     suspend fun getLikedSongs(@Header("Authorization") token: String): List<SongResponse>
 
+    @GET("search_liked_songs/{input}")
+    suspend fun searchLikedSongs(@Header("Authorization") token: String, @Path("input") input: String): List<SongResponse>
+
     @Multipart
     @POST("upload_song")
     suspend fun uploadSong(

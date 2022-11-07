@@ -18,10 +18,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
-fun AlbumsCards(title: String, buttonDestination: ()->(Unit), onAlbumClick: ()->(Unit)){
+fun AlbumsCards(title: String, albums: List<AlbumResponse>, navController: NavController, buttonDestination: ()->(Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -33,12 +37,12 @@ fun AlbumsCards(title: String, buttonDestination: ()->(Unit), onAlbumClick: ()->
             color = MaterialTheme.colors.onPrimary
         )
 
-        AlbumsCardContent(buttonDestination, onAlbumClick)
+        AlbumsCardContent(albums, navController,  buttonDestination)
     }
 }
 
 @Composable
-private fun AlbumsCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit)){
+private fun AlbumsCardContent(albums: List<AlbumResponse>, navController: NavController, destination: ()->(Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,8 +50,8 @@ private fun AlbumsCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit))
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            AlbumCard(onAlbumClick)
+        for(album in albums){
+            AlbumCard(album, navController)
         }
 
         SmallTealButton(
@@ -61,7 +65,7 @@ private fun AlbumsCardContent(destination: ()->(Unit), onAlbumClick: ()->(Unit))
 }
 
 @Composable
-fun AlbumCard(onAlbumClick: ()->(Unit)){
+fun AlbumCard(album: AlbumResponse, navController: NavController){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -72,12 +76,12 @@ fun AlbumCard(onAlbumClick: ()->(Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        AlbumCardContent(onAlbumClick)
+        AlbumCardContent(album, navController)
     }
 }
 
 @Composable
-private fun AlbumCardContent(onAlbumClick: () -> (Unit)){
+private fun AlbumCardContent(album: AlbumResponse, navController: NavController){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -86,7 +90,11 @@ private fun AlbumCardContent(onAlbumClick: () -> (Unit)){
                 interactionSource = remember { NoRippleInteractionSource() },
                 indication = null
             ) {
-                onAlbumClick()
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.AlbumPage.route + '/' + album.id,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
             }
     )
     {
@@ -103,14 +111,14 @@ private fun AlbumCardContent(onAlbumClick: () -> (Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = "Album title",
+                text = album.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary
             )
 
             Text(
-                text = "Artist name",
+                text = album.artist_name,
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 color = MaterialTheme.colors.onPrimary

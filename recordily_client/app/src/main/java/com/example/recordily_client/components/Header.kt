@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 @Composable
 fun Header(navController: NavController){
@@ -49,15 +50,11 @@ fun Header(navController: NavController){
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
                     ) {
-                        navController.navigate(Screen.LandingPage.route) {
-                            navController.graph.startDestinationRoute?.let { route ->
-                                popUpTo(route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.LandingPage.route,
+                            popUpTo = Screen.LandingPage.route
+                        )
                     }
             )
 
@@ -78,15 +75,11 @@ fun Header(navController: NavController){
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
-                    navController.navigate(Screen.ProfilePage.route) {
-                        navController.graph.startDestinationRoute?.let { route ->
-                            popUpTo(route) {
-                                saveState = true
-                            }
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.ProfilePage.route,
+                        popUpTo = Screen.LandingPage.route
+                    )
                 }
         )
     }

@@ -6,7 +6,7 @@ fun navigateTo(navController: NavController, destination: String, popUpTo: Strin
     navController.navigate(destination) {
 
         popUpTo(popUpTo) {
-            saveState = true
+            inclusive = true
         }
 
         launchSingleTop = true

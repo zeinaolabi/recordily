@@ -5,23 +5,38 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.AlbumViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun AlbumPage(navController: NavController){
+fun AlbumPage(navController: NavController, album_id: String){
+    val loginViewModel: LoginViewModel = viewModel()
+    val albumViewModel: AlbumViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    albumViewModel.getAlbumInfo(token, album_id)
+    albumViewModel.getAlbumSongs(token, album_id)
+
+    val album by albumViewModel.albumInfoResultLiveData.observeAsState()
+    val songs by albumViewModel.albumSongsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -33,11 +48,11 @@ fun AlbumPage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.album))
 
-            AlbumHeader()
+            album?.let { AlbumHeader(it) }
 
             HorizontalLine()
 
-            AlbumPageContent(navController)
+            AlbumPageContent(navController, songs)
 
         }
 
@@ -56,25 +71,26 @@ fun AlbumPage(navController: NavController){
 }
 
 @Composable
-private fun AlbumPageContent(navController: NavController){
+private fun AlbumPageContent(navController: NavController, songs: List<SongResponse>?){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(i in 1..3){
-            SongCard(
-                data = SongResponse(1,"",1,"","","",1,
-                    1,"","",1,""),
-                onSongClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.SongPage.route,
-                        popUpTo = Screen.AlbumPage.route
-                    )
-                },
-                onMoreClick = { popUpVisibility.value = true }
-            )
+        if (songs != null) {
+            for(song in songs){
+                SongCard(
+                    song = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.AlbumPage.route
+                        )
+                    },
+                    onMoreClick = { popUpVisibility.value = true }
+                )
+            }
         }
     }
 }

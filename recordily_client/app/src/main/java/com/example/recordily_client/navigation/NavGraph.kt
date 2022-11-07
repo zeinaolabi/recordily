@@ -120,9 +120,10 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.ArtistProfilePage.route
-        ){
-            ArtistProfilePage(navController)
+            route = Screen.ArtistProfilePage.route + "/{artist_id}",
+            arguments = listOf(navArgument("artist_id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("artist_id")?.let { ArtistProfilePage(navController, it) }
         }
 
         composable(
@@ -168,21 +169,24 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.AlbumsPage.route
-        ){
-            AlbumsPage(navController)
+            route = Screen.AlbumsPage.route + "/{artist_id}",
+            arguments = listOf(navArgument("artist_id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("artist_id")?.let { AlbumsPage(navController, it) }
         }
 
         composable(
-            route = Screen.AlbumPage.route
-        ){
-            AlbumPage(navController)
+            route = Screen.AlbumPage.route + "/{album_id}",
+            arguments = listOf(navArgument("album_id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("album_id")?.let { AlbumPage(navController, it) }
         }
 
         composable(
-            route = Screen.ArtistSongsPage.route
-        ){
-            ArtistSongsPage(navController)
+            route = Screen.ArtistSongsPage.route + "/{artist_id}",
+            arguments = listOf(navArgument("artist_id") { type = NavType.StringType })
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("artist_id")?.let { ArtistSongsPage(navController, it) }
         }
 
         composable(
@@ -219,6 +223,13 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.ResetPasswordPage.route
         ){
             ResetPasswordPage(navController)
+        }
+
+        composable(
+            route = Screen.EditPlaylistPage.route + "/{playlist_id}",
+            arguments = listOf(navArgument("playlist_id") { type = NavType.StringType })
+        ){  backStackEntry ->
+            backStackEntry.arguments?.getString("playlist_id")?.let { EditPlaylistPage(navController, it) }
         }
     }
 }

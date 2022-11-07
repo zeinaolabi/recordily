@@ -72,7 +72,7 @@ private fun RecentlyPlayedSongsContent(navController: NavController){
     ){
         for(i in 1..3){
             SongCard(
-                data = SongResponse(1,"",1,"","","",1,
+                song = SongResponse(1,"",1,"","","",1,
                     1,"","",1,""),
                 onSongClick = {
                     navigateTo(

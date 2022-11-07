@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.PlaylistResponse
 
@@ -73,7 +74,7 @@ fun PlaylistCard(playlist: PlaylistResponse, onPlaylistClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
-            .height(60.dp)
+            .height(65.dp)
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
@@ -96,10 +97,16 @@ private fun PlaylistCardContent(playlist: PlaylistResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(playlist.picture != ""){
+                rememberAsyncImagePainter(playlist.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "logo",
             modifier = Modifier
-                .size(50.dp)
+                .size(55.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )

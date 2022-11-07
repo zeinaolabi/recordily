@@ -123,10 +123,6 @@ private fun TextFieldColumn(navController: NavController) {
     val password = remember { mutableStateOf("") }
 
     val loginViewModel : LoginViewModel = viewModel()
-//    val loginResponse = userViewModel.loginResultLiveData.observeAsState()
-//    if (loginResponse.value?.token !== "") {
-//        navController.navigate(Screen.CommonLandingPage.route)
-//    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -186,11 +182,12 @@ private fun TextFieldColumn(navController: NavController) {
                     return@launch
                 }
 
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.LandingPage.route,
-                    popUpTo = Screen.LandingPage.route
-                )
+                navController.navigate(Screen.LandingPage.route) {
+                    popUpTo(0)
+                }
+
+                errorMessage.value = ""
+                visible.value = false
             }
 
         })

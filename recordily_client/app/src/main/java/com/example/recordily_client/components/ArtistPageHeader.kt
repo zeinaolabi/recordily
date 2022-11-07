@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -15,10 +16,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.view_models.ArtistProfileViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistPageHeader(){
+fun ArtistPageHeader(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -26,40 +32,52 @@ fun ArtistPageHeader(){
         )
     ){
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter =
+            if(artistInfo?.profile_picture != ""){
+                rememberAsyncImagePainter(artistInfo?.profile_picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "playlist picture",
             modifier = Modifier
-                .size(110.dp)
+                .size(125.dp)
                 .clip(CircleShape)
                 .border(3.dp, MaterialTheme.colors.secondary, CircleShape),
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent()
+        ArtistHeaderContent(artistInfo, artistFollowers, isFollowed, token)
     }
 }
 
 @Composable
-private fun ArtistHeaderContent(){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
+
+    val coroutinesScope = rememberCoroutineScope()
+    val artistProfileViewModel: ArtistProfileViewModel = viewModel()
+
     Column(
         modifier = Modifier
-            .height(110.dp)
+            .height(125.dp)
             .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ){
 
         Column{
-            Text(
-                text = "Artist Name",
-                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
-                color = MaterialTheme.colors.onPrimary
-            )
+            artistInfo?.name?.let {
+                Text(
+                    text = it,
+                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
 
             Text(
-                text = "10K Followers",
-                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                text = "$artistFollowers Followers",
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary
             )
@@ -69,7 +87,21 @@ private fun ArtistHeaderContent(){
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ){
-            MediumRoundButton(text = "Follow", onClick = {})
+            MediumRoundButton(
+                text = if(isFollowed == true) "Unfollow" else "Follow",
+                onClick =
+                {
+                    coroutinesScope.launch {
+                        if(isFollowed == true){
+                            artistProfileViewModel.unfollow(token, artistInfo?.id.toString())
+                        }
+                        else{
+                            artistProfileViewModel.follow(token, artistInfo?.id.toString())
+                        }
+                        artistProfileViewModel.isFollowed(token, artistInfo?.id.toString())
+                    }
+                }
+            )
         }
     }
 }
