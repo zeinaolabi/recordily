@@ -2,6 +2,7 @@ package com.example.recordily_client.apis
 
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.SongResponse
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
@@ -31,4 +32,11 @@ interface ArtistAPI {
         @Path("artist_id") artist_id: String,
         @Path("limit") limit: Int
     ): List<AlbumResponse>
+
+    @GET("get_artist_top_songs/{artist_id}/{limit}")
+    suspend fun getArtistTopSongs(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String,
+        @Path("limit") limit: Int
+    ): List<SongResponse>
 }
