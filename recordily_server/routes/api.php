@@ -39,14 +39,18 @@ Route::post('edit_playlist',[PlaylistController::class, "editPlaylist"]);
 Route::get('delete_playlist/{playlist_id}',[PlaylistController::class, "deletePlaylist"]);
 Route::get('search_liked_songs/{input}',[SongController::class, "searchLikedSongs"]);
 Route::get('search_playlists/{input}',[PlaylistController::class, "searchPlaylists"]);
-Route::get('followed_artists',[ArtistController::class, "getFollowedArtists"]);
-Route::get('follow/{artist_id}',[ArtistController::class, "followArtist"]);
-Route::get('is_followed/{artist_id}',[ArtistController::class, "isFollowed"]);
-Route::get('unfollow/{artist_id}',[ArtistController::class, "unfollowArtist"]);
 Route::get('get_artist_info/{artist_id}',[ArtistController::class, "getArtistInfo"]);
-Route::get('create_album',[AlbumController::class, "createAlbum"]);
+Route::get('followed_artists',[ArtistController::class, "getFollowedArtists"]);
+Route::get('get_artist_followers/{artist_id}',[ArtistController::class, "getArtistFollowers"]);
+Route::get('is_followed/{artist_id}',[ArtistController::class, "isFollowed"]);
+Route::get('follow/{artist_id}',[ArtistController::class, "followArtist"]);
+Route::get('unfollow/{artist_id}',[ArtistController::class, "unfollowArtist"]);
 Route::get('get_artist_albums/{artist_id}/{limit}',[ArtistController::class, "getArtistAlbums"]);
+Route::get('get_artist_top_songs/{artist_id}/{limit}',[ArtistController::class, "getArtistTopSongs"]);
+Route::get('get_artist_songs/{artist_id}/{limit}',[ArtistController::class, "getArtistSongs"]);
 Route::get('get_album_info/{album_id}',[AlbumController::class, "getAlbum"]);
 Route::get('get_album_songs/{album_id}',[AlbumController::class, "getAlbumSongs"]);
-Route::get('get_artist_top_songs/{artist_id}/{limit}',[ArtistController::class, "getArtistTopSongs"]);
-Route::get('get_artist_followers/{artist_id}',[ArtistController::class, "getArtistFollowers"]);
+Route::get('search_followed_artist/{input}',[ArtistController::class, "searchFollowedArtist"]);
+
+
+//Route::get('create_album',[AlbumController::class, "createAlbum"]);
