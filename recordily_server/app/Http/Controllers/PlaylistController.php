@@ -90,7 +90,7 @@ class PlaylistController extends Controller
                 $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
                 file_put_contents(public_path() . $picture_path, $picture->getContent());
 
-                $playlist->picture = URL::to($picture_path);
+                $playlist->picture = $picture_path;
             } catch (Exception $e) {
                 return response()->json(['error' => $e], 400);
             }

@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UploadSongRequest;
 use App\Models\Like;
 use App\Models\Play;
-use App\Models\Playlist;
-use App\Models\PlaylistHasSong;
 use App\Models\Song;
 use App\Models\User;
 use Exception;
