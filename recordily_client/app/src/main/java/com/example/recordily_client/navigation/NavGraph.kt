@@ -123,7 +123,7 @@ fun SetupNavGraph(navController: NavHostController){
             route = Screen.ArtistProfilePage.route + "/{artist_id}",
             arguments = listOf(navArgument("artist_id") { type = NavType.StringType })
         ){ backStackEntry ->
-            backStackEntry.arguments?.getString("playlist_id")?.let { ArtistProfilePage(navController, it) }
+            backStackEntry.arguments?.getString("artist_id")?.let { ArtistProfilePage(navController, it) }
         }
 
         composable(
