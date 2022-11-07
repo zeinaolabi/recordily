@@ -18,4 +18,7 @@ interface ArtistAPI {
 
     @GET("is_followed/{artist_id}")
     suspend fun isFollowed(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
+
+    @GET("follow/{artist_id}")
+    suspend fun follow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 }
