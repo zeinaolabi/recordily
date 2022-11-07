@@ -186,7 +186,12 @@ private fun RegistrationColumn(navController: NavController) {
                     )
 
                     if(loginViewModel.login(loginRequest)){
-                        navController.navigate(Screen.LandingPage.route)
+                        navController.navigate(Screen.LandingPage.route) {
+                            popUpTo(0)
+                        }
+
+                        errorMessage.value = ""
+                        visible.value = false
                     }
                 }
 

@@ -182,11 +182,12 @@ private fun TextFieldColumn(navController: NavController) {
                     return@launch
                 }
 
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.LandingPage.route,
-                    popUpTo = Screen.LandingPage.route
-                )
+                navController.navigate(Screen.LandingPage.route) {
+                    popUpTo(0)
+                }
+
+                errorMessage.value = ""
+                visible.value = false
             }
 
         })
