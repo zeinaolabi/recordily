@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PlaylistController;
@@ -37,3 +38,7 @@ Route::post('edit_playlist',[PlaylistController::class, "editPlaylist"]);
 Route::get('delete_playlist/{playlist_id}',[PlaylistController::class, "deletePlaylist"]);
 Route::get('search_liked_songs/{input}',[SongController::class, "searchLikedSongs"]);
 Route::get('search_playlists/{input}',[PlaylistController::class, "searchPlaylists"]);
+Route::get('followed_artists',[ArtistController::class, "getFollowedArtists"]);
+Route::get('follow/{artist_id}',[ArtistController::class, "followArtist"]);
+Route::get('is_followed/{artist_id}',[ArtistController::class, "isFollowed"]);
+Route::get('unfollow/{artist_id}',[ArtistController::class, "unfollowArtist"]);
