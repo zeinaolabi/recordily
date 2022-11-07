@@ -70,6 +70,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
     Route::controller(UserController::class)->group(
         function () {
             Route::get('get_user_info',"getUserInfo");
+            Route::get('get_user_top_songs/{limit}',"getUserTopSongs");
         }
     );
 });
