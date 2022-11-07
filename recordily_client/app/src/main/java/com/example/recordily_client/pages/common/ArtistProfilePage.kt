@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -42,12 +43,12 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
     artistProfileViewModel.getArtistSongs(token, artist_id, limit)
 
-    val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
-    val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
-    val isFollowed = artistProfileViewModel.isFollowedResultLiveData.observeAsState()
-    val albums = artistProfileViewModel.albumsResultLiveData.observeAsState()
-    val topSongs = artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
-    val songs = artistProfileViewModel.artistSongsResultLiveData.observeAsState()
+    val artistInfo by artistProfileViewModel.artistInfoResultLiveData.observeAsState()
+    val artistFollowers by artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
+    val isFollowed by artistProfileViewModel.isFollowedResultLiveData.observeAsState()
+    val albums by artistProfileViewModel.albumsResultLiveData.observeAsState()
+    val topSongs by artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
+    val songs by artistProfileViewModel.artistSongsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -60,11 +61,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            ArtistPageHeader(artistInfo.value, artistFollowers.value, isFollowed.value, token)
+            ArtistPageHeader(artistInfo, artistFollowers, isFollowed, token)
 
             HorizontalLine()
 
-            ArtistProfileContent(navController, albums.value, topSongs.value, songs.value, artist_id)
+            ArtistProfileContent(navController, albums, topSongs, songs, artist_id)
         }
 
         AnimatedVisibility(
@@ -109,17 +110,11 @@ private fun ArtistProfileContent(
             AlbumsCards(
                 title = stringResource(id = R.string.albums),
                 albums = albums,
+                navController = navController,
                 buttonDestination = {
                     navigateTo(
                         navController = navController,
                         destination = Screen.AlbumsPage.route + '/' + artist_id,
-                        popUpTo = Screen.ArtistProfilePage.route
-                    )
-                },
-                onAlbumClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.AlbumPage.route,
                         popUpTo = Screen.ArtistProfilePage.route
                     )
                 }

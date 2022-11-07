@@ -29,10 +29,10 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun PlaylistPage(navController: NavController, playlist_id: String){
-
     val loginViewModel: LoginViewModel = viewModel()
     val playlistViewModel: PlaylistViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
     playlistViewModel.getPlaylistSongs(token, playlist_id)
     playlistViewModel.getPlaylist(token, playlist_id)
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -62,7 +63,7 @@ fun PlaylistsPage(navController: NavController){
 
 @Composable
 private fun PlaylistsPageContent(navController: NavController, playlists: List<PlaylistResponse>?, playlistsViewModel: PlaylistsViewModel, token: String){
-    val searchResult = playlistsViewModel.searchForPlaylistResultLiveData.observeAsState()
+    val searchResult by playlistsViewModel.searchForPlaylistResultLiveData.observeAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -77,7 +78,7 @@ private fun PlaylistsPageContent(navController: NavController, playlists: List<P
         }
         else{
             playlistsViewModel.searchForPlaylist(token, searchInput.value)
-            SearchResult(navController, searchResult.value)
+            SearchResult(navController, searchResult)
         }
 
     }

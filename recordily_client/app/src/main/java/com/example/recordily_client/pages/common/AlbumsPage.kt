@@ -84,13 +84,7 @@ private fun AlbumsPageContent(navController: NavController, albums: List<AlbumRe
             for(album in albums){
                 AlbumCard(
                     album = album,
-                    onAlbumClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.AlbumPage.route,
-                            popUpTo = Screen.ArtistProfilePage.route
-                        )
-                    }
+                    navController = navController
                 )
             }
         }

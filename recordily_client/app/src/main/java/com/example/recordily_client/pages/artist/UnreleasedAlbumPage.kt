@@ -15,6 +15,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -32,7 +33,7 @@ fun UnreleasedAlbumPage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.album))
 
-            AlbumHeader()
+            AlbumHeader(AlbumResponse("", 0, "", "", "", 0, ""))
 
             HorizontalLine()
 
