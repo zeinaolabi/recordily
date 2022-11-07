@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
         $artist_type_id = 0;
         $user = User::find($id);
 
-        if($user->user_type_id = $artist_type_id){
+        if ($user->user_type_id = $artist_type_id) {
             return false;
         }
 

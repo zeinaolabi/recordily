@@ -38,8 +38,7 @@ class Follow extends Model
         $isFollowed = self::where('follower_id', $id)
             ->where('followed_id', $artist_id)->get();
 
-        if ($isFollowed->isEmpty())
-        {
+        if ($isFollowed->isEmpty()) {
             return false;
         }
 
@@ -52,7 +51,6 @@ class Follow extends Model
             'follower_id' => $id,
             'followed_id' => $artist_id
         ]);
-
     }
 
     public static function unfollowArtist(int $id, int $artist_id): int
@@ -60,7 +58,5 @@ class Follow extends Model
         return self::where('follower_id', $id)
             ->where('followed_id', $artist_id)
             ->delete();
-
     }
-
 }
