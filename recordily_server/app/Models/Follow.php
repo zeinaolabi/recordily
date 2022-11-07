@@ -59,4 +59,17 @@ class Follow extends Model
             ->where('followed_id', $artist_id)
             ->delete();
     }
+
+    public static function searchFollowedArtists(int $id, string $input): Collection
+    {
+        return User::whereIn(
+            'id',
+            function ($query) use ($id) {
+                $query
+                    ->select('followed_id')
+                    ->from(with(new Follow())->getTable())
+                    ->where('follower_id', $id);
+            }
+        )->where('name', 'like', '%' . $input . '%')->get();
+    }
 }

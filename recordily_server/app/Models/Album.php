@@ -16,6 +16,11 @@ class Album extends Model
         'user_id'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('name');
+    }
+
     public static function getAlbums(int $artist_id, int $limit): Collection
     {
         return self::where("user_id", $artist_id)
