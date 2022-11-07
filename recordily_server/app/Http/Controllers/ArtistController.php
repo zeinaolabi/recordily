@@ -89,4 +89,11 @@ class ArtistController extends Controller
 
         return response()->json($songs);
     }
+
+    public function getArtistTopSongs(int $artist_id, int $limit): JsonResponse
+    {
+        $songs = Song::getArtistTopSongs($limit, $artist_id);
+
+        return response()->json($songs);
+    }
 }
