@@ -5,17 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.services.ArtistService
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 
 class ArtistProfileViewModel: ViewModel() {
     private val service = ArtistService()
 
-    private val artistInfoResult = MutableLiveData<ArtistResponse>()
-    val artistInfoResultLiveData : LiveData<ArtistResponse>
+    private val artistInfoResult = MutableLiveData<UserResponse>()
+    val artistInfoResultLiveData : LiveData<UserResponse>
         get() = artistInfoResult
 
     private val artistFollowersResult = MutableLiveData<Int>()
