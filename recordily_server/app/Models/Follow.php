@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 
 class Follow extends Model
 {
@@ -29,5 +30,18 @@ class Follow extends Model
                     ->where('follower_id', $id);
             }
         )->get();
+    }
+
+    public static function checkIfFollowed(int $id, int $artist_id): bool
+    {
+        $isFollowed = self::where('follower_id', $id)
+            ->where('followed_id', $artist_id)->get();
+
+        if ($isFollowed->isEmpty())
+        {
+            return false;
+        }
+
+        return true;
     }
 }
