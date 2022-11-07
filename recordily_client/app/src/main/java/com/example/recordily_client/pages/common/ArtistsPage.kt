@@ -8,21 +8,31 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.view_models.ArtistsViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 
 @Composable
 fun ArtistsPage(navController: NavController) {
+    val artistsViewModel: ArtistsViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    artistsViewModel.getFollowedArtists(token)
+    val followedArtistsResult = artistsViewModel.followedArtistsResultLiveData.observeAsState()
     Scaffold(
         content = {
             Column(
@@ -31,7 +41,7 @@ fun ArtistsPage(navController: NavController) {
                     .padding(vertical = dimensionResource(id = R.dimen.padding_large)),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                ArtistsPageContent(navController)
+                followedArtistsResult.value?.let { it -> ArtistsPageContent(navController, it) }
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
@@ -39,7 +49,7 @@ fun ArtistsPage(navController: NavController) {
 }
 
 @Composable
-private fun ArtistsPageContent(navController: NavController){
+private fun ArtistsPageContent(navController: NavController, artists: List<ArtistResponse>){
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
@@ -65,9 +75,9 @@ private fun ArtistsPageContent(navController: NavController){
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(rememberScrollState())
     ){
-        for(i in 1..3){
+        for(artist in artists){
             ArtistCard(
-                data = ArtistResponse("", "", "", 1, "", "", "", 1),
+                artist = artist,
                 onClick = {
                 navController.navigate(Screen.ArtistProfilePage.route) {
                     popUpTo(Screen.ArtistsPage.route) {

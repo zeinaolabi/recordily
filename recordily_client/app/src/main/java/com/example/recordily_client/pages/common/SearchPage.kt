@@ -140,7 +140,7 @@ private fun SearchResultContent(navController: NavController, data: SearchRespon
         if (data != null) {
             for(artist in data.artists){
                 ArtistCard(
-                    data = artist,
+                    artist = artist,
                     onClick = {
                         navigateTo(
                             navController = navController,
