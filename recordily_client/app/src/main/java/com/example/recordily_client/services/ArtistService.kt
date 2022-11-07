@@ -7,4 +7,8 @@ class ArtistService {
     suspend fun followedArtists(token: String): List<ArtistResponse>{
         return RetrofitInstance.artistAPI.followedArtists(token)
     }
+
+    suspend fun getArtist(token: String, artist_id: String): ArtistResponse{
+        return RetrofitInstance.artistAPI.getArtist(token, artist_id)
+    }
 }
