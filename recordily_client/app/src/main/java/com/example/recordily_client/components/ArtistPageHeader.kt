@@ -20,7 +20,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.ArtistResponse
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int){
+fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -43,12 +43,12 @@ fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int){
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent(artistInfo, artistFollowers)
+        ArtistHeaderContent(artistInfo, artistFollowers, isFollowed)
     }
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int){
     Column(
         modifier = Modifier
             .height(125.dp)
@@ -67,7 +67,7 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
 
             Text(
                 text = "$artistFollowers Followers",
-                fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary
             )
@@ -77,7 +77,13 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth()
         ){
-            MediumRoundButton(text = "Follow", onClick = {})
+            MediumRoundButton(
+                text = if(isFollowed == 1) "Unfollow" else "Follow",
+                onClick =
+                {
+
+                }
+            )
         }
     }
 }

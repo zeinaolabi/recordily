@@ -21,7 +21,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.ArtistProfileViewModel
-import com.example.recordily_client.view_models.ArtistsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -35,9 +34,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
     artistProfileViewModel.getArtistFollowers(token, artist_id)
     artistProfileViewModel.getArtist(token, artist_id)
+    artistProfileViewModel.isFollowed(token, artist_id)
 
     val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
+    val isFollowed = artistProfileViewModel.isFollowedResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -50,10 +51,8 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            artistInfo.value?.let { artistInfo ->
-                artistFollowers.value?.let { followers ->
-                    ArtistPageHeader(artistInfo, followers)
-                }
+            if(artistInfo.value != null && artistFollowers.value != null && isFollowed.value != null){
+                ArtistPageHeader(artistInfo.value!!, artistFollowers.value!!, isFollowed.value!!)
             }
 
             HorizontalLine()
