@@ -16,9 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
-fun AlbumHeader(){
+fun AlbumHeader(album: AlbumResponse){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,28 +32,28 @@ fun AlbumHeader(){
             painter = painterResource(id = R.drawable.recordily_dark_logo),
             contentDescription = "album picture",
             modifier = Modifier
-                .size(110.dp)
+                .size(125.dp)
                 .clip(CircleShape)
                 .border(3.dp, MaterialTheme.colors.secondary, CircleShape),
             contentScale = ContentScale.Crop
         )
 
-        AlbumHeaderContent()
+        AlbumHeaderContent(album)
     }
 }
 
 @Composable
-private fun AlbumHeaderContent(){
+private fun AlbumHeaderContent(album: AlbumResponse){
     Column(
         modifier = Modifier
-            .height(110.dp)
+            .height(125.dp)
             .padding(dimensionResource(id = R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ){
 
         Column{
             Text(
-                text = "Album name",
+                text = album.name,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
@@ -60,7 +61,7 @@ private fun AlbumHeaderContent(){
             )
 
             Text(
-                text = "Artist name",
+                text = album.artist_name,
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary

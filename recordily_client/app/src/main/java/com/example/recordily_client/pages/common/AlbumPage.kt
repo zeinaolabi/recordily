@@ -5,23 +5,38 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.AlbumViewModel
+import com.example.recordily_client.view_models.AlbumsViewModel
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PlaylistViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun AlbumPage(navController: NavController){
+fun AlbumPage(navController: NavController, album_id: String){
+    val loginViewModel: LoginViewModel = viewModel()
+    val albumViewModel: AlbumViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    albumViewModel.getAlbumInfo(token, album_id)
+
+    val album by albumViewModel.albumInfoResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -33,7 +48,7 @@ fun AlbumPage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.album))
 
-            AlbumHeader()
+            album?.let { AlbumHeader(it) }
 
             HorizontalLine()
 
