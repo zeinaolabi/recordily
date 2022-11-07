@@ -33,13 +33,11 @@ class ArtistController extends Controller
     {
         $id = Auth::id();
 
-        if(!User::isArtist($artist_id))
-        {
+        if (!User::isArtist($artist_id)) {
             return response()->json(User::isArtist($artist_id), 400);
         }
 
-        if (Follow::checkIfFollowed($id, $artist_id))
-        {
+        if (Follow::checkIfFollowed($id, $artist_id)) {
             return response()->json('Already Followed', 400);
         }
 
@@ -52,13 +50,11 @@ class ArtistController extends Controller
     {
         $id = Auth::id();
 
-        if(!User::isArtist($artist_id))
-        {
+        if (!User::isArtist($artist_id)) {
             return response()->json(User::isArtist($artist_id), 400);
         }
 
-        if (!Follow::checkIfFollowed($id, $artist_id))
-        {
+        if (!Follow::checkIfFollowed($id, $artist_id)) {
             return response()->json('Not Followed', 400);
         }
 
@@ -71,8 +67,7 @@ class ArtistController extends Controller
     {
         $artist = User::find($artist_id);
 
-        if (!$artist)
-        {
+        if (!$artist) {
             return response()->json('Invalid ID', 400);
         }
 
