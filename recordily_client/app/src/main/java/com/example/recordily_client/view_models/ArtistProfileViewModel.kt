@@ -41,4 +41,13 @@ class ArtistProfileViewModel: ViewModel() {
             isFollowedResult.postValue(service.isFollowed(token, artist_id))
         }
     }
+
+    suspend fun follow(token: String, artist_id: String): Boolean {
+        return try {
+            service.follow(token, artist_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }

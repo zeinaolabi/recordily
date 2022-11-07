@@ -52,7 +52,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
             ExitBar(navController, stringResource(id = R.string.artist))
 
             if(artistInfo.value != null && artistFollowers.value != null && isFollowed.value != null){
-                ArtistPageHeader(artistInfo.value!!, artistFollowers.value!!, isFollowed.value!!)
+                ArtistPageHeader(artistInfo.value!!, artistFollowers.value!!, isFollowed.value!!, token)
             }
 
             HorizontalLine()

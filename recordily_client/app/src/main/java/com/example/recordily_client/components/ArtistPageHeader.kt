@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -15,12 +16,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.view_models.ArtistProfileViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int){
+fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int, token: String){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -43,12 +47,16 @@ fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int, isFollowe
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent(artistInfo, artistFollowers, isFollowed)
+        ArtistHeaderContent(artistInfo, artistFollowers, isFollowed, token)
     }
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int, isFollowed: Int, token: String){
+
+    val coroutinesScope = rememberCoroutineScope()
+    val artistProfileViewModel: ArtistProfileViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .height(125.dp)
@@ -81,7 +89,13 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int
                 text = if(isFollowed == 1) "Unfollow" else "Follow",
                 onClick =
                 {
+                    coroutinesScope.launch {
+//                        if(isFollowed == 1){
+//
+//                        }
+                        artistProfileViewModel.follow(token, artistInfo.id.toString())
 
+                    }
                 }
             )
         }
