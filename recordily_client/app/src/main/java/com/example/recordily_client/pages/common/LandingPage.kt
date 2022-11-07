@@ -1,6 +1,5 @@
 package com.example.recordily_client.pages.common
 
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -28,12 +27,13 @@ fun CommonLandingPage(navController: NavController){
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
     val limit = 5
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
     val landingPageViewModel : LandingPageViewModel = viewModel()
 
-    landingPageViewModel.getTopPlayed(limit)
-    landingPageViewModel.getRecentlyPlayed(limit)
-    landingPageViewModel.getSuggested(limit)
-    landingPageViewModel.getTopLiked(limit)
+    landingPageViewModel.getTopPlayed(token, limit)
+    landingPageViewModel.getRecentlyPlayed(token, limit)
+    landingPageViewModel.getSuggested(token, limit)
+    landingPageViewModel.getTopLiked(token, limit)
 
     Scaffold(
         topBar = { Header(navController) },

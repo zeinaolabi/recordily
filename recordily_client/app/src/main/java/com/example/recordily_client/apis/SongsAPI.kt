@@ -8,19 +8,19 @@ import retrofit2.http.*
 
 interface SongsAPI {
     @GET("suggested_songs/{limit}")
-    suspend fun suggestedSongs(@Path("limit") limit: Int): List<SongResponse>
+    suspend fun suggestedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @GET("recently_played_songs/{limit}")
-    suspend fun getRecentlyPlayedSongs(@Path("limit") limit: Int): List<SongResponse>
+    suspend fun getRecentlyPlayedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @GET("top_liked_songs/{limit}")
-    suspend fun getTopLikedSongs(@Path("limit") limit: Int): List<SongResponse>
+    suspend fun getTopLikedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @GET("top_played_songs/{limit}")
-    suspend fun getTopPlayedSongs(@Path("limit") limit: Int): List<SongResponse>
+    suspend fun getTopPlayedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @GET("search/{input}")
-    suspend fun searchForSong(@Path("input") input: String): SearchResponse
+    suspend fun searchForSong(@Header("Authorization") token: String, @Path("input") input: String): SearchResponse
 
     @GET("liked_songs")
     suspend fun getLikedSongs(@Header("Authorization") token: String): List<SongResponse>

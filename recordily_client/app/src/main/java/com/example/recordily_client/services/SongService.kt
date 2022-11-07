@@ -11,24 +11,24 @@ class SongService {
         return RetrofitInstance.songAPI.uploadSong(uploadSongRequest, file)
     }
 
-    suspend fun getSuggested(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songAPI.suggestedSongs(limit)
+    suspend fun getSuggested(token: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.songAPI.suggestedSongs(token, limit)
     }
 
-    suspend fun getTopLiked(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songAPI.getTopLikedSongs(limit)
+    suspend fun getTopLiked(token: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.songAPI.getTopLikedSongs(token, limit)
     }
 
-    suspend fun getRecentlyPlayed(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songAPI.getRecentlyPlayedSongs(limit)
+    suspend fun getRecentlyPlayed(token: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.songAPI.getRecentlyPlayedSongs(token, limit)
     }
 
-    suspend fun getTopPlayed(limit: Int): List<SongResponse>{
-        return RetrofitInstance.songAPI.getTopPlayedSongs(limit)
+    suspend fun getTopPlayed(token: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.songAPI.getTopPlayedSongs(token, limit)
     }
 
-    suspend fun getSearchResult(input: String): SearchResponse{
-        return RetrofitInstance.songAPI.searchForSong(input)
+    suspend fun getSearchResult(token: String, input: String): SearchResponse{
+        return RetrofitInstance.songAPI.searchForSong(token, input)
     }
 
     suspend fun getLikedSongs(token: String): List<SongResponse>{
