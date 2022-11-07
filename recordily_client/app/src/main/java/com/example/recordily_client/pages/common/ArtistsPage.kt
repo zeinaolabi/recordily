@@ -1,16 +1,10 @@
 package com.example.recordily_client.pages.common
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -25,8 +19,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
-import com.example.recordily_client.responses.ArtistResponse
-import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.ArtistsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -60,7 +53,7 @@ fun ArtistsPage(navController: NavController) {
 @Composable
 private fun ArtistsPageContent(
     navController: NavController,
-    artists: List<ArtistResponse>?,
+    artists: List<UserResponse>?,
     artistsViewModel: ArtistsViewModel,
     token: String)
 {
@@ -85,7 +78,7 @@ private fun ArtistsPageContent(
 }
 
 @Composable
-private fun Artists(navController: NavController, artists: List<ArtistResponse>?){
+private fun Artists(navController: NavController, artists: List<UserResponse>?){
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
@@ -128,7 +121,7 @@ private fun Artists(navController: NavController, artists: List<ArtistResponse>?
 }
 
 @Composable
-private fun SearchResult(navController: NavController, artists: List<ArtistResponse>?){
+private fun SearchResult(navController: NavController, artists: List<UserResponse>?){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))

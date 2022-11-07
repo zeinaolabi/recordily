@@ -1,6 +1,6 @@
 package com.example.recordily_client.responses
 
-data class ArtistResponse(
+data class UserResponse(
     val biography: String,
     val created_at: String,
     val email: String,

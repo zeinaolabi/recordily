@@ -13,6 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,16 +30,23 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.ProfileViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
 fun CommonProfilePage(navController: NavController){
-    val loginViewModel : LoginViewModel = viewModel()
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
+    val loginViewModel: LoginViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    profileViewModel.getUserInfo(token)
+
+    val profile by profileViewModel.userInfoResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -49,7 +58,7 @@ fun CommonProfilePage(navController: NavController){
         ){
             ExitBar( navController, stringResource(id = R.string.profile))
 
-            ProfileHeader(navController)
+            profile?.let { ProfileHeader(navController, it) }
 
             if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
                 TopNavBar(

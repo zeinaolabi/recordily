@@ -21,13 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
-fun ProfileHeader(navController: NavController){
+fun ProfileHeader(navController: NavController, profile: UserResponse){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -35,7 +37,13 @@ fun ProfileHeader(navController: NavController){
         )
     ){
         Image(
-            painter = painterResource(id = R.drawable.profile_picture),
+            painter =
+            if(profile.profile_picture != ""){
+                rememberAsyncImagePainter(profile.profile_picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "profile picture",
             modifier = Modifier
                 .size(125.dp)
@@ -44,12 +52,12 @@ fun ProfileHeader(navController: NavController){
             contentScale = ContentScale.Crop
         )
 
-        ProfileInfo(navController)
+        ProfileInfo(navController, profile)
     }
 }
 
 @Composable
-private fun ProfileInfo(navController: NavController){
+private fun ProfileInfo(navController: NavController, profile: UserResponse){
     val loginViewModel : LoginViewModel = viewModel()
     
     Column(
@@ -60,7 +68,7 @@ private fun ProfileInfo(navController: NavController){
     ){
         Column{
             Text(
-                text = "User Name",
+                text = profile.name,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
@@ -68,7 +76,7 @@ private fun ProfileInfo(navController: NavController){
             )
 
             Text(
-                text = "Hi this is my bio",
+                text = profile.biography,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary

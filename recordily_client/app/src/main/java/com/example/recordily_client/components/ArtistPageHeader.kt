@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
-import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.ArtistProfileViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
+fun ArtistPageHeader(artistInfo: UserResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -52,7 +52,7 @@ fun ArtistPageHeader(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollo
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
+private fun ArtistHeaderContent(artistInfo: UserResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
 
     val coroutinesScope = rememberCoroutineScope()
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
