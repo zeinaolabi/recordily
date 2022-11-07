@@ -41,4 +41,8 @@ class ArtistService {
     suspend fun getArtistSongs(token: String, artist_id: String, limit: Int): List<SongResponse>{
         return RetrofitInstance.artistAPI.getArtistSongs(token, artist_id, limit)
     }
+
+    suspend fun searchFollowedArtist(token: String, input: String): List<ArtistResponse>{
+        return RetrofitInstance.artistAPI.searchFollowedArtists(token, input)
+    }
 }
