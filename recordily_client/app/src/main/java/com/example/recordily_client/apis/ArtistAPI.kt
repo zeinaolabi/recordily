@@ -26,6 +26,9 @@ interface ArtistAPI {
     @GET("unfollow/{artist_id}")
     suspend fun unfollow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 
+    @GET("search_followed_artist/{input}")
+    suspend fun searchFollowedArtists(@Header("Authorization") token: String, @Path("input") input: String): List<ArtistResponse>
+
     @GET("get_artist_albums/{artist_id}/{limit}")
     suspend fun getAlbums(
         @Header("Authorization") token: String,
