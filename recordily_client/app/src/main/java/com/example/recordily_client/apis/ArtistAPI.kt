@@ -17,8 +17,11 @@ interface ArtistAPI {
     suspend fun getArtistFollowers(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
 
     @GET("is_followed/{artist_id}")
-    suspend fun isFollowed(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
+    suspend fun isFollowed(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Boolean
 
     @GET("follow/{artist_id}")
     suspend fun follow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
+
+    @GET("unfollow/{artist_id}")
+    suspend fun unfollow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 }
