@@ -33,6 +33,13 @@ interface ArtistAPI {
         @Path("limit") limit: Int
     ): List<AlbumResponse>
 
+    @GET("get_artist_songs/{artist_id}/{limit}")
+    suspend fun getArtistSongs(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String,
+        @Path("limit") limit: Int
+    ): List<SongResponse>
+
     @GET("get_artist_top_songs/{artist_id}/{limit}")
     suspend fun getArtistTopSongs(
         @Header("Authorization") token: String,
