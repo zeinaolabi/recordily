@@ -146,7 +146,6 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
     ){
         if (songsLiked != null) {
             for(song in songsLiked){
-                Log.i("song", song.toString())
                 SongCard(
                     song = song,
                     onSongClick = {
