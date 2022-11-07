@@ -19,6 +19,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.ArtistResponse
 import com.example.recordily_client.view_models.ArtistsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
@@ -33,6 +34,7 @@ fun ArtistsPage(navController: NavController) {
 
     artistsViewModel.getFollowedArtists(token)
     val followedArtistsResult = artistsViewModel.followedArtistsResultLiveData.observeAsState()
+
     Scaffold(
         content = {
             Column(
@@ -79,14 +81,13 @@ private fun ArtistsPageContent(navController: NavController, artists: List<Artis
             ArtistCard(
                 artist = artist,
                 onClick = {
-                navController.navigate(Screen.ArtistProfilePage.route) {
-                    popUpTo(Screen.ArtistsPage.route) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
+                        popUpTo = Screen.ArtistsPage.route
+                    )
                 }
-            })
+            )
         }
     }
 }

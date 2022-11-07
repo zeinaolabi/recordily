@@ -33,8 +33,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     val loginViewModel: LoginViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
+    artistProfileViewModel.getArtistFollowers(token, artist_id)
     artistProfileViewModel.getArtist(token, artist_id)
+
     val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
+    val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -47,7 +50,11 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            ArtistPageHeader(artistInfo)
+            artistInfo.value?.let { artistInfo ->
+                artistFollowers.value?.let { followers ->
+                    ArtistPageHeader(artistInfo, followers)
+                }
+            }
 
             HorizontalLine()
 

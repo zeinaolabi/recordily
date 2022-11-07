@@ -20,7 +20,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.ArtistResponse
 
 @Composable
-fun ArtistPageHeader(artistInfo: ArtistResponse){
+fun ArtistPageHeader(artistInfo: ArtistResponse, artistFollowers: Int){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -33,7 +33,7 @@ fun ArtistPageHeader(artistInfo: ArtistResponse){
                 rememberAsyncImagePainter(artistInfo.profile_picture)
             }
             else{
-                painterResource(id = R.drawable.recordily_dark_logo)
+                painterResource(id = R.drawable.profile_picture)
             },
             contentDescription = "playlist picture",
             modifier = Modifier
@@ -43,12 +43,12 @@ fun ArtistPageHeader(artistInfo: ArtistResponse){
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent(artistInfo)
+        ArtistHeaderContent(artistInfo, artistFollowers)
     }
 }
 
 @Composable
-private fun ArtistHeaderContent(artistInfo: ArtistResponse){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse, artistFollowers: Int){
     Column(
         modifier = Modifier
             .height(125.dp)
@@ -66,7 +66,7 @@ private fun ArtistHeaderContent(artistInfo: ArtistResponse){
             )
 
             Text(
-                text = "10K Followers",
+                text = "$artistFollowers Followers",
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary
