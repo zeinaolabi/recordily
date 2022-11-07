@@ -7,23 +7,35 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.ArtistProfileViewModel
+import com.example.recordily_client.view_models.ArtistsViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun ArtistProfilePage(navController: NavController){
+fun ArtistProfilePage(navController: NavController, artist_id: String){
+    val artistProfileViewModel: ArtistProfileViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    artistProfileViewModel.getArtist(token, artist_id)
+    val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +47,7 @@ fun ArtistProfilePage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.artist))
 
-            ArtistPageHeader()
+            ArtistPageHeader(artistInfo)
 
             HorizontalLine()
 

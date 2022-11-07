@@ -15,10 +15,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.ArtistResponse
 
 @Composable
-fun ArtistPageHeader(){
+fun ArtistPageHeader(artistInfo: ArtistResponse){
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),
@@ -26,7 +28,13 @@ fun ArtistPageHeader(){
         )
     ){
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter =
+            if(artistInfo.profile_picture != ""){
+                rememberAsyncImagePainter(artistInfo.profile_picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "playlist picture",
             modifier = Modifier
                 .size(125.dp)
@@ -35,12 +43,12 @@ fun ArtistPageHeader(){
             contentScale = ContentScale.Crop
         )
 
-        ArtistHeaderContent()
+        ArtistHeaderContent(artistInfo)
     }
 }
 
 @Composable
-private fun ArtistHeaderContent(){
+private fun ArtistHeaderContent(artistInfo: ArtistResponse){
     Column(
         modifier = Modifier
             .height(125.dp)
@@ -50,7 +58,7 @@ private fun ArtistHeaderContent(){
 
         Column{
             Text(
-                text = "Artist Name",
+                text = artistInfo.name,
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
