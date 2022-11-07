@@ -7,7 +7,9 @@ use App\Models\Follow;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 class ArtistController extends Controller
 {
@@ -17,18 +19,14 @@ class ArtistController extends Controller
 
         $followed_artists = Follow::getFollowedArtists($id);
 
-        if ($followed_artists->isEmpty()) {
-            return response()->json('No followed artists', 400);
-        }
-
         return response()->json($followed_artists);
     }
 
-    public function isFollowed(int $artist_id): bool
+    public function isFollowed(int $artist_id): JsonResponse
     {
         $id = Auth::id();
 
-        return Follow::checkIfFollowed($id, $artist_id);
+        return response()->json(Follow::checkIfFollowed($id, $artist_id));
     }
 
     public function followArtist(int $artist_id): JsonResponse
@@ -85,12 +83,18 @@ class ArtistController extends Controller
     {
         $albums = Album::getAlbums($artist_id, $limit);
 
+        $this->getPicture($albums);
+        $this->getArtistName($albums);
+
         return response()->json($albums);
     }
 
     public function getArtistSongs(int $artist_id, int $limit): JsonResponse
     {
         $songs = Song::getArtistSongs($artist_id, $limit);
+
+        $this->getPicture($songs);
+        $this->getArtistName($songs);
 
         return response()->json($songs);
     }
@@ -99,6 +103,33 @@ class ArtistController extends Controller
     {
         $songs = Song::getArtistTopSongs($limit, $artist_id);
 
+        $this->getPicture($songs);
+        $this->getArtistName($songs);
+
         return response()->json($songs);
+    }
+
+    public function searchFollowedArtist(string $input): JsonResponse
+    {
+        $id = Auth::id();
+
+        $artists = Follow::searchFollowedArtists($id, $input);
+
+        return response()->json($artists);
+    }
+
+    private function getPicture(Collection $array)
+    {
+        foreach ($array as $data) {
+            $data->picture = URL::to($data->picture);
+        }
+    }
+
+    private function getArtistName($array)
+    {
+        foreach ($array as $data) {
+            $data->artist_name = $data->user->name;
+            unset($data->user);
+        }
     }
 }

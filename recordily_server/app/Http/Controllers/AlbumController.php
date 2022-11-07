@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Song;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 
 class AlbumController extends Controller
@@ -14,6 +15,8 @@ class AlbumController extends Controller
         $album = Album::find($album_id);
 
         $album->picture = URL::to($album->picture);
+        $album->artist_name = $album->user->name;
+        unset($album->user);
 
         return response()->json($album);
     }
@@ -22,24 +25,39 @@ class AlbumController extends Controller
     {
         $songs = Song::where('album_id', $album_id)->get();
 
-        foreach ($songs as $song) {
-            $song->picture = URL::to($song->picture);
-        }
+        $this->getPicture($songs);
+        $this->getArtistName($songs);
 
         return response()->json($songs);
     }
-    //    public function createAlbum(): JsonResponse
-    //    {
-    //        $isCreated = Album::create([
-    //            'user_id' => 8,
-    //            'picture' => 'test',
-    //            'name' => 'test'
-    //        ]);
-    //
-    //        if(!$isCreated){
-    //            return response()->json('not created');
-    //        }
-    //
-    //        return response()->json(' created');
-    //    }
+
+//        public function createAlbum(): JsonResponse
+//        {
+//            $isCreated = Album::create([
+//                'user_id' => 5,
+//                'picture' => 'test',
+//                'name' => 'test5'
+//            ]);
+//
+//            if(!$isCreated){
+//                return response()->json('not created');
+//            }
+//
+//            return response()->json(' created');
+//        }
+
+    private function getPicture(Collection $array)
+    {
+        foreach ($array as $data) {
+            $data->picture = URL::to($data->picture);
+        }
+    }
+
+    private function getArtistName($array)
+    {
+        foreach ($array as $data) {
+            $data->artist_name = $data->user->name;
+            unset($data->user);
+        }
+    }
 }
