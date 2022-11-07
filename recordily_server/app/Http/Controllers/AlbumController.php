@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\URL;
 
 class AlbumController extends Controller
 {
@@ -14,6 +15,14 @@ class AlbumController extends Controller
         return response()->json($albums);
     }
 
+    public function getAlbum(int $album_id): JsonResponse
+    {
+        $album = Album::find($album_id);
+
+        $album->picture = URL::to($album->picture);
+
+        return response()->json($album);
+    }
 //    public function createAlbum(): JsonResponse
 //    {
 //        $isCreated = Album::create([
