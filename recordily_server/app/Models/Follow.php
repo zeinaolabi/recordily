@@ -55,4 +55,12 @@ class Follow extends Model
 
     }
 
+    public static function unfollowArtist(int $id, int $artist_id): int
+    {
+        return self::where('follower_id', $id)
+            ->where('followed_id', $artist_id)
+            ->delete();
+
+    }
+
 }
