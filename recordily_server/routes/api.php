@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\SongController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
@@ -63,6 +64,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
         function () {
             Route::get('get_album_info/{album_id}',"getAlbum");
             Route::get('get_album_songs/{album_id}',"getAlbumSongs");
+        }
+    );
+
+    Route::controller(UserController::class)->group(
+        function () {
+            Route::get('get_user_info',"getUserInfo");
         }
     );
 });
