@@ -16,11 +16,15 @@ class ArtistService {
         return RetrofitInstance.artistAPI.getArtistFollowers(token, artist_id)
     }
 
-    suspend fun isFollowed(token: String, artist_id: String): Int{
+    suspend fun isFollowed(token: String, artist_id: String): Boolean{
         return RetrofitInstance.artistAPI.isFollowed(token, artist_id)
     }
 
     suspend fun follow(token: String, artist_id: String){
         return RetrofitInstance.artistAPI.follow(token, artist_id)
+    }
+
+    suspend fun unfollow(token: String, artist_id: String){
+        return RetrofitInstance.artistAPI.unfollow(token, artist_id)
     }
 }
