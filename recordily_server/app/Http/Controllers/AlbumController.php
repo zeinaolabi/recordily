@@ -3,18 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Song;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\URL;
 
 class AlbumController extends Controller
 {
-    public function getArtistAlbums(int $artist_id, int $limit): JsonResponse
-    {
-        $albums = Album::getAlbums($artist_id, $limit);
-
-        return response()->json($albums);
-    }
-
     public function getAlbum(int $album_id): JsonResponse
     {
         $album = Album::find($album_id);
@@ -22,6 +16,17 @@ class AlbumController extends Controller
         $album->picture = URL::to($album->picture);
 
         return response()->json($album);
+    }
+
+    public function getAlbumSongs(int $album_id): JsonResponse
+    {
+        $songs = Song::where('album_id', $album_id)->get();
+
+        foreach ($songs as $song){
+            $song->picture = URL::to($song->picture);
+        }
+
+        return response()->json($songs);
     }
 //    public function createAlbum(): JsonResponse
 //    {
