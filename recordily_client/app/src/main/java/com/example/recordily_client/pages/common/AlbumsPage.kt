@@ -30,7 +30,7 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun AlbumsPage(navController: NavController, artist_id: String){
-    val limit = 40;
+    val limit = 40
     val loginViewModel: LoginViewModel = viewModel()
     val albumViewModel: AlbumsViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()

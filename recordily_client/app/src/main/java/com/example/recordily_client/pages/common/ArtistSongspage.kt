@@ -5,23 +5,35 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.ArtistSongsViewModel
+import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun ArtistSongsPage(navController: NavController){
+fun ArtistSongsPage(navController: NavController, artist_id: String){
+    val limit = 40
+    val loginViewModel: LoginViewModel = viewModel()
+    val artistSongsViewModel: ArtistSongsViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    artistSongsViewModel.getAlbums(token, artist_id, limit)
+
+    val songs = artistSongsViewModel.songsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +47,7 @@ fun ArtistSongsPage(navController: NavController){
 
             HorizontalLine()
 
-            ArtistSongsContent(navController)
+            ArtistSongsContent(navController, songs.value)
 
         }
 
@@ -54,26 +66,26 @@ fun ArtistSongsPage(navController: NavController){
 }
 
 @Composable
-private fun ArtistSongsContent(navController: NavController){
+private fun ArtistSongsContent(navController: NavController, songs: List<SongResponse>?){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(i in 1..3){
-            SongCard(
-                song = SongResponse(1,"",1,"","","",1,
-                    1,"","",1,"")
-                ,
-                onSongClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.SongPage.route,
-                        popUpTo = Screen.ArtistSongsPage.route
-                    )
-                },
-                onMoreClick = { popUpVisibility.value = true }
-            )
+        if (songs != null) {
+            for(song in songs){
+                SongCard(
+                    song = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.ArtistSongsPage.route
+                        )
+                    },
+                    onMoreClick = { popUpVisibility.value = true }
+                )
+            }
         }
     }
 }

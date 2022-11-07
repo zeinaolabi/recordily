@@ -138,7 +138,7 @@ private fun ArtistProfileContent(
             destination = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.ArtistSongsPage.route,
+                    destination = Screen.ArtistSongsPage.route + '/' + artist_id,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             },
