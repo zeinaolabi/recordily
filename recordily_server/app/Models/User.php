@@ -56,4 +56,16 @@ class User extends Authenticatable implements JWTSubject
             ]
         );
     }
+
+    public static function isArtist(int $id): bool
+    {
+        $artist_type_id = 0;
+        $user = User::find($id);
+
+        if($user->user_type_id = $artist_type_id){
+            return false;
+        }
+
+        return true;
+    }
 }
