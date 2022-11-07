@@ -47,4 +47,23 @@ class ArtistController extends Controller
 
         return response()->json('Artist Followed', 201);
     }
+
+    public function unfollowArtist(int $artist_id): JsonResponse
+    {
+        $id = Auth::id();
+
+        if(!User::isArtist($artist_id))
+        {
+            return response()->json(User::isArtist($artist_id), 400);
+        }
+
+        if (!Follow::checkIfFollowed($id, $artist_id))
+        {
+            return response()->json('Not Followed', 400);
+        }
+
+        Follow::unfollowArtist($id, $artist_id);
+
+        return response()->json('Artist Unfollowed', 201);
+    }
 }
