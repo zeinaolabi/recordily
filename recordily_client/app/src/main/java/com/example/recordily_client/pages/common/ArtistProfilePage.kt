@@ -30,6 +30,7 @@ private val popUpVisibility = mutableStateOf(false)
 @Composable
 fun ArtistProfilePage(navController: NavController, artist_id: String){
     val limit = 3
+    val topLimit = 5
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
@@ -38,11 +39,13 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     artistProfileViewModel.getArtist(token, artist_id)
     artistProfileViewModel.isFollowed(token, artist_id)
     artistProfileViewModel.getAlbums(token, artist_id, limit)
+    artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
 
     val artistInfo = artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers = artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
     val isFollowed = artistProfileViewModel.isFollowedResultLiveData.observeAsState()
     val albums = artistProfileViewModel.albumsResultLiveData.observeAsState()
+    val topSongs = artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -61,7 +64,9 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            albums.value?.let { ArtistProfileContent(navController, it) }
+            if(albums.value != null && topSongs.value != null){
+                ArtistProfileContent(navController, albums.value!!, topSongs.value!!)
+            }
         }
 
         AnimatedVisibility(
@@ -78,7 +83,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 }
 
 @Composable
-private fun ArtistProfileContent(navController: NavController, albums: List<AlbumResponse>){
+private fun ArtistProfileContent(navController: NavController, albums: List<AlbumResponse>, topSongs: List<SongResponse>){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -118,7 +123,7 @@ private fun ArtistProfileContent(navController: NavController, albums: List<Albu
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
             navController = navController,
-            data = null
+            data = topSongs
         )
 
         SongsCards(
