@@ -66,4 +66,16 @@ class ArtistController extends Controller
 
         return response()->json('Artist Unfollowed', 201);
     }
+
+    public function getArtistInfo(int $artist_id): JsonResponse
+    {
+        $artist = User::find($artist_id);
+
+        if (!$artist)
+        {
+            return response()->json('Invalid ID', 400);
+        }
+
+        return response()->json($artist);
+    }
 }
