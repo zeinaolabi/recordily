@@ -20,4 +20,11 @@ class ArtistController extends Controller
 
         return response()->json($followed_artists);
     }
+
+    public function isFollowed(int $artist_id): bool
+    {
+        $id = Auth::id();
+
+        return Follow::checkIfFollowed($id, $artist_id);
+    }
 }
