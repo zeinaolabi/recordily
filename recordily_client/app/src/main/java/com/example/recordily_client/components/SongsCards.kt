@@ -73,7 +73,7 @@ fun SongCard(data: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Un
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
-            .height(60.dp)
+            .height(65.dp)
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
@@ -129,7 +129,7 @@ private fun SongDetails(data: SongResponse, onSongClick: ()->(Unit)){
             painter = painterResource(R.drawable.recordily_dark_logo),
             contentDescription = "song picture",
             modifier = Modifier
-                .size(50.dp)
+                .size(55.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )

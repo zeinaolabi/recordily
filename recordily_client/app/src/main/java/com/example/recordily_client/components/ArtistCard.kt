@@ -27,7 +27,7 @@ fun ArtistCard(data: ArtistResponse, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
-            .height(60.dp)
+            .height(65.dp)
             .fillMaxWidth()
             .shadow(5.dp)
             .background(MaterialTheme.colors.surface)
@@ -50,7 +50,7 @@ private fun ArtistCardContent(data: ArtistResponse){
             painter = painterResource(R.drawable.recordily_dark_logo),
             contentDescription = "logo",
             modifier = Modifier
-                .size(50.dp)
+                .size(55.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
