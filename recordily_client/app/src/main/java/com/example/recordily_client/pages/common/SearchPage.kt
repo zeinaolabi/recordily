@@ -29,6 +29,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SearchPageViewModel
 
 private val searchInput = mutableStateOf("")
@@ -39,8 +40,10 @@ private val popUpVisibility = mutableStateOf(false)
 fun CommonSearchPage(navController: NavController){
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    searchPageViewModel.getSuggestedResult(limit)
+    searchPageViewModel.getSuggestedResult(token, limit)
 
     Box(
         modifier = Modifier
@@ -61,7 +64,7 @@ fun CommonSearchPage(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
-                SearchPageContent(navController, searchPageViewModel)
+                SearchPageContent(navController, searchPageViewModel, token)
             }
 
             Row(
@@ -87,7 +90,7 @@ fun CommonSearchPage(navController: NavController){
 
 @ExperimentalAnimationApi
 @Composable
-private fun SearchPageContent(navController: NavController, searchPageViewModel: SearchPageViewModel){
+private fun SearchPageContent(navController: NavController, searchPageViewModel: SearchPageViewModel, token: String){
     val searchResult by searchPageViewModel.searchResultLiveData.observeAsState()
     val suggestedResult by searchPageViewModel.suggestedResultLiveData.observeAsState()
 
@@ -104,7 +107,7 @@ private fun SearchPageContent(navController: NavController, searchPageViewModel:
     if (searchInput.value == "") {
         SuggestedContent(navController, suggestedResult)
     } else {
-        searchPageViewModel.getSearchResult(searchInput.value)
+        searchPageViewModel.getSearchResult(token, searchInput.value)
         SearchResultContent(navController, searchResult)
     }
 }

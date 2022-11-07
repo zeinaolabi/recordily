@@ -8,28 +8,28 @@ import retrofit2.http.Header
 import retrofit2.http.Path
 
 interface ArtistAPI {
-    @GET("followed_artists")
+    @GET("auth/followed_artists")
     suspend fun followedArtists(@Header("Authorization") token: String): List<ArtistResponse>
 
-    @GET("get_artist_info/{artist_id}")
+    @GET("auth/get_artist_info/{artist_id}")
     suspend fun getArtist(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): ArtistResponse
 
-    @GET("get_artist_followers/{artist_id}")
+    @GET("auth/get_artist_followers/{artist_id}")
     suspend fun getArtistFollowers(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
 
-    @GET("is_followed/{artist_id}")
+    @GET("auth/is_followed/{artist_id}")
     suspend fun isFollowed(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Boolean
 
-    @GET("follow/{artist_id}")
+    @GET("auth/follow/{artist_id}")
     suspend fun follow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 
-    @GET("unfollow/{artist_id}")
+    @GET("auth/unfollow/{artist_id}")
     suspend fun unfollow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
 
-    @GET("search_followed_artist/{input}")
+    @GET("auth/search_followed_artist/{input}")
     suspend fun searchFollowedArtists(@Header("Authorization") token: String, @Path("input") input: String): List<ArtistResponse>
 
-    @GET("get_artist_albums/{artist_id}/{limit}")
+    @GET("auth/get_artist_albums/{artist_id}/{limit}")
     suspend fun getAlbums(
         @Header("Authorization") token: String,
         @Path("artist_id") artist_id: String,

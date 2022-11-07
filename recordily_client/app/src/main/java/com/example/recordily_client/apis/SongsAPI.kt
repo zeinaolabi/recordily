@@ -7,25 +7,25 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface SongsAPI {
-    @GET("suggested_songs/{limit}")
+    @GET("auth/suggested_songs/{limit}")
     suspend fun suggestedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
-    @GET("recently_played_songs/{limit}")
+    @GET("auth/recently_played_songs/{limit}")
     suspend fun getRecentlyPlayedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
-    @GET("top_liked_songs/{limit}")
+    @GET("auth/top_liked_songs/{limit}")
     suspend fun getTopLikedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
-    @GET("top_played_songs/{limit}")
+    @GET("auth/top_played_songs/{limit}")
     suspend fun getTopPlayedSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
-    @GET("search/{input}")
+    @GET("auth/search/{input}")
     suspend fun searchForSong(@Header("Authorization") token: String, @Path("input") input: String): SearchResponse
 
-    @GET("liked_songs")
+    @GET("auth/liked_songs")
     suspend fun getLikedSongs(@Header("Authorization") token: String): List<SongResponse>
 
-    @GET("search_liked_songs/{input}")
+    @GET("auth/search_liked_songs/{input}")
     suspend fun searchLikedSongs(@Header("Authorization") token: String, @Path("input") input: String): List<SongResponse>
 
     @Multipart

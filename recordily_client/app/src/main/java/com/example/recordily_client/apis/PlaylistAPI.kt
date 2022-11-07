@@ -6,23 +6,23 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface PlaylistAPI {
-    @GET("get_playlists")
+    @GET("auth/get_playlists")
     suspend fun getPlaylists(@Header("Authorization") token: String): List<PlaylistResponse>
 
-    @GET("get_playlist_songs/{playlist_id}")
+    @GET("auth/get_playlist_songs/{playlist_id}")
     suspend fun getPlaylistSongs(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): List<SongResponse>
 
-    @GET("get_playlist/{playlist_id}")
+    @GET("auth/get_playlist/{playlist_id}")
     suspend fun getPlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): PlaylistResponse
 
-    @GET("delete_playlist/{playlist_id}")
+    @GET("auth/delete_playlist/{playlist_id}")
     suspend fun deletePlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String)
 
-    @GET("search_playlists/{input}")
+    @GET("auth/search_playlists/{input}")
     suspend fun searchForPlaylist(@Header("Authorization") token: String, @Path("input") input: String): List<PlaylistResponse>
 
     @Multipart
-    @POST("add_playlist")
+    @POST("auth/add_playlist")
     suspend fun addPlaylist(
         @Header("Authorization") token: String,
         @Part("name") name: String,
@@ -30,7 +30,7 @@ interface PlaylistAPI {
     )
 
     @Multipart
-    @POST("edit_playlist")
+    @POST("auth/edit_playlist")
     suspend fun editPlaylist(
         @Header("Authorization") token: String,
         @Part("playlist_id") playlist_id: String,

@@ -22,13 +22,14 @@ import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun CommonLandingPage(navController: NavController){
-    val loginViewModel : LoginViewModel = viewModel()
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
+    val loginViewModel : LoginViewModel = viewModel()
+    val landingPageViewModel : LandingPageViewModel = viewModel()
+
     val limit = 5
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val landingPageViewModel : LandingPageViewModel = viewModel()
 
     landingPageViewModel.getTopPlayed(token, limit)
     landingPageViewModel.getRecentlyPlayed(token, limit)
