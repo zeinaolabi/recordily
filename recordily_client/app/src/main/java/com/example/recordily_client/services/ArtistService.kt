@@ -1,6 +1,7 @@
 package com.example.recordily_client.services
 
 import com.example.recordily_client.apis.RetrofitInstance
+import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.ArtistResponse
 
 class ArtistService {
@@ -26,5 +27,9 @@ class ArtistService {
 
     suspend fun unfollow(token: String, artist_id: String){
         return RetrofitInstance.artistAPI.unfollow(token, artist_id)
+    }
+
+    suspend fun getAlbums(token: String, artist_id: String, limit: Int): List<AlbumResponse>{
+        return RetrofitInstance.artistAPI.getAlbums(token, artist_id, limit)
     }
 }
