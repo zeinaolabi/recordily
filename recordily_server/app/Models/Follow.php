@@ -8,6 +8,24 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 
+/**
+ * App\Models\Follow
+ *
+ * @property int $id
+ * @property int $follower_id
+ * @property int $followed_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow whereFollowedId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow whereFollowerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Follow whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Follow extends Model
 {
     use HasFactory;
