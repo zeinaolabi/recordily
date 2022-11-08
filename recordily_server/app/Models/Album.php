@@ -23,8 +23,20 @@ class Album extends Model
 
     public static function getAlbums(int $artist_id, int $limit): Collection
     {
+        $is_published = 1;
+
         return self::where("user_id", $artist_id)
+            ->where('is_published', $is_published)
             ->limit($limit)
             ->get();
+    }
+
+    public static function findPublished(int $id): Collection
+    {
+        $is_published = 1;
+
+        return self::where('id', $id)
+            ->where('is_published', $is_published)
+            ->first();
     }
 }

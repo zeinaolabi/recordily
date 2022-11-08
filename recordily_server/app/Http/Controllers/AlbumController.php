@@ -12,7 +12,7 @@ class AlbumController extends Controller
 {
     public function getAlbum(int $album_id): JsonResponse
     {
-        $album = Album::find($album_id);
+        $album = Album::findPublished($album_id);
 
         $album->picture = URL::to($album->picture);
         $album->artist_name = $album->user->name;

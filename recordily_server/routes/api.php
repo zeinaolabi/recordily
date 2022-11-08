@@ -20,11 +20,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
     Route::controller(SongController::class)->group(
         function () {
             Route::post('upload_song', "uploadSong");
-            Route::get('get_songs', "getSongs");
             Route::get('play_song', "playSong");
             Route::get('top_played_songs/{limit}', "getTopPlayedSongs");
             Route::get('top_liked_songs/{limit}', "getTopLikedSongs");
-            Route::get('recently_played_songs/{limit}',"getRecentlyPlayed");
             Route::get('suggested_songs/{limit}', "getSuggestedSongs");
             Route::get('search/{input}',"searchForSong");
             Route::get('liked_songs', "getLikedSongs");
@@ -57,6 +55,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_artist_top_songs/{artist_id}/{limit}', "getArtistTopSongs");
             Route::get('get_artist_songs/{artist_id}/{limit}',"getArtistSongs");
             Route::get('search_followed_artist/{input}',"searchFollowedArtist");
+            Route::get('unreleased_songs/{limit}',"getArtistUnreleasedSongs");
         }
     );
 
@@ -71,6 +70,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
         function () {
             Route::get('get_user_info',"getUserInfo");
             Route::get('get_user_top_songs/{limit}',"getUserTopSongs");
+            Route::get('recently_played_songs/{limit}',"getRecentlyPlayed");
         }
     );
 });

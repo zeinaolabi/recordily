@@ -17,7 +17,6 @@ class UserController extends Controller
     public function getUserInfo(): JsonResponse
     {
         $id = Auth::id();
-
         $user = User::find($id);
 
         return response()->json($user);
@@ -26,7 +25,6 @@ class UserController extends Controller
     public function editProfile(Request $request): JsonResponse
     {
         $id = Auth::id();
-
         $user = User::find($id);
 
         if ($request->file('profile_picture')) {
@@ -65,6 +63,10 @@ class UserController extends Controller
     {
         $id = Auth::id();
         $topSongs = Play::getRecentlyPlayed($id, $limit);
+
+        if($topSongs->isEmpty()){
+            return response()->json([]);
+        }
 
         $result = $this->saveSongs($topSongs);
 

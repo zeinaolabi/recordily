@@ -16,7 +16,6 @@ class ArtistController extends Controller
     public function getFollowedArtists(): JsonResponse
     {
         $id = Auth::id();
-
         $followed_artists = Follow::getFollowedArtists($id);
 
         return response()->json($followed_artists);
@@ -109,10 +108,20 @@ class ArtistController extends Controller
         return response()->json($songs);
     }
 
+    public function getArtistUnreleasedSongs(int $limit): JsonResponse
+    {
+        $id = Auth::id();
+        $songs = Song::getArtistUnreleasedSongs($id, $limit);
+
+        $this->getPicture($songs);
+        $this->getArtistName($songs);
+
+        return response()->json($songs);
+    }
+
     public function searchFollowedArtist(string $input): JsonResponse
     {
         $id = Auth::id();
-
         $artists = Follow::searchFollowedArtists($id, $input);
 
         return response()->json($artists);

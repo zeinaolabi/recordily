@@ -39,7 +39,10 @@ class Song extends Model
 
     public static function getArtistSongs(int $artist_id, int $limit): Collection
     {
-        return self::where("user_id", $artist_id)
+        $is_published = 1;
+
+        return self::where('user_id', $artist_id)
+            ->where('is_published', $is_published)
             ->limit($limit)
             ->get();
     }
@@ -53,5 +56,24 @@ class Song extends Model
             ->orderBy('plays', 'desc')
             ->limit($limit)
             ->pluck('song_id');
+    }
+
+    public static function getArtistUnreleasedSongs(int $id, int $limit): Collection
+    {
+        $not_published = 0;
+
+        return self::where('is_published', $not_published)
+            ->where('user_id', $id)
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function searchForSong(string $input)
+    {
+        $is_published = 1;
+
+        return self::where('is_published', $is_published)->
+        where('name', 'like', '%' . $input . '%')
+            ->get();
     }
 }
