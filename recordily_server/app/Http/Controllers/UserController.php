@@ -41,7 +41,8 @@ class UserController extends Controller
         }
 
         $user->name = $request->get('name') ? str_replace('"', '', $request->get('name')) : $user->name;
-        $user->biography = $request->get('biography') ? str_replace('"', '', $request->get('biography')) : $user->biography;
+        $user->biography = $request->get('biography') ?
+            str_replace('"', '', $request->get('biography')) : $user->biography;
 
         if (!$user->save()) {
             return response()->json('unsuccessfully attempt', 400);
@@ -65,7 +66,7 @@ class UserController extends Controller
         $id = Auth::id();
         $topSongs = Play::getRecentlyPlayed($id, $limit);
 
-        if($topSongs->isEmpty()){
+        if ($topSongs->isEmpty()) {
             return response()->json([]);
         }
 

@@ -33,7 +33,7 @@ class SongController extends Controller
         try {
             $song = $request->file('file')->getContent();
             file_put_contents($song_path . $metadata['chunk_num'], $song);
-//            $audio = new Mp3Info($song, true);
+            //            $audio = new Mp3Info($song, true);
         } catch (Exception $e) {
             return false;
         }
@@ -49,31 +49,31 @@ class SongController extends Controller
         }
 
         return true;
-//
-//        if(count($chunks) == $request->chunk_size){
-//            $audioFile = "";
-//            foreach ($chunks as $chunk){
-//                var_dump($chunks);
-//            }
-//            var_dump($chunk);
-//            file_put_contents($path . '/'. uniqid(), $audioFile);
-//        }
+        //
+        //        if(count($chunks) == $request->chunk_size){
+        //            $audioFile = "";
+        //            foreach ($chunks as $chunk){
+        //                var_dump($chunks);
+        //            }
+        //            var_dump($chunk);
+        //            file_put_contents($path . '/'. uniqid(), $audioFile);
+        //        }
 
 
-//        Song::create([
-//            'name' => $request->name,
-//            'picture' => $request->picture,
-//            'path' => $song_path,
-//            'size' => $song->getSize(),
-//            'type' => $song->extension(),
-//            'time_length' => $audio->duration,
-//            'user_id' => Auth::id(),
-//            'album_id' => $request->album_id
-//        ]);
+        //        Song::create([
+        //            'name' => $request->name,
+        //            'picture' => $request->picture,
+        //            'path' => $song_path,
+        //            'size' => $song->getSize(),
+        //            'type' => $song->extension(),
+        //            'time_length' => $audio->duration,
+        //            'user_id' => Auth::id(),
+        //            'album_id' => $request->album_id
+        //        ]);
 
-//        return response()->json([
-//            "status" => "Successfully saved"
-//        ], 201);
+        //        return response()->json([
+        //            "status" => "Successfully saved"
+        //        ], 201);
     }
 
     public function getTopPlayedSongs(int $limit): JsonResponse
@@ -98,7 +98,7 @@ class SongController extends Controller
     {
         $suggestedSongs = Song::all();
 
-        if($suggestedSongs->isEmpty()){
+        if ($suggestedSongs->isEmpty()) {
             return response()->json([]);
         }
 
