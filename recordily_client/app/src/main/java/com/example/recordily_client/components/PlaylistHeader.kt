@@ -25,7 +25,6 @@ import com.example.recordily_client.responses.PlaylistResponse
 
 @Composable
 fun PlaylistHeader(navController: NavController, playlist: PlaylistResponse){
-    Log.i("image", playlist.picture)
     Row(
         modifier = Modifier.padding(
             vertical = dimensionResource(id = R.dimen.padding_large),

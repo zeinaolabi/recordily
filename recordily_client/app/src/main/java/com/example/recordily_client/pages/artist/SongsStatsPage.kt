@@ -53,8 +53,9 @@ private fun SongsStatsContent(navController: NavController){
 
         TopNavBar(
             pageOptions = pageOptions,
-            currentPage = R.string.songs,
-            navController = navController)
+            currentPage = R.string.song_stats,
+            navController = navController
+        )
 
         SearchResult(navController)
 
