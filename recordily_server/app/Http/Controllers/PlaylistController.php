@@ -36,7 +36,7 @@ class PlaylistController extends Controller
     {
         $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
 
-        $result = $this->saveSongs($songs);
+        $result = Song::FetchSongs($songs);
 
         return response()->json($result);
     }
@@ -132,17 +132,5 @@ class PlaylistController extends Controller
         $search_playlist = Playlist::searchPlaylist($id, $input);
 
         return response()->json($search_playlist);
-    }
-
-    private function saveSongs($song_ids): array
-    {
-        return Song::whereIn('id', $song_ids)
-            ->get()
-            ->each(
-                function (Song $song) {
-                    $song->artist_name = $song->user->name;
-                    unset($song->user);
-                }
-            )->toArray();
     }
 }

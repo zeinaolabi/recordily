@@ -80,7 +80,7 @@ class SongController extends Controller
     {
         $topSongs = Play::getTopSongs("plays", $limit, "plays");
 
-        $result = $this->saveSongs($topSongs);
+        $result = Song::fetchSongs($topSongs);
 
         return response()->json($result);
     }
@@ -89,7 +89,7 @@ class SongController extends Controller
     {
         $topSongs = Like::getTopSongs("likes", $limit, "likes");
 
-        $result = $this->saveSongs($topSongs);
+        $result = Song::fetchSongs($topSongs);
 
         return response()->json($result);
     }
@@ -127,7 +127,7 @@ class SongController extends Controller
         $id = Auth::id();
         $liked_songs = Like::where('user_id', $id)->pluck('song_id');
 
-        $result = $this->saveSongs($liked_songs);
+        $result = Song::fetchSongs($liked_songs);
 
         return response()->json($result);
     }
@@ -140,19 +140,6 @@ class SongController extends Controller
         $this->getArtistName($search_liked);
 
         return response()->json($search_liked);
-    }
-
-    private function saveSongs($song_ids): array
-    {
-        $result = [];
-        $songs = Song::whereIn('id', $song_ids)->get();
-        foreach ($songs as $song) {
-            $song->artist_name = $song->user->name;
-            unset($song->user);
-            $result[] = $song;
-        }
-
-        return $result;
     }
 
     private function getArtistName($songs)
