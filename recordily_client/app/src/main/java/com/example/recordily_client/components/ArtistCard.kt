@@ -48,7 +48,8 @@ private fun ArtistCardContent(artist: UserResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
-            painter = if(artist.profile_picture != ""){
+            painter =
+            if(artist.profile_picture != null && artist.profile_picture != ""){
                 rememberAsyncImagePainter(artist.profile_picture)
             }
             else{
@@ -62,7 +63,7 @@ private fun ArtistCardContent(artist: UserResponse){
         )
 
         Text(
-            text = artist.name,
+            text = artist.name ?: "User Name",
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))

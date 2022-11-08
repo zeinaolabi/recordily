@@ -124,7 +124,7 @@ private fun ArtistProfileContent(
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
             navController = navController,
-            data = topSongs
+            songs = topSongs
         )
 
         SongsCards(

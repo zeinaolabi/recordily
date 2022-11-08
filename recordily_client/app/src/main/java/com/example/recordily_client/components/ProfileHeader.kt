@@ -38,7 +38,7 @@ fun ProfileHeader(navController: NavController, profile: UserResponse){
     ){
         Image(
             painter =
-            if(profile.profile_picture != ""){
+            if(profile.profile_picture != null && profile.profile_picture != ""){
                 rememberAsyncImagePainter(profile.profile_picture)
             }
             else{
@@ -68,7 +68,7 @@ private fun ProfileInfo(navController: NavController, profile: UserResponse){
     ){
         Column{
             Text(
-                text = profile.name,
+                text = profile.name ?: "User Name",
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium)),
@@ -76,7 +76,7 @@ private fun ProfileInfo(navController: NavController, profile: UserResponse){
             )
 
             Text(
-                text = profile.biography,
+                text = profile.biography ?: "Bio",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary

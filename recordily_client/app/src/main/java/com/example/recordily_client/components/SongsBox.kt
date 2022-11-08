@@ -1,8 +1,10 @@
 package com.example.recordily_client.components
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -23,7 +26,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.responses.SongResponse
 
 @Composable
-fun SongsBox(title: String, navController: NavController, data: List<SongResponse>?){
+fun SongsBox(title: String, navController: NavController, songs: List<SongResponse>?){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -46,11 +49,34 @@ fun SongsBox(title: String, navController: NavController, data: List<SongRespons
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
         ){
-            if (data != null) {
-                for (element in data) {
+            if(songs == null || songs.isEmpty()){
+                Column(
+                    modifier = Modifier
+                        .width(330.dp)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.nothing_found),
+                        contentDescription = "not found",
+                        modifier = Modifier.size(60.dp),
+                        tint = Color.Unspecified
+                    )
+
+                    Text(
+                        text = "No songs found",
+                        fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colors.onPrimary
+                        )
+                }
+            }
+            else{
+                for (song in songs) {
                     SongSquareCard(
                         onClick = { navController.navigate(Screen.SongPage.route) },
-                        data = element
+                        song = song
                     )
                 }
             }
@@ -59,7 +85,7 @@ fun SongsBox(title: String, navController: NavController, data: List<SongRespons
 }
 
 @Composable
-private fun SongSquareCard(onClick: () -> (Unit), data: SongResponse){
+private fun SongSquareCard(onClick: () -> (Unit), song: SongResponse){
 
     Column(
         modifier = Modifier
@@ -81,14 +107,14 @@ private fun SongSquareCard(onClick: () -> (Unit), data: SongResponse){
         )
 
         Text(
-            text = data.name,
+            text = song.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             color = MaterialTheme.colors.onPrimary
         )
 
         Text(
-            text = data.artist_name,
+            text = song.artist_name,
             fontWeight = FontWeight.Medium,
             fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             color = MaterialTheme.colors.onPrimary

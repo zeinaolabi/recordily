@@ -4,14 +4,21 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -96,7 +103,28 @@ private fun Artists(navController: NavController, artists: List<UserResponse>?){
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
     ){
-        if (artists != null) {
+        if(artists == null || artists.isEmpty()){
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.nothing_found),
+                    contentDescription = "not found",
+                    modifier = Modifier.size(60.dp),
+                    tint = Color.Unspecified
+                )
+
+                Text(
+                    text = "No Artists found",
+                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
+        else {
             for(artist in artists){
                 ArtistCard(
                     artist = artist,

@@ -74,13 +74,13 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
         SongsBox(
             title = stringResource(id = R.string.suggested),
             navController = navController,
-            data = getSuggestedResponse
+            songs = getSuggestedResponse
         )
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
             navController = navController,
-            data = getTopPlayedResponse
+            songs = getTopPlayedResponse
         )
 
         ArtistsBox(
@@ -91,13 +91,13 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
         SongsBox(
             title = stringResource(id = R.string.top_5_liked_songs),
             navController = navController,
-            data = getTopLikedResponse
+            songs = getTopLikedResponse
         )
 
         SongsBox(
             title = stringResource(id = R.string.recently_played),
             navController = navController,
-            data = getRecentlyPlayedResponse
+            songs = getRecentlyPlayedResponse
         )
     }
 }

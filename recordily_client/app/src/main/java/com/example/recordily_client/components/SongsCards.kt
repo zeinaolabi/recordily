@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -48,7 +49,30 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if (songs != null) {
+        if(songs == null || songs.isEmpty()){
+            Column(
+                modifier = Modifier
+                    .width(330.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.nothing_found),
+                    contentDescription = "not found",
+                    modifier = Modifier.size(60.dp),
+                    tint = Color.Unspecified
+                )
+
+                Text(
+                    text = "No songs found",
+                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colors.onPrimary
+                )
+            }
+        }
+        else{
             for(song in songs){
                 SongCard(
                     song = song,
@@ -56,15 +80,14 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
                     onMoreClick = {onMoreClick()}
                 )
             }
-        }
 
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-        
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
+            )
+        }
     }
 }
 
