@@ -35,6 +35,6 @@ interface PlaylistAPI {
         @Header("Authorization") token: String,
         @Part("playlist_id") playlist_id: String,
         @Part("name") name: String,
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part?
     )
 }
