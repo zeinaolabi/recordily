@@ -26,7 +26,7 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.addPlaylist(token, name, image)
     }
 
-    suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part){
+    suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part?){
         return RetrofitInstance.playlistAPI.editPlaylist(token, playlist_id, name, image)
     }
 

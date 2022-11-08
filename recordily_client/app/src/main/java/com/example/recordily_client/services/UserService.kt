@@ -6,8 +6,9 @@ import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.requests.RegistrationRequest
 import com.example.recordily_client.responses.RegistrationResponse
 import com.example.recordily_client.responses.UserResponse
+import okhttp3.MultipartBody
 
-class UserService{
+class UserService {
     suspend fun login(loginRequest: LoginRequest): LoginResponse {
         return RetrofitInstance.authAPI.login(loginRequest)
     }
@@ -18,5 +19,9 @@ class UserService{
 
     suspend fun getUserInfo(token: String): UserResponse {
         return RetrofitInstance.userAPI.getUserInfo(token)
+    }
+
+    suspend fun editProfile(token: String, name: String, bio: String, image: MultipartBody.Part?) {
+        return RetrofitInstance.userAPI.editProfile(token, name, bio, image)
     }
 }
