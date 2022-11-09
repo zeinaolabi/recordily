@@ -10,6 +10,10 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.getPlaylists(token)
     }
 
+    suspend fun getLimitedPlaylists(token: String, limit: Int): List<PlaylistResponse>{
+        return RetrofitInstance.playlistAPI.getLimitedPlaylists(token, limit)
+    }
+
     suspend fun getPlaylistSongs(token: String, playlist_id: String): List<SongResponse>{
         return RetrofitInstance.playlistAPI.getPlaylistSongs(token, playlist_id)
     }
