@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 
 class Album extends Model
@@ -52,18 +53,32 @@ class Album extends Model
 
     public static function createAlbum(int $id, string $name, string $picture): bool
     {
-        $isCreated = self::create(
+        return self::create(
             [
                 'user_id' => $id,
                 'name' => $name,
                 'picture' => $picture
             ]
         );
+    }
 
-        if (!$isCreated) {
-            return false;
+    public static function publishAlbum(int $album_id): JsonResponse
+    {
+        $published = Album::where('id', $album_id)->update(['is_published' => 1]);
+
+        if ($published === null) {
+            return response()->json("Unsuccessful publish attempt");
         }
 
-        return true;
+        $publish_songs = Song::where('album_id', $album_id)->update(['is_published' => 1]);
+
+        if ($publish_songs === null) {
+            Album::where('id', $album_id)->update(['is_published' => 0]);
+            return response()->json("Unsuccessful publish attempt");
+        }
+
+        return response()->json("Successfully published");
     }
+
+
 }
