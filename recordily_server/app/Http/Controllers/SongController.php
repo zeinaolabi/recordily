@@ -63,22 +63,23 @@ class SongController extends Controller
 
             $size = File::size($song_path . $metadata['song_id']);
 
-            Song::create([
+            Song::create(
+                [
                 'name' => $metadata['name'],
                 'picture' => $picture_path,
                 'path' => $song_path,
-                'type'=> 'test',
+                'type' => 'test',
                 'size' => $size,
                 'time_length' => 123,
                 'user_id' => Auth::id(),
                 'album_id' => $metadata['album_id']
-            ]);
+                ]
+            );
 
             return response()->json("Successfully Uploaded", 201);
         }
 
         return response()->json("Chunk Uploaded Successfully", 201);
-
     }
 
     public function getTopPlayedSongs(int $limit): JsonResponse
@@ -101,12 +102,13 @@ class SongController extends Controller
 
     public function getSuggestedSongs(int $limit): JsonResponse
     {
-        $suggestedSongs = Song::all();
+        $published = 1;
+
+        $suggestedSongs = Song::where('is_published', $published)->get();
 
         if ($suggestedSongs->isEmpty()) {
             return response()->json([]);
-        }
-        else if(count($suggestedSongs) < $limit) {
+        } elseif (count($suggestedSongs) < $limit) {
             $suggestedSongs->random(count($suggestedSongs));
             $this->getArtistName($suggestedSongs);
 
