@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Psy\Util\Json;
 
 class AlbumController extends Controller
 {
@@ -72,6 +73,11 @@ class AlbumController extends Controller
         }
 
         return response()->json('successfully created', 201);
+    }
+
+    public function publishAlbum(int $album_id): JsonResponse
+    {
+        return Album::publishAlbum($album_id);
     }
 
     private function getPicture(Collection $array)
