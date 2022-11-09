@@ -7,5 +7,5 @@ data class UploadSongRequest(
     val chunks_size: Int,
     val chunk_num: Int,
     val song_id: String,
-    val album_id: Int
+    val album_id: Int?
 )

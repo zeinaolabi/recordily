@@ -159,7 +159,7 @@ private fun UploadSongContent(){
                 chunks_size = files.size,
                 chunk_num = index,
                 song_id = songID,
-                album_id = 1)
+                album_id = null)
 
             coroutinesScope.launch {
                 val isCreated = uploadSongViewModel.uploadSong(

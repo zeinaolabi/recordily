@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +22,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.UnreleasedViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun UnreleasedSongsCard(title: String, songs: List<SongResponse>?,destination: ()->(Unit), onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
+fun UnreleasedSongsCard(
+    title: String,
+    songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -38,12 +49,20 @@ fun UnreleasedSongsCard(title: String, songs: List<SongResponse>?,destination: (
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick, onUploadClick)
+        CardsContent(songs, destination, onSongClick, viewModel, token)
     }
 }
 
 @Composable
-private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun CardsContent(
+    songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +77,11 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
                 UnreleasedSongCard(
                     song = song,
                     onSongClick = onSongClick,
-                    onUploadClick = { onUploadClick() }
+                    onUploadClick = {
+                        coroutinesScope.launch {
+                            viewModel.publishSong(token, song.id)
+                        }
+                    }
                 )
             }
 
@@ -110,7 +133,7 @@ fun UnreleasedAlbumSongCard(song: SongResponse, onSongClick: ()->(Unit), onDelet
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .clickable{
+                    .clickable {
                         onDeleteClick()
                     },
                 verticalArrangement = Arrangement.Center
@@ -138,7 +161,7 @@ private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onUploa
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .clickable{
+                .clickable {
                     onUploadClick()
                 },
             verticalArrangement = Arrangement.Center

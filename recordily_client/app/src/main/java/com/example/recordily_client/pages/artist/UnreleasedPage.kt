@@ -49,17 +49,25 @@ fun UnreleasedPage(navController: NavController) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                profile?.let { it1 -> ProfileHeader(navController, it1) }
+                profile?.let { it ->
+                    ProfileHeader(navController, it)
 
-                TopNavBar(
-                    pageOptions = pageOptions,
-                    currentPage = R.string.unreleased,
-                    navController = navController
-                )
+                    TopNavBar(
+                        pageOptions = pageOptions,
+                        currentPage = R.string.unreleased,
+                        navController = navController
+                    )
 
-                AddMusicRow(navController)
+                    AddMusicRow(navController)
 
-                UnreleasedContentColumn(navController, unreleasedSongs, unreleasedAlbums)
+                    UnreleasedContentColumn(
+                        navController,
+                        unreleasedSongs,
+                        unreleasedAlbums,
+                        unreleasedViewModel,
+                        token
+                    )
+                }
             }
         }
     )
@@ -115,7 +123,9 @@ private fun AddMusicRow(navController: NavController){
 private fun UnreleasedContentColumn(
     navController: NavController,
     unreleasedSongs: List<SongResponse>?,
-    unreleasedAlbums: List<AlbumResponse>?
+    unreleasedAlbums: List<AlbumResponse>?,
+    unreleasedViewModel: UnreleasedViewModel,
+    token: String
 ){
     Column(
         modifier = Modifier
@@ -139,9 +149,8 @@ private fun UnreleasedContentColumn(
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
-            onUploadClick = {
-                //Upload Song
-            }
+            viewModel = unreleasedViewModel,
+            token = token
         )
 
         UnreleasedAlbumsCard(

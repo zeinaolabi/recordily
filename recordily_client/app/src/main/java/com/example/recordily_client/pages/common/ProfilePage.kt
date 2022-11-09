@@ -65,20 +65,21 @@ fun CommonProfilePage(navController: NavController){
         ){
             ExitBar( navController, stringResource(id = R.string.profile))
 
-            profile?.let { ProfileHeader(navController, it) }
+            profile?.let {
+                ProfileHeader(navController, it)
 
-            if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
-                TopNavBar(
-                    pageOptions = pageOptions,
-                    currentPage = R.string.profile,
-                    navController = navController
-                )
-            }
-            else{
-                HorizontalLine()
-            }
+                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0) {
+                    TopNavBar(
+                        pageOptions = pageOptions,
+                        currentPage = R.string.profile,
+                        navController = navController
+                    )
+                } else {
+                    HorizontalLine()
+                }
 
-            ProfileContentColumn(navController, topSongs, recentlyPlayedSongs, playlists)
+                ProfileContentColumn(navController, topSongs, recentlyPlayedSongs, playlists)
+            }
         }
 
         AnimatedVisibility(

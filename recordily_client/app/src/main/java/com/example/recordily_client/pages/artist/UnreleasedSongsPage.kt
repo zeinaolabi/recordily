@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -28,6 +29,7 @@ import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 import com.example.recordily_client.view_models.UnreleasedSongsViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
+import kotlinx.coroutines.launch
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -61,7 +63,12 @@ fun UnreleasedSongsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                UnreleasedSongsContent(navController, unreleasedSongs)
+                UnreleasedSongsContent(
+                    navController,
+                    unreleasedSongs,
+                    unreleasedSongsViewModel,
+                    token
+                )
             }
         }
 
@@ -79,7 +86,14 @@ fun UnreleasedSongsPage(navController: NavController){
 }
 
 @Composable
-private fun UnreleasedSongsContent(navController: NavController, unreleasedSongs: List<SongResponse>?){
+private fun UnreleasedSongsContent(
+    navController: NavController,
+    unreleasedSongs: List<SongResponse>?,
+    unreleasedSongsViewModel: UnreleasedSongsViewModel,
+    token: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -100,7 +114,9 @@ private fun UnreleasedSongsContent(navController: NavController, unreleasedSongs
                         )
                     },
                     onUploadClick = {
-                        //Upload Song
+                        coroutinesScope.launch {
+                            unreleasedSongsViewModel.publishSong(token, song.id)
+                        }
                     }
                 )
             }

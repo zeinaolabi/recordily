@@ -73,15 +73,14 @@ private fun CardsContent(
                     onUploadClick = { onUploadClick() }
                 )
             }
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
+            )
         }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-
     }
 }
 
