@@ -7,10 +7,13 @@ import retrofit2.http.*
 
 interface UserAPI {
     @GET("auth/get_user_info")
-    suspend fun getUserInfo(@Header("Authorization") token: String): UserResponse
+    suspend fun getInfo(@Header("Authorization") token: String): UserResponse
 
     @GET("auth/get_user_top_songs/{limit}")
-    suspend fun getUserTopSongs(@Header("Authorization") token: String, limit: Int): List<SongResponse>
+    suspend fun getTopSongs(@Header("Authorization") token: String, limit: Int): List<SongResponse>
+
+    @GET("auth/recently_played_songs/{limit}")
+    suspend fun getRecentlyPlayed(@Header("Authorization") token: String, limit: Int): List<SongResponse>
 
     @Multipart
     @POST("auth/edit_profile")
