@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('like', "likeSong");
             Route::get('search_liked_songs/{input}', "searchLikedSongs");
             Route::get('unreleased_songs/{limit}',"getUnreleasedSongs");
+            Route::get('publish_song/{song_id}',"publishSong");
         }
     );
 
