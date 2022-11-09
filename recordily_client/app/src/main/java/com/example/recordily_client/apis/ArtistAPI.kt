@@ -9,25 +9,45 @@ import retrofit2.http.Path
 
 interface ArtistAPI {
     @GET("auth/followed_artists")
-    suspend fun followedArtists(@Header("Authorization") token: String): List<UserResponse>
+    suspend fun followedArtists(
+        @Header("Authorization") token: String
+    ): List<UserResponse>
 
     @GET("auth/get_artist_info/{artist_id}")
-    suspend fun getArtist(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): UserResponse
+    suspend fun getArtist(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String
+    ): UserResponse
 
     @GET("auth/get_artist_followers/{artist_id}")
-    suspend fun getArtistFollowers(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Int
+    suspend fun getArtistFollowers(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String
+    ): Int
 
     @GET("auth/is_followed/{artist_id}")
-    suspend fun isFollowed(@Header("Authorization") token: String, @Path("artist_id") artist_id: String): Boolean
+    suspend fun isFollowed(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String
+    ): Boolean
 
     @GET("auth/follow/{artist_id}")
-    suspend fun follow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
+    suspend fun follow(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String
+    )
 
     @GET("auth/unfollow/{artist_id}")
-    suspend fun unfollow(@Header("Authorization") token: String, @Path("artist_id") artist_id: String)
+    suspend fun unfollow(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String
+    )
 
     @GET("auth/search_followed_artist/{input}")
-    suspend fun searchFollowedArtists(@Header("Authorization") token: String, @Path("input") input: String): List<UserResponse>
+    suspend fun searchFollowedArtists(
+        @Header("Authorization") token: String,
+        @Path("input") input: String
+    ): List<UserResponse>
 
     @GET("auth/get_artist_albums/{artist_id}/{limit}")
     suspend fun getAlbums(
