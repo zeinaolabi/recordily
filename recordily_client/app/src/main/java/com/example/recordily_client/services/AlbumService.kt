@@ -21,4 +21,8 @@ class AlbumService {
     suspend fun addAlbum(token: String, name: String, image: MultipartBody.Part){
         return RetrofitInstance.albumAPI.createAlbum(token, name, image)
     }
+
+    suspend fun publishAlbum(token: String, album_id: Int){
+        return RetrofitInstance.albumAPI.publishAlbum(token, album_id)
+    }
 }
