@@ -47,4 +47,8 @@ class SongService {
     suspend fun getUnreleasedSong(token: String, limit: Int): List<SongResponse>{
         return RetrofitInstance.songAPI.getUnreleasedSongs(token, limit)
     }
+
+    suspend fun publishSong(token: String, song_id: Int) {
+        return RetrofitInstance.songAPI.publishSong(token, song_id)
+    }
 }
