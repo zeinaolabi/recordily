@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use wapmorgan\Mp3Info\Mp3Info;
 
 class SongController extends Controller
 {
-    public function uploadSong(Request $request): bool
+    /**
+     * @throws Exception
+     */
+    public function uploadSong(Request $request): JsonResponse
     {
         $metadata = json_decode($request->get('metadata'), true);
 
@@ -35,12 +39,11 @@ class SongController extends Controller
         try {
             $song = $request->file('file')->getContent();
             file_put_contents($song_path . $metadata['chunk_num'], $song);
-            //            $audio = new Mp3Info($song, true);
         } catch (Exception $e) {
-            return false;
+            return response()->json($e, 400);
         }
 
-        $chunks = Storage::disk('uploads')->files($metadata['user_id'] . '/' . $metadata['song_id']);
+        $chunks = Storage::disk('uploads')->files($metadata['user_id'] . '/' . $metadata['song_id'] . '/');
 
         if (count($chunks) == $metadata['chunks_size']) {
             for ($i = 0; $i < count($chunks); $i++) {
@@ -48,34 +51,34 @@ class SongController extends Controller
                 file_put_contents($song_path . $metadata['song_id'], $contents, FILE_APPEND);
                 File::delete($song_path . $i);
             }
+
+            try {
+                $picture = $request->file('picture');
+
+                $picture_path = '/images/' . $metadata['user_id'] . '/' . uniqid() . '.' . $picture->extension();
+                file_put_contents(public_path() . $picture_path, $picture->getContent());
+            } catch (Exception $e) {
+                return response()->json(['error' => $e], 400);
+            }
+
+            $size = File::size($song_path . $metadata['song_id']);
+
+            Song::create([
+                'name' => $metadata['name'],
+                'picture' => $picture_path,
+                'path' => $song_path,
+                'type'=> 'test',
+                'size' => $size,
+                'time_length' => 123,
+                'user_id' => Auth::id(),
+                'album_id' => $metadata['album_id']
+            ]);
+
+            return response()->json("Successfully Uploaded", 201);
         }
 
-        return true;
-        //
-        //        if(count($chunks) == $request->chunk_size){
-        //            $audioFile = "";
-        //            foreach ($chunks as $chunk){
-        //                var_dump($chunks);
-        //            }
-        //            var_dump($chunk);
-        //            file_put_contents($path . '/'. uniqid(), $audioFile);
-        //        }
+        return response()->json("Chunk Uploaded Successfully", 201);
 
-
-        //        Song::create([
-        //            'name' => $request->name,
-        //            'picture' => $request->picture,
-        //            'path' => $song_path,
-        //            'size' => $song->getSize(),
-        //            'type' => $song->extension(),
-        //            'time_length' => $audio->duration,
-        //            'user_id' => Auth::id(),
-        //            'album_id' => $request->album_id
-        //        ]);
-
-        //        return response()->json([
-        //            "status" => "Successfully saved"
-        //        ], 201);
     }
 
     public function getTopPlayedSongs(int $limit): JsonResponse
@@ -102,6 +105,12 @@ class SongController extends Controller
 
         if ($suggestedSongs->isEmpty()) {
             return response()->json([]);
+        }
+        else if(count($suggestedSongs) < $limit) {
+            $suggestedSongs->random(count($suggestedSongs));
+            $this->getArtistName($suggestedSongs);
+
+            return response()->json($suggestedSongs);
         }
 
         $suggestedSongs->random($limit);
@@ -165,6 +174,7 @@ class SongController extends Controller
     {
         foreach ($songs as $song) {
             $song->artist_name = $song->user->name;
+            $song->picture = URL::to($song->picture);
             unset($song->user);
         }
     }
