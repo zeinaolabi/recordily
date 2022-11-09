@@ -51,4 +51,8 @@ class SongService {
     suspend fun publishSong(token: String, song_id: Int) {
         return RetrofitInstance.songAPI.publishSong(token, song_id)
     }
+
+    suspend fun deleteFromAlbum(token: String, song_id: Int) {
+        return RetrofitInstance.songAPI.deleteFromAlbum(token, song_id)
+    }
 }
