@@ -49,4 +49,21 @@ class Album extends Model
             ->limit($limit)
             ->get();
     }
+
+    public static function createAlbum(int $id, string $name, string $picture): bool
+    {
+        $isCreated = self::create(
+            [
+                'user_id' => $id,
+                'name' => $name,
+                'picture' => $picture
+            ]
+        );
+
+        if (!$isCreated) {
+            return false;
+        }
+
+        return true;
+    }
 }
