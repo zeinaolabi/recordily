@@ -29,5 +29,4 @@ class SearchPageViewModel: ViewModel(){
             suggestedResult.postValue(songService.getSuggested(token, limit))
         }
     }
-
 }
