@@ -5,6 +5,7 @@ import com.example.recordily_client.responses.LoginResponse
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.requests.RegistrationRequest
 import com.example.recordily_client.responses.RegistrationResponse
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
 import okhttp3.MultipartBody
 
@@ -23,5 +24,9 @@ class UserService {
 
     suspend fun editProfile(token: String, name: String, bio: String, image: MultipartBody.Part?) {
         return RetrofitInstance.userAPI.editProfile(token, name, bio, image)
+    }
+
+    suspend fun getUserTopSongs(token: String, limit: Int): List<SongResponse> {
+        return RetrofitInstance.userAPI.getUserTopSongs(token, limit)
     }
 }
