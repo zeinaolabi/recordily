@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -64,6 +65,7 @@ class Song extends Model
 
         return self::where('is_published', $not_published)
             ->where('user_id', $id)
+            ->where('album_id', null)
             ->limit($limit)
             ->get();
     }
@@ -87,5 +89,16 @@ class Song extends Model
                     unset($song->user);
                 }
             )->toArray();
+    }
+
+    public static function publishSong(int $song_id): JsonResponse
+    {
+        $isPublished = Song::where('id', $song_id)->update(['is_published' => 1]);
+
+        if ($isPublished === null) {
+            return response()->json("Unsuccessful publish attempt");
+        }
+
+        return response()->json("Successfully published");
     }
 }

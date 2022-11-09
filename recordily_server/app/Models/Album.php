@@ -79,6 +79,4 @@ class Album extends Model
 
         return response()->json("Successfully published");
     }
-
-
 }
