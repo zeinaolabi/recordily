@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.UserService
 import kotlinx.coroutines.launch
@@ -15,9 +16,19 @@ class ProfileViewModel: ViewModel() {
     val userInfoResultLiveData: LiveData<UserResponse>
         get() = userInfoResult
 
+    private val userTopResult = MutableLiveData<List<SongResponse>>()
+    val userTopResultLiveData: LiveData<List<SongResponse>>
+        get() = userTopResult
+
     fun getUserInfo(token: String){
         viewModelScope.launch {
             userInfoResult.postValue(service.getUserInfo(token))
+        }
+    }
+
+    fun getUserTopSongs(token: String, limit: Int){
+        viewModelScope.launch {
+            userTopResult.postValue(service.getUserTopSongs(token, limit))
         }
     }
 }

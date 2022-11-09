@@ -37,6 +37,7 @@ private val popUpVisibility = mutableStateOf(false)
 @ExperimentalAnimationApi
 @Composable
 fun CommonProfilePage(navController: NavController){
+    val limit = 3
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
@@ -45,8 +46,10 @@ fun CommonProfilePage(navController: NavController){
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
     profileViewModel.getUserInfo(token)
+    profileViewModel.getUserTopSongs(token, limit)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
+    val topSongs by profileViewModel.userTopResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -71,7 +74,7 @@ fun CommonProfilePage(navController: NavController){
                 HorizontalLine()
             }
 
-            ProfileContentColumn(navController)
+            topSongs?.let { ProfileContentColumn(navController, it) }
         }
 
         AnimatedVisibility(
@@ -90,7 +93,7 @@ fun CommonProfilePage(navController: NavController){
 
 
 @Composable
-private fun ProfileContentColumn(navController: NavController){
+private fun ProfileContentColumn(navController: NavController, topSongs: List<SongResponse>){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -98,9 +101,7 @@ private fun ProfileContentColumn(navController: NavController){
     ){
         SongsCards(
             title = stringResource(id = R.string.top_songs),
-            songs = listOf(SongResponse(1,"",1,"","","",1,
-                1,"","",1,"")
-            ),
+            songs = topSongs,
             destination = {
                 navigateTo(
                     navController = navController,
