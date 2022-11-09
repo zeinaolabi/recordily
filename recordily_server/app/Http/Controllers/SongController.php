@@ -9,9 +9,11 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class SongController extends Controller
 {
@@ -132,6 +134,17 @@ class SongController extends Controller
         return response()->json($result);
     }
 
+    public function getUnreleasedSongs(int $limit): JsonResponse
+    {
+        $id = Auth::id();
+        $songs = Song::getArtistUnreleasedSongs($id, $limit);
+
+        $this->getPicture($songs);
+        $this->getArtistName($songs);
+
+        return response()->json($songs);
+    }
+
     public function searchLikedSongs(string $input): JsonResponse
     {
         $id = Auth::id();
@@ -142,6 +155,12 @@ class SongController extends Controller
         return response()->json($search_liked);
     }
 
+    private function getPicture(Collection $array)
+    {
+        foreach ($array as $data) {
+            $data->picture = URL::to($data->picture);
+        }
+    }
     private function getArtistName($songs)
     {
         foreach ($songs as $song) {

@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Song;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
 class AlbumController extends Controller
@@ -29,6 +30,17 @@ class AlbumController extends Controller
         $this->getArtistName($songs);
 
         return response()->json($songs);
+    }
+
+    public function getUnreleasedAlbums(int $limit): JsonResponse
+    {
+        $id = Auth::id();
+        $albums = Album::getArtistUnreleasedAlbums($id, $limit);
+
+        $this->getPicture($albums);
+        $this->getArtistName($albums);
+
+        return response()->json($albums);
     }
 
 //        public function createAlbum(): JsonResponse
