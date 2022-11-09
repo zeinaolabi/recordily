@@ -55,8 +55,9 @@ interface SongsAPI {
     ): List<SongResponse>
 
     @Multipart
-    @POST("upload_song")
+    @POST("auth/upload_song")
     suspend fun uploadSong(
+        @Header("Authorization") token: String,
         @Part("metadata") uploadSongRequest: UploadSongRequest,
         @Part file: MultipartBody.Part
     )

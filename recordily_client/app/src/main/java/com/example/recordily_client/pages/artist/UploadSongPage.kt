@@ -80,6 +80,7 @@ private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
     val uploadSongViewModel: UploadSongViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
     Image(
         painter = painterResource(id = logo),
@@ -106,16 +107,16 @@ private fun UploadSongContent(){
         val files = splitFile(chunks)
         val songID = System.currentTimeMillis().toString() + id
 
-
         files.forEachIndexed { index, file ->
-            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", files.size, index, songID)
+            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", files.size, index, songID, 1)
 
             uploadSongViewModel.uploadSong(
+                token,
                 uploadSongRequest,
                 MultipartBody.Part.createFormData("file", songName.value, RequestBody.create("audio/*".toMediaTypeOrNull(), file))
             )
 
-            file.delete()
+//            file.delete()
         }
     })
 }
@@ -189,6 +190,7 @@ private fun PickAudioRow(){
 
             fileName.value = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
             val file = File(dir, fileName.value)
+            file.createNewFile()
 
             chunks = file
 
@@ -223,21 +225,21 @@ private fun PickAudioRow(){
 
 fun splitFile(file: File): ArrayList<File> {
     var partCounter = 1
-
     val sizeOfFiles = 1024 * 100
-    val buffer = ByteArray(sizeOfFiles)
-    val fileName: String = file.getName()
 
+    val buffer = ByteArray(sizeOfFiles)
+    val fileName: String = file.name
     val fileList = ArrayList<File>()
+
     FileInputStream(file).use { fis ->
         BufferedInputStream(fis).use { bis ->
-
             var bytesAmount = 0
             while (bis.read(buffer).also { it -> bytesAmount = it } > 0) {
 
                 //Write each chunk of data into separate file with different number in name
                 val filePartName = String.format("%s.%03d", fileName, partCounter++)
                 val newFile = File(file.parent, filePartName)
+
                 newFile.createNewFile()
                 FileOutputStream(newFile).use { out -> out.write(buffer, 0, bytesAmount) }
 
