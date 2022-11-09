@@ -10,10 +10,10 @@ interface UserAPI {
     suspend fun getInfo(@Header("Authorization") token: String): UserResponse
 
     @GET("auth/get_user_top_songs/{limit}")
-    suspend fun getTopSongs(@Header("Authorization") token: String, limit: Int): List<SongResponse>
+    suspend fun getTopSongs(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @GET("auth/recently_played_songs/{limit}")
-    suspend fun getRecentlyPlayed(@Header("Authorization") token: String, limit: Int): List<SongResponse>
+    suspend fun getRecentlyPlayed(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
 
     @Multipart
     @POST("auth/edit_profile")
