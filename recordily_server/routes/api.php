@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('search_liked_songs/{input}', "searchLikedSongs");
             Route::get('unreleased_songs/{limit}',"getUnreleasedSongs");
             Route::get('publish_song/{song_id}',"publishSong");
+            Route::get('delete_song_from_album/{song_id}',"deleteSongFromAlbum");
         }
     );
 
