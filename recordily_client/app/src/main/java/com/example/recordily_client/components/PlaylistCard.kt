@@ -44,8 +44,7 @@ private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination:
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .verticalScroll(ScrollState(0)),
+            .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         if (playlists != null) {

@@ -45,15 +45,14 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .verticalScroll(ScrollState(0)),
+            .height(260.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         if(songs == null || songs.isEmpty()){
             Column(
                 modifier = Modifier
                     .width(330.dp)
-                    .fillMaxSize(),
+                    .height(270.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){

@@ -46,8 +46,7 @@ private fun AlbumsCardContent(albums: List<AlbumResponse>, navController: NavCon
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .verticalScroll(ScrollState(0)),
+            .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         for(album in albums){
