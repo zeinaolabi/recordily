@@ -56,9 +56,9 @@ class UserController extends Controller
         $id = Auth::id();
         $songs = Play::getUserTopSongs($id, $limit);
 
-        $this->saveSongs($songs);
+        $result = Song::fetchSongs($songs);
 
-        return response()->json($songs);
+        return response()->json($result);
     }
 
     public function getRecentlyPlayed(int $limit): JsonResponse
@@ -66,27 +66,9 @@ class UserController extends Controller
         $id = Auth::id();
         $topSongs = Play::getRecentlyPlayed($id, $limit);
 
-        if ($topSongs->isEmpty()) {
-            return response()->json([]);
-        }
-
-        $result = $this->saveSongs($topSongs);
+        $result = Song::fetchSongs($topSongs);
 
         return response()->json($result);
-    }
-
-    private function saveSongs($song_ids): array
-    {
-        $result = [];
-        $songs = Song::whereIn('id', $song_ids)->get();
-        foreach ($songs as $song) {
-            $song->artist_name = $song->user->name;
-            $song->picture = URL::to($song->picture);
-            unset($song->user);
-            $result[] = $song;
-        }
-
-        return $result;
     }
 
     private function getPicture(Collection $array)

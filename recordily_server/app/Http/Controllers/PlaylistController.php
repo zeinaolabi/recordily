@@ -32,6 +32,16 @@ class PlaylistController extends Controller
         return response()->json($playlists);
     }
 
+    public function getLimitedPlaylists(int $limit): JsonResponse
+    {
+        $playlists = Playlist::where('user_id', $this->authManager->guard()->id())
+            ->limit($limit)
+            ->get()
+            ->each(fn(Playlist $playlist) => $playlist->picture = $this->urlGenerator->to($playlist->picture));
+
+        return response()->json($playlists);
+    }
+
     public function getPlaylistSongs(int $playlist_id): JsonResponse
     {
         $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
