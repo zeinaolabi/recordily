@@ -18,15 +18,19 @@ class UserService {
         return RetrofitInstance.authAPI.register(registrationRequest)
     }
 
-    suspend fun getUserInfo(token: String): UserResponse {
-        return RetrofitInstance.userAPI.getUserInfo(token)
+    suspend fun getInfo(token: String): UserResponse {
+        return RetrofitInstance.userAPI.getInfo(token)
     }
 
     suspend fun editProfile(token: String, name: String, bio: String, image: MultipartBody.Part?) {
         return RetrofitInstance.userAPI.editProfile(token, name, bio, image)
     }
 
-    suspend fun getUserTopSongs(token: String, limit: Int): List<SongResponse> {
-        return RetrofitInstance.userAPI.getUserTopSongs(token, limit)
+    suspend fun getTopSongs(token: String, limit: Int): List<SongResponse> {
+        return RetrofitInstance.userAPI.getTopSongs(token, limit)
+    }
+
+    suspend fun getRecentlyPlayed(token: String, limit: Int): List<SongResponse> {
+        return RetrofitInstance.userAPI.getRecentlyPlayed(token, limit)
     }
 }
