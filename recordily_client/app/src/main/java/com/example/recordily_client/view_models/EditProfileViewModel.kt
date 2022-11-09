@@ -20,7 +20,7 @@ class EditProfileViewModel: ViewModel() {
 
     fun getUserInfo(token: String) {
         viewModelScope.launch {
-            userInfoResult.postValue(service.getUserInfo(token))
+            userInfoResult.postValue(service.getInfo(token))
         }
     }
 

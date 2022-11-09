@@ -48,10 +48,12 @@ fun CommonProfilePage(navController: NavController){
     profileViewModel.getInfo(token)
     profileViewModel.getTopSongs(token, limit)
     profileViewModel.getRecentlyPlayed(token, limit)
+    profileViewModel.getPlaylists(token, limit)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
     val topSongs by profileViewModel.topSongsResultLiveData.observeAsState()
     val recentlyPlayedSongs by profileViewModel.recentlyPlayedResultLiveData.observeAsState()
+    val playlists by profileViewModel.playlistsResultResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -76,7 +78,7 @@ fun CommonProfilePage(navController: NavController){
                 HorizontalLine()
             }
 
-            ProfileContentColumn(navController, topSongs, recentlyPlayedSongs)
+            ProfileContentColumn(navController, topSongs, recentlyPlayedSongs, playlists)
         }
 
         AnimatedVisibility(
@@ -95,7 +97,12 @@ fun CommonProfilePage(navController: NavController){
 
 
 @Composable
-private fun ProfileContentColumn(navController: NavController, topSongs: List<SongResponse>?, recentlyPlayedSongs: List<SongResponse>?){
+private fun ProfileContentColumn(
+    navController: NavController,
+    topSongs: List<SongResponse>?,
+    recentlyPlayedSongs: List<SongResponse>?,
+    playlists: List<PlaylistResponse>?
+){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -147,10 +154,7 @@ private fun ProfileContentColumn(navController: NavController, topSongs: List<So
 
         PlaylistsCard(
             title = stringResource(id = R.string.playlists),
-            playlists = listOf(
-                PlaylistResponse("", 1, "", "", "", 1)
-            )
-            ,
+            playlists = playlists,
             destination = {
                 navigateTo(
                     navController = navController,

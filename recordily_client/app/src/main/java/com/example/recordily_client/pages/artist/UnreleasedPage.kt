@@ -30,7 +30,7 @@ fun UnreleasedPage(navController: NavController) {
     val profileViewModel: ProfileViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    profileViewModel.getUserInfo(token)
+    profileViewModel.getInfo(token)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
 
