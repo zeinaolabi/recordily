@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
@@ -28,6 +29,9 @@ object RetrofitInstance {
         client.addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         })
+       client.connectTimeout(30, TimeUnit.SECONDS)
+             .writeTimeout(30, TimeUnit.SECONDS)
+             .readTimeout(30, TimeUnit.SECONDS)
 
         return client.build()
     }

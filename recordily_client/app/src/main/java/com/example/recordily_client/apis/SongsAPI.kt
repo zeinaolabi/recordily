@@ -54,6 +54,12 @@ interface SongsAPI {
         @Path("limit") limit: Int
     ): List<SongResponse>
 
+    @GET("auth/publish_song/{song_id}")
+    suspend fun publishSong(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: Int
+    )
+
     @Multipart
     @POST("auth/upload_song")
     suspend fun uploadSong(
