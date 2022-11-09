@@ -35,9 +35,6 @@ private val popUpVisibility = mutableStateOf(false)
 @Composable
 fun UnreleasedSongsPage(navController: NavController){
     val limit = 40
-    val pageOptions = listOf(
-        TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
-    )
     val loginViewModel: LoginViewModel = viewModel()
     val unreleasedSongsViewModel: UnreleasedSongsViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
