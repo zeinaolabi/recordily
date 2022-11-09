@@ -18,6 +18,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
@@ -36,9 +37,11 @@ fun UnreleasedPage(navController: NavController) {
 
     profileViewModel.getInfo(token)
     unreleasedViewModel.getUnreleasedSongs(token, limit)
+    unreleasedViewModel.getUnreleasedAlbums(token, limit)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
     val unreleasedSongs by unreleasedViewModel.unreleasedSongsResultLiveData.observeAsState()
+    val unreleasedAlbums by unreleasedViewModel.unreleasedAlbumsResultLiveData.observeAsState()
 
     Scaffold(
         topBar = { ExitBar(navController, stringResource(id = R.string.profile)) },
@@ -56,7 +59,7 @@ fun UnreleasedPage(navController: NavController) {
 
                 AddMusicRow(navController)
 
-                UnreleasedContentColumn(navController, unreleasedSongs)
+                UnreleasedContentColumn(navController, unreleasedSongs, unreleasedAlbums)
             }
         }
     )
@@ -109,7 +112,11 @@ private fun AddMusicRow(navController: NavController){
 }
 
 @Composable
-private fun UnreleasedContentColumn(navController: NavController, unreleasedSongs: List<SongResponse>?){
+private fun UnreleasedContentColumn(
+    navController: NavController,
+    unreleasedSongs: List<SongResponse>?,
+    unreleasedAlbums: List<AlbumResponse>?
+){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -139,6 +146,7 @@ private fun UnreleasedContentColumn(navController: NavController, unreleasedSong
 
         UnreleasedAlbumsCard(
             title = stringResource(id = R.string.unreleased_albums),
+            albums = unreleasedAlbums,
             destination = {
                 navigateTo(
                     navController = navController,

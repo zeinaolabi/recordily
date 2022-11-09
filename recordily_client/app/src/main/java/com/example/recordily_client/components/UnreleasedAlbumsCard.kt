@@ -20,9 +20,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
-fun UnreleasedAlbumsCard(title: String, destination: ()->(Unit), onAlbumClick: ()->(Unit),onUploadClick: () -> (Unit)){
+fun UnreleasedAlbumsCard(
+    title: String,
+    albums: List<AlbumResponse>?,
+    destination: ()->(Unit),
+    onAlbumClick: ()->(Unit),
+    onUploadClick: () -> (Unit)
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -34,12 +41,17 @@ fun UnreleasedAlbumsCard(title: String, destination: ()->(Unit), onAlbumClick: (
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(destination, onAlbumClick, onUploadClick)
+        CardsContent(albums, destination, onAlbumClick, onUploadClick)
     }
 }
 
 @Composable
-private fun CardsContent(destination: ()->(Unit), onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun CardsContent(
+    albums: List<AlbumResponse>?,
+    destination: ()->(Unit),
+    onAlbumClick: ()->(Unit),
+    onUploadClick: () -> (Unit)
+){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,11 +59,15 @@ private fun CardsContent(destination: ()->(Unit), onAlbumClick: ()->(Unit), onUp
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            UnreleasedAlbumCard(
-                onAlbumClick = onAlbumClick,
-                onUploadClick = {onUploadClick()}
-            )
+        if(albums == null || albums.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_albums_found))
+        } else {
+            for (album in albums) {
+                UnreleasedAlbumCard(
+                    onAlbumClick = onAlbumClick,
+                    onUploadClick = { onUploadClick() }
+                )
+            }
         }
 
         SmallTealButton(
@@ -92,7 +108,7 @@ private fun AlbumCardContent(onAlbumClick: ()->(Unit), onUploadClick: () -> (Uni
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .clickable{
+                .clickable {
                     onUploadClick()
                 },
             verticalArrangement = Arrangement.Center

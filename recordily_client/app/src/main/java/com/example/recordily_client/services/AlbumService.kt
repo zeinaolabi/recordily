@@ -12,4 +12,8 @@ class AlbumService {
     suspend fun getAlbumSongs(token: String, album_id: String): List<SongResponse>{
         return RetrofitInstance.albumAPI.getAlbumSongs(token, album_id)
     }
+
+    suspend fun getUnreleasedAlbum(token: String, limit: Int): List<AlbumResponse>{
+        return RetrofitInstance.albumAPI.getUnreleasedAlbums(token, limit)
+    }
 }
