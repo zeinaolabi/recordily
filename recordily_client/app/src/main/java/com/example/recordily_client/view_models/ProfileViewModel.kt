@@ -16,19 +16,29 @@ class ProfileViewModel: ViewModel() {
     val userInfoResultLiveData: LiveData<UserResponse>
         get() = userInfoResult
 
-    private val userTopResult = MutableLiveData<List<SongResponse>>()
-    val userTopResultLiveData: LiveData<List<SongResponse>>
-        get() = userTopResult
+    private val topSongsResult = MutableLiveData<List<SongResponse>>()
+    val topSongsResultLiveData: LiveData<List<SongResponse>>
+        get() = topSongsResult
 
-    fun getUserInfo(token: String){
+    private val recentlyPlayedResult = MutableLiveData<List<SongResponse>>()
+    val recentlyPlayedResultLiveData: LiveData<List<SongResponse>>
+        get() = recentlyPlayedResult
+
+    fun getInfo(token: String){
         viewModelScope.launch {
-            userInfoResult.postValue(service.getUserInfo(token))
+            userInfoResult.postValue(service.getInfo(token))
         }
     }
 
-    fun getUserTopSongs(token: String, limit: Int){
+    fun getTopSongs(token: String, limit: Int){
         viewModelScope.launch {
-            userTopResult.postValue(service.getUserTopSongs(token, limit))
+            topSongsResult.postValue(service.getTopSongs(token, limit))
+        }
+    }
+
+    fun getRecentlyPlayed(token: String, limit: Int){
+        viewModelScope.launch {
+            recentlyPlayedResult.postValue(service.getTopSongs(token, limit))
         }
     }
 }

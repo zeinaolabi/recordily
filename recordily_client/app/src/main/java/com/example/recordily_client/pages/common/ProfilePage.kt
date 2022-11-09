@@ -45,11 +45,13 @@ fun CommonProfilePage(navController: NavController){
     val profileViewModel: ProfileViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    profileViewModel.getUserInfo(token)
-    profileViewModel.getUserTopSongs(token, limit)
+    profileViewModel.getInfo(token)
+    profileViewModel.getTopSongs(token, limit)
+    profileViewModel.getRecentlyPlayed(token, limit)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
-    val topSongs by profileViewModel.userTopResultLiveData.observeAsState()
+    val topSongs by profileViewModel.topSongsResultLiveData.observeAsState()
+    val recentlyPlayedSongs by profileViewModel.recentlyPlayedResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -74,7 +76,7 @@ fun CommonProfilePage(navController: NavController){
                 HorizontalLine()
             }
 
-            topSongs?.let { ProfileContentColumn(navController, it) }
+            ProfileContentColumn(navController, topSongs, recentlyPlayedSongs)
         }
 
         AnimatedVisibility(
@@ -93,7 +95,7 @@ fun CommonProfilePage(navController: NavController){
 
 
 @Composable
-private fun ProfileContentColumn(navController: NavController, topSongs: List<SongResponse>){
+private fun ProfileContentColumn(navController: NavController, topSongs: List<SongResponse>?, recentlyPlayedSongs: List<SongResponse>?){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -123,10 +125,7 @@ private fun ProfileContentColumn(navController: NavController, topSongs: List<So
 
         SongsCards(
             title = stringResource(id = R.string.recently_played),
-            songs = listOf(
-                SongResponse(1,"",1,"","","",1,
-                1,"","",1,"")
-            ),
+            songs = recentlyPlayedSongs,
             destination = {
                 navigateTo(
                     navController = navController,
