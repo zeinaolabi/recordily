@@ -34,9 +34,9 @@ class UnreleasedAlbumViewModel: ViewModel() {
         }
     }
 
-    suspend fun publishSong(token: String, song_id: Int): Boolean {
+    suspend fun deleteFromAlbum(token: String, song_id: Int): Boolean {
         return try {
-            songService.publishSong(token, song_id)
+            songService.deleteFromAlbum(token, song_id)
             true
         } catch (exception: Throwable) {
             false
