@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_album_songs/{album_id}',"getAlbumSongs");
             Route::get('unreleased_albums/{limit}',"getUnreleasedAlbums");
             Route::post('create_album',"addAlbum");
+            Route::get('publish_album/{limit}',"publishAlbum");
         }
     );
 
