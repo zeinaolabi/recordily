@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
     Route::controller(PlaylistController::class)->group(
         function () {
             Route::get('get_playlists', "getPlaylists");
+            Route::get('get_limited_playlists/{limit}', "getLimitedPlaylists");
             Route::get('get_playlist_songs/{playlist_id}',"getPlaylistSongs");
             Route::post('add_playlist', "addPlaylist");
             Route::get('get_playlist/{playlist_id}',"getPlaylistInfo");
