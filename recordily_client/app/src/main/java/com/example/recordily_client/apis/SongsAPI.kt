@@ -54,6 +54,12 @@ interface SongsAPI {
         @Path("limit") limit: Int
     ): List<SongResponse>
 
+    @GET("auth/delete_song_from_album/{song_id}")
+    suspend fun deleteFromAlbum(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: Int
+    )
+
     @GET("auth/publish_song/{song_id}")
     suspend fun publishSong(
         @Header("Authorization") token: String,
