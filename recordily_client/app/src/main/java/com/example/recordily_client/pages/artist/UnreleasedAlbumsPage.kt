@@ -89,13 +89,8 @@ private fun UnreleasedAlbumsContent(navController: NavController, unreleasedAlbu
         else {
             for (album in unreleasedAlbums) {
                 UnreleasedAlbumCard(
-                    onAlbumClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.UnreleasedAlbumPage.route + '/' + album.id,
-                            popUpTo = Screen.UnreleasedAlbumsPage.route
-                        )
-                    },
+                    album = album,
+                    navController = navController,
                     onUploadClick = {
                         //Upload Song
                     }

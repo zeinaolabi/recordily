@@ -193,7 +193,6 @@ private fun UploadSongContent(){
         visible.value = true
     })
 
-
     AnimatedVisibility(
         visible = visible.value,
         enter = slideInHorizontally(

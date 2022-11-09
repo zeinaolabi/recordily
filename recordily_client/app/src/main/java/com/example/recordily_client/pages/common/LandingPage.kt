@@ -40,7 +40,8 @@ fun CommonLandingPage(navController: NavController){
         topBar = { Header(navController) },
         content = {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
             ){
                 if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
                     TopNavBar(

@@ -19,15 +19,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
 fun UnreleasedAlbumsCard(
     title: String,
+    navController: NavController,
     albums: List<AlbumResponse>?,
     destination: ()->(Unit),
-    onAlbumClick: ()->(Unit),
     onUploadClick: () -> (Unit)
 ){
     Column(
@@ -41,15 +45,15 @@ fun UnreleasedAlbumsCard(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(albums, destination, onAlbumClick, onUploadClick)
+        CardsContent(albums, navController, destination, onUploadClick)
     }
 }
 
 @Composable
 private fun CardsContent(
     albums: List<AlbumResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onAlbumClick: ()->(Unit),
     onUploadClick: () -> (Unit)
 ){
     Column(
@@ -64,7 +68,8 @@ private fun CardsContent(
         } else {
             for (album in albums) {
                 UnreleasedAlbumCard(
-                    onAlbumClick = onAlbumClick,
+                    album = album,
+                    navController = navController,
                     onUploadClick = { onUploadClick() }
                 )
             }
@@ -81,7 +86,7 @@ private fun CardsContent(
 }
 
 @Composable
-fun UnreleasedAlbumCard(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+fun UnreleasedAlbumCard(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -92,18 +97,18 @@ fun UnreleasedAlbumCard(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        AlbumCardContent(onAlbumClick, onUploadClick)
+        AlbumCardContent(album, navController, onUploadClick)
     }
 }
 
 @Composable
-private fun AlbumCardContent(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun AlbumCardContent(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        AlbumDetails(onAlbumClick)
+        AlbumDetails(album, navController)
 
         Column(
             modifier = Modifier
@@ -124,7 +129,7 @@ private fun AlbumCardContent(onAlbumClick: ()->(Unit), onUploadClick: () -> (Uni
 }
 
 @Composable
-private fun AlbumDetails(onAlbumClick: ()->(Unit)){
+private fun AlbumDetails(album: AlbumResponse, navController: NavController){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -133,12 +138,22 @@ private fun AlbumDetails(onAlbumClick: ()->(Unit)){
                 interactionSource = remember { NoRippleInteractionSource() },
                 indication = null
             ) {
-                onAlbumClick()
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UnreleasedAlbumPage.route + '/' + album.id,
+                    popUpTo = Screen.UnreleasedAlbumsPage.route
+                )
             }
     )
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(album.picture != null && album.picture != ""){
+                rememberAsyncImagePainter(album.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "album picture",
             modifier = Modifier
                 .size(50.dp)
@@ -150,7 +165,7 @@ private fun AlbumDetails(onAlbumClick: ()->(Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = "Album title",
+                text = album.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary

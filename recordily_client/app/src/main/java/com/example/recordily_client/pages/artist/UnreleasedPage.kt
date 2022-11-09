@@ -147,17 +147,11 @@ private fun UnreleasedContentColumn(
         UnreleasedAlbumsCard(
             title = stringResource(id = R.string.unreleased_albums),
             albums = unreleasedAlbums,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.UnreleasedAlbumsPage.route,
-                    popUpTo = Screen.UnreleasedPage.route
-                )
-            },
-            onAlbumClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.UnreleasedAlbumPage.route,
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },

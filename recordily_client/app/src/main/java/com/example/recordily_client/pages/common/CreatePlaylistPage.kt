@@ -143,7 +143,6 @@ private fun CreatePlaylistContent(){
                 errorMessage.value = "Successfully Created!"
                 visible.value = true
             }
-
         }
     )
 
