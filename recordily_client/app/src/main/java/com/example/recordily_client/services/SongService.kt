@@ -7,8 +7,13 @@ import com.example.recordily_client.responses.SongResponse
 import okhttp3.MultipartBody
 
 class SongService {
-    suspend fun uploadSong(token: String, uploadSongRequest: UploadSongRequest, file: MultipartBody.Part) {
-        return RetrofitInstance.songAPI.uploadSong(token, uploadSongRequest, file)
+    suspend fun uploadSong(
+        token: String,
+        uploadSongRequest: UploadSongRequest,
+        song: MultipartBody.Part,
+        image: MultipartBody.Part
+    ) {
+        return RetrofitInstance.songAPI.uploadSong(token, uploadSongRequest, song, image)
     }
 
     suspend fun getSuggested(token: String, limit: Int): List<SongResponse>{

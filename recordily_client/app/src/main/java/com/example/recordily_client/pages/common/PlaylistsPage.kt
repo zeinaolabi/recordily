@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -104,31 +105,13 @@ private fun Playlists(navController: NavController, playlists: List<PlaylistResp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
     ){
 
         if(playlists == null || playlists.isEmpty()){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    text = "No Playlists found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+            EmptyState(message = stringResource(id = R.string.no_playlists_found))
         }
         else {
             for(playlist in playlists){

@@ -17,10 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.responses.SongResponse
@@ -50,27 +52,7 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
             verticalAlignment = Alignment.CenterVertically
         ){
             if(songs == null || songs.isEmpty()){
-                Column(
-                    modifier = Modifier
-                        .width(330.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.nothing_found),
-                        contentDescription = "not found",
-                        modifier = Modifier.size(60.dp),
-                        tint = Color.Unspecified
-                    )
-
-                    Text(
-                        text = "No songs found",
-                        fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colors.onPrimary
-                        )
-                }
+                EmptyState(stringResource(id = R.string.no_songs_found))
             }
             else{
                 for (song in songs) {
@@ -98,7 +80,13 @@ private fun SongSquareCard(onClick: () -> (Unit), song: SongResponse){
 
     ){
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(song.picture != ""){
+                rememberAsyncImagePainter(song.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "logo",
             modifier = Modifier
                 .size(115.dp)

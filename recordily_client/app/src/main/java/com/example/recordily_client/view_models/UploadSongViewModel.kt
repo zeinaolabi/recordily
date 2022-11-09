@@ -16,9 +16,17 @@ class UploadSongViewModel(application: Application): AndroidViewModel(applicatio
     val context: Context = getApplication<Application>().applicationContext
     private val service = SongService()
 
-    fun uploadSong(token: String ,uploadSongRequest: UploadSongRequest, file: MultipartBody.Part){
-        viewModelScope.launch {
-            service.uploadSong(token, uploadSongRequest, file)
+    suspend fun uploadSong(
+        token: String,
+        uploadSongRequest: UploadSongRequest,
+        song: MultipartBody.Part,
+        image: MultipartBody.Part
+    ): Boolean {
+        return try {
+            service.uploadSong(token, uploadSongRequest, song, image)
+            true
+        } catch (exception: Throwable) {
+            false
         }
     }
 }

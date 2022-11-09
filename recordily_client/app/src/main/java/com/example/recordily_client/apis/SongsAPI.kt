@@ -59,6 +59,7 @@ interface SongsAPI {
     suspend fun uploadSong(
         @Header("Authorization") token: String,
         @Part("metadata") uploadSongRequest: UploadSongRequest,
-        @Part file: MultipartBody.Part
+        @Part song: MultipartBody.Part,
+        @Part picture: MultipartBody.Part
     )
 }

@@ -3,6 +3,8 @@ package com.example.recordily_client.pages.artist
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -30,9 +32,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Environment
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.view_models.LoginViewModel
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -45,7 +53,10 @@ import java.io.BufferedInputStream
 import java.io.FileInputStream
 import kotlin.collections.ArrayList
 
-
+private val errorMessage = mutableStateOf("")
+private val visible = mutableStateOf(false)
+private var image: File = File("")
+private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
 private var chunks: File = File("")
@@ -78,17 +89,46 @@ fun UploadSongPage(navController: NavController) {
 @Composable
 private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
+    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val intent = result.data
+            val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+
+            val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
+            val file = File(dir, fileName)
+
+            image = file
+
+            imgBitmap.value = BitmapFactory.decodeFile(image.absolutePath)
+        }
+    }
+
+    val coroutinesScope = rememberCoroutineScope()
     val uploadSongViewModel: UploadSongViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val id = loginViewModel.sharedPreferences.getInt("id", -1)
 
     Image(
-        painter = painterResource(id = logo),
+        painter =
+        if(imgBitmap.value != null) {
+            rememberImagePainter(data = imgBitmap.value)
+        }
+        else{
+            painterResource(id = logo)
+        },
         contentDescription = "logo",
         modifier = Modifier
             .size(160.dp)
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+            .clickable {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                startForResult.launch(intent)
+            },
+        contentScale = ContentScale.FillBounds
     )
     
     TextField(
@@ -102,23 +142,71 @@ private fun UploadSongContent(){
     PickAudioRow()
 
     MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
-        val id = loginViewModel.sharedPreferences.getInt("id", -1)
+        if(songName.value == "" || image == File("")){
+            errorMessage.value = "Empty Field"
+            visible.value = true
+            return@MediumRoundButton
+        }
 
         val files = splitFile(chunks)
         val songID = System.currentTimeMillis().toString() + id
 
         files.forEachIndexed { index, file ->
-            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", files.size, index, songID, 1)
+            val uploadSongRequest = UploadSongRequest(
+                user_id =  id,
+                name = songName.value,
+                image ="test",
+                chunks_size = files.size,
+                chunk_num = index,
+                song_id = songID,
+                album_id = 1)
 
-            uploadSongViewModel.uploadSong(
-                token,
-                uploadSongRequest,
-                MultipartBody.Part.createFormData("file", songName.value, RequestBody.create("audio/*".toMediaTypeOrNull(), file))
-            )
+            coroutinesScope.launch {
+                val isCreated = uploadSongViewModel.uploadSong(
+                    token = token,
+                    uploadSongRequest = uploadSongRequest,
+                    song = MultipartBody.Part.createFormData(
+                        "file",
+                        songName.value,
+                        RequestBody.create("audio/*".toMediaTypeOrNull(),
+                            file)
+                    ),
+                    image = MultipartBody.Part.createFormData(
+                        "picture",
+                        "picture",
+                        RequestBody.create("image/*".toMediaTypeOrNull(),
+                            image
+                        )
+                    )
+                )
 
-//            file.delete()
+                if(!isCreated){
+                    errorMessage.value = "Network error"
+                    visible.value = true
+                    return@launch
+                }
+            }
+
         }
+
+        errorMessage.value = "Successfully Created!"
+        visible.value = true
     })
+
+
+    AnimatedVisibility(
+        visible = visible.value,
+        enter = slideInHorizontally(
+            initialOffsetX = { -40 }
+        ),
+        exit = slideOutHorizontally()
+    ) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colors.primary,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable
