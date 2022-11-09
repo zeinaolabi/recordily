@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.SongResponse
 
@@ -45,31 +46,11 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp),
+            .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         if(songs == null || songs.isEmpty()){
-            Column(
-                modifier = Modifier
-                    .width(330.dp)
-                    .height(270.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    text = "No songs found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+            EmptyState(stringResource(id = R.string.no_songs_found))
         }
         else{
             for(song in songs){
@@ -118,7 +99,7 @@ private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onMoreC
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .clickable{
+                .clickable {
                     onMoreClick()
                 },
             verticalArrangement = Arrangement.Center
@@ -148,7 +129,13 @@ private fun SongDetails(song: SongResponse, onSongClick: ()->(Unit)){
     )
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(song.picture != null && song.picture != ""){
+                rememberAsyncImagePainter(song.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "song picture",
             modifier = Modifier
                 .size(55.dp)
