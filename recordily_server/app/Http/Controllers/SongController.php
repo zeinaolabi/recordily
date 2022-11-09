@@ -63,7 +63,7 @@ class SongController extends Controller
 
             $size = File::size($song_path . $metadata['song_id']);
 
-            if ($metadata['album_id'] == "null"){
+            if (!$metadata['album_id']){
                 $metadata['album_id'] = null;
             }
 
@@ -76,7 +76,7 @@ class SongController extends Controller
                 'size' => $size,
                 'time_length' => 123,
                 'user_id' => Auth::id(),
-                'album_id' => $metadata['album_id']
+                'album_id' => $metadata['album_id'] ?: null
                 ]
             );
 
@@ -168,6 +168,11 @@ class SongController extends Controller
         $this->getArtistName($search_liked);
 
         return response()->json($search_liked);
+    }
+
+    public function deleteSongFromAlbum(int $song_id): JsonResponse
+    {
+        return Song::deleteFromAlbum($song_id);
     }
 
     public function publishSong(int $song_id): JsonResponse

@@ -18,6 +18,7 @@ class UserController extends Controller
     {
         $id = Auth::id();
         $user = User::find($id);
+        $user->profile_picture = URL::to($user->profile_picture);
 
         return response()->json($user);
     }
@@ -34,7 +35,7 @@ class UserController extends Controller
                 $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
                 file_put_contents(public_path() . $picture_path, $picture->getContent());
 
-                $user->picture = $picture_path;
+                $user->profile_picture = $picture_path;
             } catch (Exception $e) {
                 return response()->json(['error' => $e], 400);
             }

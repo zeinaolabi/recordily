@@ -64,6 +64,12 @@ class Album extends Model
 
     public static function publishAlbum(int $album_id): JsonResponse
     {
+        $album = Album::find($album_id);
+
+        if($album === null){
+            return response()->json("Album not found");
+        }
+
         $published = Album::where('id', $album_id)->update(['is_published' => 1]);
 
         if ($published === null) {

@@ -101,4 +101,15 @@ class Song extends Model
 
         return response()->json("Successfully published");
     }
+
+    public static function deleteFromAlbum(int $song_id): JsonResponse
+    {
+        $isDeleted = Song::find($song_id)->delete();
+
+        if ($isDeleted === null) {
+            return response()->json("Unsuccessful delete attempt");
+        }
+
+        return response()->json("Successfully deleted");
+    }
 }
