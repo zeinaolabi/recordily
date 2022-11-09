@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('liked_songs', "getLikedSongs");
             Route::get('like', "likeSong");
             Route::get('search_liked_songs/{input}', "searchLikedSongs");
+            Route::get('unreleased_songs/{limit}',"getUnreleasedSongs");
         }
     );
 
@@ -56,7 +57,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_artist_top_songs/{artist_id}/{limit}', "getArtistTopSongs");
             Route::get('get_artist_songs/{artist_id}/{limit}',"getArtistSongs");
             Route::get('search_followed_artist/{input}',"searchFollowedArtist");
-            Route::get('unreleased_songs/{limit}',"getArtistUnreleasedSongs");
         }
     );
 
@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
         function () {
             Route::get('get_album_info/{album_id}',"getAlbum");
             Route::get('get_album_songs/{album_id}',"getAlbumSongs");
+            Route::get('unreleased_albums/{limit}',"getUnreleasedAlbums");
         }
     );
 
