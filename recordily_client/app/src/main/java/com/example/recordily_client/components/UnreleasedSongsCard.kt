@@ -36,7 +36,8 @@ fun UnreleasedSongsCard(
     destination: ()->(Unit),
     onSongClick: ()->(Unit),
     viewModel: UnreleasedViewModel,
-    token: String
+    token: String,
+    onUploadClick: () -> Unit,
 ){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
@@ -49,7 +50,7 @@ fun UnreleasedSongsCard(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick, viewModel, token)
+        CardsContent(songs, destination, onSongClick, viewModel, token, onUploadClick)
     }
 }
 
@@ -59,7 +60,8 @@ private fun CardsContent(
     destination: ()->(Unit),
     onSongClick: ()->(Unit),
     viewModel: UnreleasedViewModel,
-    token: String
+    token: String,
+    onUploadClick: () -> Unit,
 ){
     val coroutinesScope = rememberCoroutineScope()
 
@@ -80,6 +82,7 @@ private fun CardsContent(
                     onUploadClick = {
                         coroutinesScope.launch {
                             viewModel.publishSong(token, song.id)
+                            onUploadClick()
                         }
                     }
                 )

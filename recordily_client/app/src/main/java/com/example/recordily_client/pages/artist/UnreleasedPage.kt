@@ -24,9 +24,10 @@ import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
 
+private const val limit = 3
+
 @Composable
 fun UnreleasedPage(navController: NavController) {
-    val limit = 3
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
@@ -150,7 +151,9 @@ private fun UnreleasedContentColumn(
                 )
             },
             viewModel = unreleasedViewModel,
-            token = token
+            token = token,
+            onUploadClick = { unreleasedViewModel.getUnreleasedSongs(token, limit) }
+
         )
 
         UnreleasedAlbumsCard(
@@ -165,7 +168,8 @@ private fun UnreleasedContentColumn(
                 )
             },
             viewModel = unreleasedViewModel,
-            token = token
+            token = token,
+            onUploadClick = { unreleasedViewModel.getUnreleasedAlbums(token, limit) }
         )
     }
 }

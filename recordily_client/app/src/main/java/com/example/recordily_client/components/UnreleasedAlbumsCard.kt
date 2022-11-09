@@ -36,7 +36,8 @@ fun UnreleasedAlbumsCard(
     albums: List<AlbumResponse>?,
     destination: ()->(Unit),
     viewModel: UnreleasedViewModel,
-    token: String
+    token: String,
+    onUploadClick: () -> Unit,
 ){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
@@ -49,7 +50,7 @@ fun UnreleasedAlbumsCard(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(albums, navController, destination, viewModel, token)
+        CardsContent(albums, navController, destination, viewModel, token, onUploadClick)
     }
 }
 
@@ -59,7 +60,8 @@ private fun CardsContent(
     navController: NavController,
     destination: ()->(Unit),
     viewModel: UnreleasedViewModel,
-    token: String
+    token: String,
+    onUploadClick: () -> Unit,
 ){
     val coroutinesScope = rememberCoroutineScope()
 
@@ -80,6 +82,7 @@ private fun CardsContent(
                     onUploadClick = {
                         coroutinesScope.launch {
                             viewModel.publishAlbum(token, album.id)
+                            onUploadClick()
                         }
                     }
                 )

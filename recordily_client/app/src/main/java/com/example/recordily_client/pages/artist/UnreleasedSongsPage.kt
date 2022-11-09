@@ -32,11 +32,11 @@ import com.example.recordily_client.view_models.UnreleasedViewModel
 import kotlinx.coroutines.launch
 
 private val popUpVisibility = mutableStateOf(false)
+private const val limit = 40
 
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedSongsPage(navController: NavController){
-    val limit = 40
     val loginViewModel: LoginViewModel = viewModel()
     val unreleasedSongsViewModel: UnreleasedSongsViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
@@ -116,6 +116,7 @@ private fun UnreleasedSongsContent(
                     onUploadClick = {
                         coroutinesScope.launch {
                             unreleasedSongsViewModel.publishSong(token, song.id)
+                            unreleasedSongsViewModel.getUnreleasedSongs(token, limit)
                         }
                     }
                 )

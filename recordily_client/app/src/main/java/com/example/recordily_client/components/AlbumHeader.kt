@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.AlbumResponse
 
@@ -29,7 +30,13 @@ fun AlbumHeader(album: AlbumResponse){
             )
     ){
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter =
+            if(album.picture != ""){
+                rememberAsyncImagePainter(album.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "album picture",
             modifier = Modifier
                 .size(125.dp)
