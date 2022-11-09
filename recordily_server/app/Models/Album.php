@@ -6,29 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-/**
- * App\Models\Album
- *
- * @property int $id
- * @property string $name
- * @property string $picture
- * @property int $user_id
- * @property int $is_published
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $user
- * @method static \Illuminate\Database\Eloquent\Builder|Album newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Album newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Album query()
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereIsPublished($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album wherePicture($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Album whereUserId($value)
- * @mixin \Eloquent
- */
 class Album extends Model
 {
     use HasFactory;
@@ -54,12 +31,22 @@ class Album extends Model
             ->get();
     }
 
-    public static function findPublished(int $id): Collection
+    public static function findPublished(int $id): object
     {
         $is_published = 1;
 
         return self::where('id', $id)
             ->where('is_published', $is_published)
             ->first();
+    }
+
+    public static function getArtistUnreleasedAlbums(int $id, int $limit): Collection
+    {
+        $not_published = 0;
+
+        return self::where('is_published', $not_published)
+            ->where('user_id', $id)
+            ->limit($limit)
+            ->get();
     }
 }
