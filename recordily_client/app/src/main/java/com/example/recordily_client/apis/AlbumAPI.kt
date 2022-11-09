@@ -24,6 +24,12 @@ interface AlbumAPI {
         @Path("limit") limit: Int
     ): List<AlbumResponse>
 
+    @GET("auth/publish_album/{limit}")
+    suspend fun publishAlbum(
+        @Header("Authorization") token: String,
+        @Path("album_id") album_id: Int
+    )
+
     @Multipart
     @POST("auth/create_album")
     suspend fun createAlbum(
