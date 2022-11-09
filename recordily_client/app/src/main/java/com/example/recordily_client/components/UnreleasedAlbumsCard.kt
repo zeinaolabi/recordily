@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +26,8 @@ import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.view_models.UnreleasedViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun UnreleasedAlbumsCard(
@@ -32,7 +35,8 @@ fun UnreleasedAlbumsCard(
     navController: NavController,
     albums: List<AlbumResponse>?,
     destination: ()->(Unit),
-    onUploadClick: () -> (Unit)
+    viewModel: UnreleasedViewModel,
+    token: String
 ){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
@@ -45,7 +49,7 @@ fun UnreleasedAlbumsCard(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(albums, navController, destination, onUploadClick)
+        CardsContent(albums, navController, destination, viewModel, token)
     }
 }
 
@@ -54,8 +58,11 @@ private fun CardsContent(
     albums: List<AlbumResponse>?,
     navController: NavController,
     destination: ()->(Unit),
-    onUploadClick: () -> (Unit)
+    viewModel: UnreleasedViewModel,
+    token: String
 ){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,7 +77,11 @@ private fun CardsContent(
                 UnreleasedAlbumCard(
                     album = album,
                     navController = navController,
-                    onUploadClick = { onUploadClick() }
+                    onUploadClick = {
+                        coroutinesScope.launch {
+                            viewModel.publishAlbum(token, album.id)
+                        }
+                    }
                 )
             }
 

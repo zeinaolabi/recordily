@@ -164,9 +164,8 @@ private fun UnreleasedContentColumn(
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
-            onUploadClick = {
-                //Upload Song
-            }
+            viewModel = unreleasedViewModel,
+            token = token
         )
     }
 }

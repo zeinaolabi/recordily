@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -23,6 +24,7 @@ import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.AlbumViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
+import kotlinx.coroutines.launch
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -54,7 +56,7 @@ fun UnreleasedAlbumPage(navController: NavController, album_id: String){
 
             HorizontalLine()
 
-            UnreleasedAlbumContent(navController, songs)
+            UnreleasedAlbumContent(navController, songs, unreleasedAlbumViewModel, token, album_id)
 
         }
 
@@ -72,7 +74,15 @@ fun UnreleasedAlbumPage(navController: NavController, album_id: String){
 }
 
 @Composable
-private fun UnreleasedAlbumContent(navController: NavController, songs: List<SongResponse>?){
+private fun UnreleasedAlbumContent(
+    navController: NavController,
+    songs: List<SongResponse>?,
+    unreleasedAlbumViewModel: UnreleasedAlbumViewModel,
+    token: String,
+    album_id: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +103,9 @@ private fun UnreleasedAlbumContent(navController: NavController, songs: List<Son
                         )
                     },
                     onDeleteClick = {
-                        //Delete Song from album
+                        coroutinesScope.launch {
+                            unreleasedAlbumViewModel.deleteFromAlbum(token, song.id, album_id)
+                        }
                     }
                 )
             }

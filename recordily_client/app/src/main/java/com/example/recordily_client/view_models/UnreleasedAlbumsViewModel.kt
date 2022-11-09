@@ -20,4 +20,13 @@ class UnreleasedAlbumsViewModel: ViewModel() {
             unreleasedAlbumsResult.postValue(service.getUnreleasedAlbum(token, limit))
         }
     }
+
+    suspend fun publishAlbum(token: String, album_id: Int): Boolean {
+        return try {
+            service.publishAlbum(token, album_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }

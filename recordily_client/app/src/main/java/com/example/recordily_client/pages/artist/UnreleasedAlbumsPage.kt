@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -26,6 +27,7 @@ import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumsViewModel
 import com.example.recordily_client.view_models.UnreleasedSongsViewModel
+import kotlinx.coroutines.launch
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -59,7 +61,7 @@ fun UnreleasedAlbumsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                UnreleasedAlbumsContent(navController, unreleasedAlbums)
+                UnreleasedAlbumsContent(navController, unreleasedAlbums, unreleasedAlbumsViewModel, token)
             }
         }
 
@@ -77,7 +79,14 @@ fun UnreleasedAlbumsPage(navController: NavController){
 }
 
 @Composable
-private fun UnreleasedAlbumsContent(navController: NavController, unreleasedAlbums: List<AlbumResponse>?){
+private fun UnreleasedAlbumsContent(
+    navController: NavController,
+    unreleasedAlbums: List<AlbumResponse>?,
+    viewModel: UnreleasedAlbumsViewModel,
+    token: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +101,9 @@ private fun UnreleasedAlbumsContent(navController: NavController, unreleasedAlbu
                     album = album,
                     navController = navController,
                     onUploadClick = {
-                        //Upload Song
+                        coroutinesScope.launch {
+                            viewModel.publishAlbum(token, album.id)
+                        }
                     }
                 )
             }

@@ -43,4 +43,13 @@ class UnreleasedViewModel: ViewModel() {
             false
         }
     }
+
+    suspend fun publishAlbum(token: String, album_id: Int): Boolean {
+        return try {
+            albumService.publishAlbum(token, album_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }
