@@ -18,9 +18,7 @@ import com.example.recordily_client.R
 @Composable
 fun EmptyState(message: String) {
     Column(
-        modifier = Modifier
-            .width(330.dp)
-            .height(270.dp),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
