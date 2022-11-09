@@ -52,11 +52,13 @@ fun UnreleasedAlbumPage(navController: NavController, album_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.album))
 
-            album?.let { AlbumHeader(it) }
+            album?.let {
+                AlbumHeader(it)
 
-            HorizontalLine()
+                HorizontalLine()
 
-            UnreleasedAlbumContent(navController, songs, unreleasedAlbumViewModel, token, album_id)
+                UnreleasedAlbumContent(navController, songs, unreleasedAlbumViewModel, token)
+            }
 
         }
 
@@ -78,8 +80,7 @@ private fun UnreleasedAlbumContent(
     navController: NavController,
     songs: List<SongResponse>?,
     unreleasedAlbumViewModel: UnreleasedAlbumViewModel,
-    token: String,
-    album_id: String
+    token: String
 ){
     val coroutinesScope = rememberCoroutineScope()
 
@@ -104,7 +105,7 @@ private fun UnreleasedAlbumContent(
                     },
                     onDeleteClick = {
                         coroutinesScope.launch {
-                            unreleasedAlbumViewModel.deleteFromAlbum(token, song.id, album_id)
+                            unreleasedAlbumViewModel.deleteFromAlbum(token, song.id)
                         }
                     }
                 )
