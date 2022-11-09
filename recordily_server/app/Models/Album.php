@@ -32,15 +32,6 @@ class Album extends Model
             ->get();
     }
 
-    public static function findPublished(int $id): object
-    {
-        $is_published = 1;
-
-        return self::where('id', $id)
-            ->where('is_published', $is_published)
-            ->first();
-    }
-
     public static function getArtistUnreleasedAlbums(int $id, int $limit): Collection
     {
         $not_published = 0;
@@ -66,7 +57,7 @@ class Album extends Model
     {
         $album = Album::find($album_id);
 
-        if($album === null){
+        if ($album === null) {
             return response()->json("Album not found");
         }
 

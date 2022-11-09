@@ -11,13 +11,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
-use Psy\Util\Json;
 
 class AlbumController extends Controller
 {
     public function getAlbum(int $album_id): JsonResponse
     {
-        $album = Album::findPublished($album_id);
+        $album = Album::where('id', $album_id)->first();
 
         $album->picture = URL::to($album->picture);
         $album->artist_name = $album->user->name;
