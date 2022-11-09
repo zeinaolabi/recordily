@@ -92,7 +92,7 @@ private fun UnreleasedAlbumsContent(navController: NavController, unreleasedAlbu
                     onAlbumClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.UnreleasedAlbumPage.route,
+                            destination = Screen.UnreleasedAlbumPage.route + '/' + album.id,
                             popUpTo = Screen.UnreleasedAlbumsPage.route
                         )
                     },
