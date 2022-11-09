@@ -18,21 +18,27 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
+import com.example.recordily_client.view_models.UnreleasedViewModel
 
 @Composable
 fun UnreleasedPage(navController: NavController) {
+    val limit = 3
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
     val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
+    val unreleasedViewModel: UnreleasedViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
     profileViewModel.getInfo(token)
+    unreleasedViewModel.getUnreleasedSongs(token, limit)
 
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
+    val unreleasedSongs by unreleasedViewModel.unreleasedSongsResultLiveData.observeAsState()
 
     Scaffold(
         topBar = { ExitBar(navController, stringResource(id = R.string.profile)) },
@@ -50,7 +56,7 @@ fun UnreleasedPage(navController: NavController) {
 
                 AddMusicRow(navController)
 
-                UnreleasedContentColumn(navController)
+                UnreleasedContentColumn(navController, unreleasedSongs)
             }
         }
     )
@@ -103,7 +109,7 @@ private fun AddMusicRow(navController: NavController){
 }
 
 @Composable
-private fun UnreleasedContentColumn(navController: NavController){
+private fun UnreleasedContentColumn(navController: NavController, unreleasedSongs: List<SongResponse>?){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -111,6 +117,7 @@ private fun UnreleasedContentColumn(navController: NavController){
         ){
         UnreleasedSongsCard(
             title = stringResource(id = R.string.unreleased_songs),
+            songs = unreleasedSongs,
             destination = {
                        navigateTo(
                            navController = navController,

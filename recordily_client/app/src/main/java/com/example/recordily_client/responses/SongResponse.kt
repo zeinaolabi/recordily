@@ -6,7 +6,7 @@ data class SongResponse(
     val id: Int,
     val name: String,
     val path: String,
-    val picture: String,
+    val picture: String?,
     val size: Int,
     val time_length: Int,
     val type: String,

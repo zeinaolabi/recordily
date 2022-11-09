@@ -16,6 +16,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.responses.SongResponse
 
 private val popUpVisibility = mutableStateOf(false)
 
@@ -63,6 +64,7 @@ private fun UnreleasedAlbumContent(navController: NavController){
     ){
         for(i in 1..3){
             UnreleasedAlbumSongCard(
+                song = SongResponse(1, "", 1, "", "", "", 1, 1, "", "", 1, ""),
                 onSongClick = {
                     navigateTo(
                         navController = navController,

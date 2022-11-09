@@ -97,6 +97,8 @@
     <string name="reset_password">Reset Password</string>
 
     <string name="delete_playlist">Delete Playlist</string>
+    <string name="no_songs_found">No Songs Found</string>
+    <string name="no_albums_found">No Albums Found</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
