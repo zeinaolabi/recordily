@@ -63,6 +63,10 @@ class SongController extends Controller
 
             $size = File::size($song_path . $metadata['song_id']);
 
+            if ($metadata['album_id'] == "null"){
+                $metadata['album_id'] = null;
+            }
+
             Song::create(
                 [
                 'name' => $metadata['name'],
@@ -164,6 +168,11 @@ class SongController extends Controller
         $this->getArtistName($search_liked);
 
         return response()->json($search_liked);
+    }
+
+    public function publishSong(int $song_id): JsonResponse
+    {
+        return Song::publishSong($song_id);
     }
 
     private function getPicture(Collection $array)
