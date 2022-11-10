@@ -26,7 +26,12 @@ import com.example.recordily_client.view_models.PopUpViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun Popup(songID: Int, popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
+fun Popup(
+    songID: Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>,
+    isPlaylist: Boolean
+){
     val loginViewModel: LoginViewModel = viewModel()
     val popUpViewModel: PopUpViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
@@ -70,18 +75,35 @@ fun Popup(songID: Int, popUpVisibility: MutableState<Boolean>, isPlaylist: Boole
                 },
         ) {
             if(isPlaylist){
-                PlaylistPopupContent(popUpViewModel, token, songID)
+                PlaylistPopupContent(
+                    popUpViewModel,
+                    token,
+                    songID,
+                    popUpVisibility,
+                    playlistPopUpVisibility
+                )
 
             }
             else{
-                RegularPopupContent(popUpViewModel, token, songID)
+                RegularPopupContent(
+                    popUpViewModel,
+                    token,
+                    songID,
+                    popUpVisibility,
+                    playlistPopUpVisibility
+                )
             }
         }
     }
 }
 
 @Composable
-private fun RegularPopupContent(popUpViewModel: PopUpViewModel, token: String, songID:Int){
+private fun RegularPopupContent(
+    popUpViewModel: PopUpViewModel,
+    token: String, songID:Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>
+){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -93,12 +115,18 @@ private fun RegularPopupContent(popUpViewModel: PopUpViewModel, token: String, s
     ){
         AddToLikes(popUpViewModel, token, songID)
 
-        AddToPlaylist()
+        AddToPlaylist(popUpVisibility, playlistPopUpVisibility)
     }
 }
 
 @Composable
-private fun PlaylistPopupContent(popUpViewModel: PopUpViewModel, token: String, songID: Int){
+private fun PlaylistPopupContent(
+    popUpViewModel: PopUpViewModel,
+    token: String,
+    songID: Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>
+){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -111,7 +139,7 @@ private fun PlaylistPopupContent(popUpViewModel: PopUpViewModel, token: String, 
 
         AddToLikes(popUpViewModel, token, songID)
 
-        AddToPlaylist()
+        AddToPlaylist(popUpVisibility, playlistPopUpVisibility)
 
         DeleteFromPlaylist()
 
@@ -138,9 +166,13 @@ private fun DeleteFromPlaylist(){
 }
 
 @Composable
-private fun AddToPlaylist(){
+private fun AddToPlaylist(popUpVisibility: MutableState<Boolean>, playlistPopUpVisibility: MutableState<Boolean>){
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.clickable {
+            popUpVisibility.value = false
+            playlistPopUpVisibility.value = true
+        }
     ){
         Icon(
             imageVector = Icons.Default.Add,
