@@ -34,4 +34,8 @@ class UserService {
     suspend fun getAlbums(token: String): List<AlbumResponse> {
         return RetrofitInstance.userAPI.getAlbums(token)
     }
+
+    suspend fun getUserSongs(token: String): List<SongResponse> {
+        return RetrofitInstance.userAPI.getUserSongs(token)
+    }
 }
