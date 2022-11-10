@@ -130,10 +130,10 @@ class ArtistController extends Controller
             $playsCount[(int)$key] = count($value);
         }
 
-        for($i = 1; $i <= 12; $i++){
-            if(!empty($playsCount[$i])){
+        for ($i = 1; $i <= 12; $i++) {
+            if (!empty($playsCount[$i])) {
                 $playsArray[] = $playsCount[$i];
-            }else{
+            } else {
                 $playsArray[] = 0;
             }
         }

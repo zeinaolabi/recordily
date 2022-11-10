@@ -63,10 +63,9 @@ class SongController extends Controller
 
             $size = File::size($song_path . $metadata['song_id']);
 
-            if (!array_key_exists("album_id",$metadata)) {
+            if (!array_key_exists("album_id", $metadata)) {
                 $album_id = null;
-            }
-            else{
+            } else {
                 $album_id = $metadata['album_id'];
             }
 

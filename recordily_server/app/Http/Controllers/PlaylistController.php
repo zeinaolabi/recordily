@@ -159,7 +159,7 @@ class PlaylistController extends Controller
         return response()->json('Successfully Added', 201);
     }
 
-    public function removeFromPlaylist( int $playlist_id, int $song_id): JsonResponse
+    public function removeFromPlaylist(int $playlist_id, int $song_id): JsonResponse
     {
         if (!Playlist::exists($playlist_id)) {
             return response()->json('Playlist Not Found', 400);

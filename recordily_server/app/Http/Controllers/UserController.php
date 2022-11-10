@@ -84,6 +84,14 @@ class UserController extends Controller
         return response()->json($songs);
     }
 
+    public function searchReleasedSongs(string $input): JsonResponse
+    {
+        $id = Auth::id();
+        $artists = Song::searchReleasedSongs($id, $input);
+
+        return response()->json($artists);
+    }
+
     private function getPicture(Collection $array)
     {
         foreach ($array as $data) {

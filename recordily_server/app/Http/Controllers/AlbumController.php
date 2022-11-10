@@ -37,7 +37,7 @@ class AlbumController extends Controller
 
     public function getAlbumSongs(int $album_id): JsonResponse
     {
-        $songs = Song::where('album_id', $album_id)->where('is_published',0)->get();
+        $songs = Song::where('album_id', $album_id)->where('is_published', 0)->get();
 
         $this->getPicture($songs);
         $this->getArtistName($songs);
