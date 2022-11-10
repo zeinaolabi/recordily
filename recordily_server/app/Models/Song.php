@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class Song extends Model
 {
@@ -91,6 +92,7 @@ class Song extends Model
             ->each(
                 function (self $song) {
                     $song->artist_name = $song->user->name;
+                    $song->picture = URL::to($song->picture);
                     unset($song->user);
                 }
             )->toArray();
