@@ -63,4 +63,8 @@ class SongService {
     suspend fun likeSong(token: String, song_id: Int) {
         return RetrofitInstance.songAPI.likeSong(token, song_id)
     }
+
+    suspend fun unlikeSong(token: String, song_id: Int) {
+        return RetrofitInstance.songAPI.unlikeSong(token, song_id)
+    }
 }
