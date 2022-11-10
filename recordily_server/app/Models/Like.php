@@ -45,4 +45,12 @@ class Like extends BaseModel
         return true;
     }
 
+    public static function likeSong(int $id, int $song_id): self
+    {
+        return self::create([
+            'user_id' => $id,
+            'song_id' => $song_id
+        ]);
+    }
+
 }
