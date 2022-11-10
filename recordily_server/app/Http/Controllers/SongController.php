@@ -63,8 +63,11 @@ class SongController extends Controller
 
             $size = File::size($song_path . $metadata['song_id']);
 
-            if (!$metadata['album_id']) {
-                $metadata['album_id'] = null;
+            if (!array_key_exists("album_id",$metadata)) {
+                $album_id = null;
+            }
+            else{
+                $album_id = $metadata['album_id'];
             }
 
             Song::create(
@@ -76,7 +79,7 @@ class SongController extends Controller
                 'size' => $size,
                 'time_length' => 123,
                 'user_id' => Auth::id(),
-                'album_id' => $metadata['album_id'] ?: null
+                'album_id' => $album_id
                 ]
             );
 
