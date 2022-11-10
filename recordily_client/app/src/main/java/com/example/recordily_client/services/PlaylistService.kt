@@ -37,4 +37,12 @@ class PlaylistService {
     suspend fun searchForPlaylist(token: String, input: String): List<PlaylistResponse> {
         return RetrofitInstance.playlistAPI.searchForPlaylist(token, input)
     }
+
+    suspend fun addToPlaylist(token: String, playlist_id: Int, song_id: Int) {
+        return RetrofitInstance.playlistAPI.addToPlaylist(token, playlist_id, song_id)
+    }
+
+    suspend fun removeFromPlaylist(token: String, playlist_id: Int, song_id: Int) {
+        return RetrofitInstance.playlistAPI.removeFromPlaylist(token, playlist_id, song_id)
+    }
 }
