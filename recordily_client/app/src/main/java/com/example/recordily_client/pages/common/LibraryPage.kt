@@ -72,7 +72,7 @@ fun LibraryPage(navController: NavController){
 
 @Composable
 private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?, token: String, likesPageViewModel: LikesPageViewModel){
-    val searchResult = likesPageViewModel.likedSongsResultLiveData.observeAsState()
+    val searchResult = likesPageViewModel.searchResultLiveData.observeAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))

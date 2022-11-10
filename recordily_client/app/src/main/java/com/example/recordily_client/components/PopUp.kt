@@ -168,7 +168,7 @@ private fun AddToLikes(popUpViewModel: PopUpViewModel, token: String, songID: In
             {
                 coroutinesScope.launch {
                     if(isLiked == true){
-                        popUpViewModel.unfollow(token, songID)
+                        popUpViewModel.unlikeSong(token, songID)
                     }
                     else{
                         popUpViewModel.likeSong(token, songID)
@@ -178,10 +178,14 @@ private fun AddToLikes(popUpViewModel: PopUpViewModel, token: String, songID: In
             }
     ){
         Icon(
-            painter = painterResource(id = R.drawable.heart),
+            painter =
+            if( isLiked == true )
+                painterResource(id = R.drawable.red_heart)
+            else
+                painterResource(id = R.drawable.heart),
             contentDescription = "delete",
             modifier = Modifier.size(20.dp),
-            tint = Color.White
+            tint = Color.Unspecified
         )
 
         Text(

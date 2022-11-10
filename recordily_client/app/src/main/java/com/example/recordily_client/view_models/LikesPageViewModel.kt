@@ -16,7 +16,7 @@ class LikesPageViewModel: ViewModel(){
         get() = likedSongsResult
 
     private val searchResult = MutableLiveData<List<SongResponse>>()
-    val searchResultResultLiveData : LiveData<List<SongResponse>>
+    val searchResultLiveData : LiveData<List<SongResponse>>
         get() = searchResult
 
     fun getLikedSongs(token:String){

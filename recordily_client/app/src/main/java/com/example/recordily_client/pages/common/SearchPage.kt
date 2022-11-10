@@ -183,6 +183,7 @@ private fun ResultData(navController: NavController, data: SearchResponse){
             },
             onMoreClick = {
                 popUpVisibility.value = true
+                songID.value = song.id
             }
         )
     }

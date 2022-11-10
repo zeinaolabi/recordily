@@ -33,7 +33,7 @@ class LandingPageViewModel: ViewModel(){
 
     fun getTopLiked(token: String, limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getTopLiked(token, limit))
+            topLikedResult.postValue(songService.getTopLiked(token, limit))
         }
     }
 
@@ -45,7 +45,7 @@ class LandingPageViewModel: ViewModel(){
 
     fun getRecentlyPlayed(token: String, limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getRecentlyPlayed(token, limit))
+            recentlyPlayedResult.postValue(songService.getRecentlyPlayed(token, limit))
         }
     }
 }

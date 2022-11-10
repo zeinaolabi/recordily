@@ -28,4 +28,13 @@ class PopUpViewModel: ViewModel() {
             false
         }
     }
+
+    suspend fun unlikeSong(token: String, song_id: Int): Boolean {
+        return try {
+            service.unlikeSong(token, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }
