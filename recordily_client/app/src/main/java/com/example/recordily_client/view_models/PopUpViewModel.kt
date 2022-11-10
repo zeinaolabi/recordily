@@ -19,4 +19,13 @@ class PopUpViewModel: ViewModel() {
             isLikedResult.postValue(service.isLiked(token, song_id))
         }
     }
+
+    suspend fun likeSong(token: String, song_id: Int): Boolean {
+        return try {
+            service.likeSong(token, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
 }

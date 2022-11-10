@@ -7,6 +7,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +26,13 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.SongResponse
 
 @Composable
-fun SongsCards(title: String, songs: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit),onMoreClick: () -> (Unit)){
+fun SongsCards(
+    title: String, songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    onMoreClick: () -> (Unit),
+    songID: MutableState<Int>
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -37,12 +44,18 @@ fun SongsCards(title: String, songs: List<SongResponse>?, destination: ()->(Unit
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick ,onMoreClick)
+        CardsContent(songs, destination, onSongClick ,onMoreClick, songID)
     }
 }
 
 @Composable
-private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun CardsContent(
+    songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    onMoreClick: () -> (Unit),
+    songID: MutableState<Int>
+){
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +70,10 @@ private fun CardsContent(songs: List<SongResponse>?, destination: ()->(Unit), on
                 SongCard(
                     song = song,
                     onSongClick = onSongClick,
-                    onMoreClick = {onMoreClick()}
+                    onMoreClick = {
+                        onMoreClick()
+                        songID.value = song.id
+                    }
                 )
             }
 

@@ -10,9 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,10 +19,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.R
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PopUpViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
+fun Popup(songID: Int, popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
+    val loginViewModel: LoginViewModel = viewModel()
+    val popUpViewModel: PopUpViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    popUpViewModel.isLiked(token, songID)
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -56,23 +65,23 @@ fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ){
+                ) {
                     popUpVisibility.value = true
                 },
         ) {
             if(isPlaylist){
-                PlaylistPopupContent()
+                PlaylistPopupContent(popUpViewModel, token, songID)
 
             }
             else{
-                RegularPopupContent()
+                RegularPopupContent(popUpViewModel, token, songID)
             }
         }
     }
 }
 
 @Composable
-private fun RegularPopupContent(){
+private fun RegularPopupContent(popUpViewModel: PopUpViewModel, token: String, songID:Int){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -82,14 +91,14 @@ private fun RegularPopupContent(){
                 horizontal = dimensionResource(id = R.dimen.padding_medium)
             )
     ){
-        AddToLikes()
+        AddToLikes(popUpViewModel, token, songID)
 
         AddToPlaylist()
     }
 }
 
 @Composable
-private fun PlaylistPopupContent(){
+private fun PlaylistPopupContent(popUpViewModel: PopUpViewModel, token: String, songID: Int){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -100,7 +109,7 @@ private fun PlaylistPopupContent(){
             )
     ){
 
-        AddToLikes()
+        AddToLikes(popUpViewModel, token, songID)
 
         AddToPlaylist()
 
@@ -148,9 +157,25 @@ private fun AddToPlaylist(){
 }
 
 @Composable
-private fun AddToLikes(){
+private fun AddToLikes(popUpViewModel: PopUpViewModel, token: String, songID: Int){
+    val coroutinesScope = rememberCoroutineScope()
+    val isLiked by popUpViewModel.isLikedResultLiveData.observeAsState()
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier
+            .clickable
+            {
+                coroutinesScope.launch {
+                    if(isLiked == true){
+                        popUpViewModel.unfollow(token, songID)
+                    }
+                    else{
+                        popUpViewModel.likeSong(token, songID)
+                    }
+                    popUpViewModel.isLiked(token, songID)
+                }
+            }
     ){
         Icon(
             painter = painterResource(id = R.drawable.heart),
@@ -160,7 +185,7 @@ private fun AddToLikes(){
         )
 
         Text(
-            text="Like",
+            text= if( isLiked == true ) "Unlike" else "Like",
             color = Color.White
         )
     }
