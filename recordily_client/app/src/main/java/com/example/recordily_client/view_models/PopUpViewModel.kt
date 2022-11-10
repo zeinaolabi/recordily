@@ -1,15 +1,17 @@
 package com.example.recordily_client.view_models
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.annotation.SuppressLint
+import android.app.Application
+import androidx.lifecycle.*
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.services.PlaylistService
 import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 
-class PopUpViewModel: ViewModel() {
+@SuppressLint("StaticFieldLeak")
+class PopUpViewModel(application: Application): AndroidViewModel(application) {
+
+    val context = getApplication<Application>().applicationContext
     private val songService = SongService()
     private val playlistService = PlaylistService()
 
