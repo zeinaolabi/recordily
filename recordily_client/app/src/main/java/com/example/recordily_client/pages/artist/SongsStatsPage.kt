@@ -50,7 +50,7 @@ fun SongsStatsPage(navController: NavController){
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ){
-        songs?.let { SongsStatsContent(navController, it) }
+        songs?.let { SongsStatsContent(navController, it,  songsStatsViewModel, token) }
 
         Row(
             modifier = Modifier.fillMaxHeight(),
@@ -58,6 +58,7 @@ fun SongsStatsPage(navController: NavController){
         ){
             BottomNavigationBar(navController)
         }
+
         AnimatedVisibility(
             visible = popUpVisibility.value,
             enter = expandVertically(expandFrom = Alignment.CenterVertically),
@@ -87,10 +88,16 @@ fun SongsStatsPage(navController: NavController){
 
 @ExperimentalAnimationApi
 @Composable
-private fun SongsStatsContent(navController: NavController, songs: List<SongResponse>){
+private fun SongsStatsContent(
+    navController: NavController,
+    songs: List<SongResponse>,
+    songsStatsViewModel: SongsStatsViewModel,
+    token: String
+){
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
+    val searchResult by songsStatsViewModel.searchResultLiveData.observeAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -116,6 +123,7 @@ private fun SongsStatsContent(navController: NavController, songs: List<SongResp
                 SongsResult(navController, songs)
             }
             else{
+                songsStatsViewModel.searchReleasedSongs(token, searchInput.value)
                 SearchResult(navController, searchResult)
             }
         }

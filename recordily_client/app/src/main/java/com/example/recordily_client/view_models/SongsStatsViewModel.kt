@@ -15,9 +15,19 @@ class SongsStatsViewModel: ViewModel() {
     val songsResultLiveData: LiveData<List<SongResponse>>
         get() = songsResult
 
+    private val searchResult = MutableLiveData<List<SongResponse>>()
+    val searchResultLiveData: LiveData<List<SongResponse>>
+        get() = searchResult
+
     fun getUserSongs(token: String){
         viewModelScope.launch{
             songsResult.postValue(userService.getUserSongs(token))
+        }
+    }
+
+    fun searchReleasedSongs(token: String, input: String){
+        viewModelScope.launch{
+            searchResult.postValue(userService.searchReleasedSongs(token, input))
         }
     }
 }
