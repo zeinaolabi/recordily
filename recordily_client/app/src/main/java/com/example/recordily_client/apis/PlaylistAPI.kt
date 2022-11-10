@@ -41,6 +41,20 @@ interface PlaylistAPI {
         @Path("input") input: String
     ): List<PlaylistResponse>
 
+    @GET("auth/add_to_playlist/{playlist_id}/{song_id}")
+    suspend fun addToPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: Int,
+        @Path("song_id") song_id: Int
+    )
+
+    @GET("auth/remove_to_playlist/{playlist_id}/{song_id}")
+    suspend fun removeFromPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: Int,
+        @Path("song_id") song_id: Int
+    )
+
     @Multipart
     @POST("auth/add_playlist")
     suspend fun addPlaylist(
