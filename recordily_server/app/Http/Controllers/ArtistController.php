@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Follow;
+use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -114,6 +115,30 @@ class ArtistController extends Controller
         $artists = Follow::searchFollowedArtists($id, $input);
 
         return response()->json($artists);
+    }
+
+    public function getViewsPerMonth(): JsonResponse
+    {
+        $id = Auth::id();
+
+        $plays = Play::getViewsPerMonth($id);
+
+        $playsCount = [];
+        $playsArray = [];
+
+        foreach ($plays as $key => $value) {
+            $playsCount[(int)$key] = count($value);
+        }
+
+        for($i = 1; $i <= 12; $i++){
+            if(!empty($playsCount[$i])){
+                $playsArray[] = $playsCount[$i];
+            }else{
+                $playsArray[] = 0;
+            }
+        }
+
+        return response()->json($playsArray);
     }
 
     private function getPicture(Collection $array)

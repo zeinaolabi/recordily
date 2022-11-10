@@ -2,29 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-/**
- * App\Models\Play
- *
- * @property int $id
- * @property int $user_id
- * @property int $song_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Song|null $song
- * @method static \Illuminate\Database\Eloquent\Builder|Play newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Play newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Play query()
- * @method static \Illuminate\Database\Eloquent\Builder|Play whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Play whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Play whereSongId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Play whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Play whereUserId($value)
- * @mixin \Eloquent
- */
 class Play extends BaseModel
 {
     use HasFactory;
@@ -57,5 +39,17 @@ class Play extends BaseModel
     public function song()
     {
         return $this->belongsTo(Song::class, 'song_id');
+    }
+
+    public static function getViewsPerMonth(int $id): Collection
+    {
+        return self::select('plays.id', 'plays.created_at')
+            ->join('songs', 'songs.id', '=', 'song_id')
+            ->whereYear('plays.created_at', '=', date("Y"))
+            ->where('songs.user_id', $id)
+            ->get()
+            ->groupBy(function($date) {
+                return Carbon::parse($date->created_at)->format('m');
+            });
     }
 }

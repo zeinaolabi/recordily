@@ -146,15 +146,15 @@ class PlaylistController extends Controller
 
     public function addToPlaylist(int $playlist_id, int $song_id): JsonResponse
     {
-        if (!Playlist::exists($song_id)) {
+        if (!Playlist::exists($playlist_id)) {
             return response()->json('Playlist Not Found', 400);
         }
 
-        if (Playlist::songInPlaylist($playlist_id, $song_id)) {
+        if (PlaylistHasSong::songInPlaylist($playlist_id, $song_id)) {
             return response()->json('Song in playlist', 400);
         }
 
-        Playlist::addToPlaylist($playlist_id, $song_id);
+        PlaylistHasSong::addToPlaylist($playlist_id, $song_id);
 
         return response()->json('Successfully Added', 201);
     }
@@ -165,11 +165,11 @@ class PlaylistController extends Controller
             return response()->json('Playlist Not Found', 400);
         }
 
-        if (!Playlist::songInPlaylist($playlist_id, $song_id)) {
+        if (!PlaylistHasSong::songInPlaylist($playlist_id, $song_id)) {
             return response()->json('Song in playlist', 400);
         }
 
-        Playlist::removeFromPlaylist($playlist_id, $song_id);
+        PlaylistHasSong::removeFromPlaylist($playlist_id, $song_id);
 
         return response()->json('Successfully Removed', 201);
     }
