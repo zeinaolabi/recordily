@@ -48,7 +48,7 @@ class Play extends BaseModel
             ->whereYear('plays.created_at', '=', date("Y"))
             ->where('songs.user_id', $id)
             ->get()
-            ->groupBy(function($date) {
+            ->groupBy(function ($date) {
                 return Carbon::parse($date->created_at)->format('m');
             });
     }

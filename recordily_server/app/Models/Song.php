@@ -119,4 +119,13 @@ class Song extends Model
 
         return response()->json("Successfully deleted");
     }
+
+    public static function searchReleasedSongs(int $user_id, string $input)
+    {
+        $is_published = 1;
+
+        return self::where('user_id', $user_id)->
+        where('is_published', $is_published)->
+        where('name', 'like', '%' . $input . '%')->get();
+    }
 }
