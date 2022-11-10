@@ -27,9 +27,9 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SuggestedSongsViewModel
-import com.example.recordily_client.view_models.TopSongsViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -70,6 +70,7 @@ fun SuggestedSongsPage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 isPlaylist = false
             )
@@ -94,7 +95,10 @@ private fun SuggestedSongsContent(navController: NavController, songs: List<Song
                         popUpTo = Screen.SuggestedSongsPage.route
                     )
                 },
-                onMoreClick = { popUpVisibility.value = true }
+                onMoreClick = {
+                    popUpVisibility.value = true
+                    songID.value = song.id
+                }
             )
         }
 

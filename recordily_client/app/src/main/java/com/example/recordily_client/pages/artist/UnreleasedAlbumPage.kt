@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,14 +18,10 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
-import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.AlbumViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
 import kotlinx.coroutines.launch
-
-private val popUpVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
@@ -60,17 +55,6 @@ fun UnreleasedAlbumPage(navController: NavController, album_id: String){
                 UnreleasedAlbumContent(navController, songs, unreleasedAlbumViewModel, token)
             }
 
-        }
-
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            Popup(
-                popUpVisibility = popUpVisibility,
-                isPlaylist = false
-            )
         }
     }
 }

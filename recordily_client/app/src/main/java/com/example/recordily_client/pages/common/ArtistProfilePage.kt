@@ -26,6 +26,7 @@ import com.example.recordily_client.view_models.ArtistProfileViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -74,6 +75,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 isPlaylist = false
             )
@@ -146,7 +148,8 @@ private fun ArtistProfileContent(
             },
             onMoreClick = {
                 popUpVisibility.value = true
-            }
+            },
+            songID = songID
         )
     }
 }

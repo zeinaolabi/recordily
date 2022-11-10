@@ -9,20 +9,14 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -36,6 +30,7 @@ import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -67,6 +62,7 @@ fun LibraryPage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 isPlaylist = false
             )
@@ -111,31 +107,13 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
     ){
 
         if(songsLiked == null || songsLiked.isEmpty()){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    text = "No Songs found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+            EmptyState(message = stringResource(id = R.string.no_songs_found))
         }
         else{
             for(song in songsLiked){
@@ -151,6 +129,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
                     },
                     onMoreClick = {
                         popUpVisibility.value = true
+                        songID.value = song.id
                     }
                 )
             }
@@ -185,6 +164,7 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
                     },
                     onMoreClick = {
                         popUpVisibility.value = true
+                        songID.value = song.id
                     }
                 )
             }

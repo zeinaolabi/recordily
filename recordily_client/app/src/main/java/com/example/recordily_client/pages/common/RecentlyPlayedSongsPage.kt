@@ -6,37 +6,27 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.components.ExitBar
-import com.example.recordily_client.components.HorizontalLine
-import com.example.recordily_client.components.Popup
-import com.example.recordily_client.components.SongCard
+import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.RecentlyPlaySongsViewModel
-import com.example.recordily_client.view_models.TopSongsViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -77,6 +67,7 @@ fun RecentlyPlayedSongsPage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 isPlaylist = false
             )
@@ -92,27 +83,7 @@ private fun RecentlyPlayedSongsContent(navController: NavController, songs: List
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
         if(songs == null || songs.isEmpty()){
-            Column(
-                modifier = Modifier
-                    .width(330.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    text = "No songs found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+           EmptyState(message = stringResource(id = R.string.no_songs_found))
         } else {
             for (song in songs) {
                 SongCard(
@@ -124,7 +95,10 @@ private fun RecentlyPlayedSongsContent(navController: NavController, songs: List
                             popUpTo = Screen.SuggestedSongsPage.route
                         )
                     },
-                    onMoreClick = { popUpVisibility.value = true }
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
+                    }
                 )
             }
         }

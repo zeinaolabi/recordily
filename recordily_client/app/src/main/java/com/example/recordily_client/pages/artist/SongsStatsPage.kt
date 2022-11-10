@@ -66,17 +66,6 @@ private fun SongsStatsContent(navController: NavController){
             BottomNavigationBar(navController)
         }
     }
-
-    AnimatedVisibility(
-        visible = popUpVisibility.value,
-        enter = expandVertically(expandFrom = Alignment.CenterVertically),
-        exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
-    ) {
-        Popup(
-            popUpVisibility = popUpVisibility,
-            isPlaylist = false
-        )
-    }
 }
 
 @Composable
@@ -92,9 +81,7 @@ private fun SearchResult(navController: NavController){
                 SongCard(
                     song = SongResponse(1,"",1,"","","",1,
                     1,"","",1,""),
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                    },
+                    onMoreClick = { },
                     onSongClick = {
                         navigateTo(
                             navController = navController,
