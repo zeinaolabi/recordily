@@ -108,18 +108,17 @@ class SongController extends Controller
     {
         $published = 1;
 
-        $suggestedSongs = Song::where('is_published', $published)->get();
+        $songsCount = Song::where('is_published', $published)->count();
 
-        if ($suggestedSongs->isEmpty()) {
-            return response()->json([]);
-        } elseif (count($suggestedSongs) < $limit) {
-            $suggestedSongs->random(count($suggestedSongs));
-            $this->getArtistName($suggestedSongs);
-
-            return response()->json($suggestedSongs);
+        if ($songsCount === 0) {
+            return response()->json("No Songs Found", 400);
         }
 
-        $suggestedSongs->random($limit);
+        if ($songsCount < $limit) {
+            $limit = $songsCount;
+        }
+
+        $suggestedSongs = Song::where('is_published', $published)->inRandomOrder()->limit($limit)->get();
         $this->getArtistName($suggestedSongs);
 
         return response()->json($suggestedSongs);
@@ -178,6 +177,17 @@ class SongController extends Controller
     public function publishSong(int $song_id): JsonResponse
     {
         return Song::publishSong($song_id);
+    }
+
+    public function isLiked(int $song_id): JsonResponse
+    {
+        $id = Auth::id();
+
+        if (!Song::exists($song_id)) {
+            return response()->json("Song Not Found", 400);
+        }
+
+        return response()->json(Like::checkIfLiked($id, $song_id));
     }
 
     private function getPicture(Collection $array)
