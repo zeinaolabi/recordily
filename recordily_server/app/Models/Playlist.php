@@ -63,4 +63,10 @@ class Playlist extends Model
         ]);
     }
 
+    public static function removeFromPlaylist(int $playlist_id, int $song_id): int
+    {
+        return self::where('playlist_id', $playlist_id)
+            ->where('song_id', $song_id)
+            ->delete();
+    }
 }
