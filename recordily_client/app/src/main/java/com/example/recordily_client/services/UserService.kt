@@ -1,12 +1,9 @@
 package com.example.recordily_client.services
 
 import com.example.recordily_client.apis.RetrofitInstance
-import com.example.recordily_client.responses.LoginResponse
 import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.requests.RegistrationRequest
-import com.example.recordily_client.responses.RegistrationResponse
-import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.responses.UserResponse
+import com.example.recordily_client.responses.*
 import okhttp3.MultipartBody
 
 class UserService {
@@ -32,5 +29,9 @@ class UserService {
 
     suspend fun getRecentlyPlayed(token: String, limit: Int): List<SongResponse> {
         return RetrofitInstance.userAPI.getRecentlyPlayed(token, limit)
+    }
+
+    suspend fun getAlbums(token: String): List<AlbumResponse> {
+        return RetrofitInstance.userAPI.getAlbums(token)
     }
 }

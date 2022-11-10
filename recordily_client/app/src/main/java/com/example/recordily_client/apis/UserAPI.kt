@@ -1,5 +1,6 @@
 package com.example.recordily_client.apis
 
+import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
 import okhttp3.MultipartBody
@@ -14,6 +15,9 @@ interface UserAPI {
 
     @GET("auth/recently_played_songs/{limit}")
     suspend fun getRecentlyPlayed(@Header("Authorization") token: String, @Path("limit") limit: Int): List<SongResponse>
+
+    @GET("auth/get_albums")
+    suspend fun getAlbums(@Header("Authorization") token: String): List<AlbumResponse>
 
     @Multipart
     @POST("auth/edit_profile")

@@ -35,6 +35,7 @@ import android.os.Environment
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberImagePainter
@@ -60,6 +61,7 @@ private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
 private var chunks: File = File("")
+private var selectedAlbum: MutableState<Int?> = mutableStateOf(null)
 
 @Composable
 fun UploadSongPage(navController: NavController) {
@@ -137,7 +139,7 @@ private fun UploadSongContent(){
         visibility = true
     )
 
-    DropDownAlbumMenu()
+    DropDownAlbumMenu(uploadSongViewModel, token)
 
     PickAudioRow()
 
@@ -159,7 +161,7 @@ private fun UploadSongContent(){
                 chunks_size = files.size,
                 chunk_num = index,
                 song_id = songID,
-                album_id = null
+                album_id = selectedAlbum.value
             )
 
             coroutinesScope.launch {
@@ -210,13 +212,20 @@ private fun UploadSongContent(){
 }
 
 @Composable
-private fun DropDownAlbumMenu(){
+private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: String){
     var expanded by remember { mutableStateOf(false) }
-    var selectedAlbum by remember { mutableStateOf("Single") }
-    val albumList = listOf(
-        "Single",
-        "Album names"
-    )
+    var selectedAlbumName by remember { mutableStateOf("Single") }
+    val albumList: HashMap<Int?, String> = HashMap()
+    albumList[null] = "Single"
+
+    uploadSongViewModel.getAlbums(token)
+    val albums = uploadSongViewModel.albumsResultLiveData.observeAsState()
+
+    if(albums.value != null) {
+        for (album in albums.value!!) {
+            albumList[album.id] = album.name
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -231,7 +240,7 @@ private fun DropDownAlbumMenu(){
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = selectedAlbum,
+            text = selectedAlbumName,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             color = colorResource(R.color.darker_gray),
             fontWeight = FontWeight.Bold
@@ -250,17 +259,20 @@ private fun DropDownAlbumMenu(){
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
+                .height(250.dp)
                 .background(colorResource(id = R.color.darker_gray))
+                .verticalScroll(ScrollState(0))
         ) {
-            albumList.forEach { album ->
+            albumList.keys.forEach { albumID ->
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
-                        selectedAlbum = album
+                        selectedAlbumName = albumList[albumID].toString()
+                        selectedAlbum.value = albumID
                     }
                 ) {
                     Text(
-                        text = album,
+                        text = albumList[albumID].toString(),
                         color = MaterialTheme.colors.onPrimary
                     )
                 }
@@ -271,7 +283,8 @@ private fun DropDownAlbumMenu(){
 
 @Composable
 private fun PickAudioRow(){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)
