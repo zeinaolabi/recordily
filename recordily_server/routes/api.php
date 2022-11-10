@@ -85,6 +85,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('recently_played_songs/{limit}',"getRecentlyPlayed");
             Route::post('edit_profile',"editProfile");
             Route::get('get_user_songs',"getUserSongs");
+            Route::get('search_released_songs/{input}',"searchReleasedSongs");
         }
     );
 });
