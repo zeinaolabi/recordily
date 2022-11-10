@@ -53,4 +53,10 @@ class Like extends BaseModel
         ]);
     }
 
+    public static function unlikeSong(int $id, int $song_id): int
+    {
+        return self::where('user_id', $id)
+            ->where('song_id', $song_id)
+            ->delete();
+    }
 }
