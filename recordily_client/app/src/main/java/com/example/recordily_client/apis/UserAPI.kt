@@ -22,6 +22,9 @@ interface UserAPI {
     @GET("auth/get_user_songs")
     suspend fun getUserSongs(@Header("Authorization") token: String): List<SongResponse>
 
+    @GET("auth/search_released_songs/{input}")
+    suspend fun searchReleasedSongs(@Header("Authorization") token: String, @Path("input") input: String): List<SongResponse>
+
     @Multipart
     @POST("auth/edit_profile")
     suspend fun editProfile(
