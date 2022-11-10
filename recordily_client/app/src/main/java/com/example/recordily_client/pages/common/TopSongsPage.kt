@@ -25,10 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
-import com.example.recordily_client.components.ExitBar
-import com.example.recordily_client.components.HorizontalLine
-import com.example.recordily_client.components.Popup
-import com.example.recordily_client.components.SongCard
+import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
@@ -36,6 +33,7 @@ import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.TopSongsViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
@@ -79,7 +77,19 @@ fun TopSongsPage(navController: NavController){
             Popup(
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
+                playlistPopUpVisibility = playlistPopUpVisibility,
                 isPlaylist = false
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }

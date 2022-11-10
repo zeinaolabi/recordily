@@ -30,6 +30,7 @@ import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
@@ -64,6 +65,7 @@ fun LibraryPage(navController: NavController){
             Popup(
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
+                playlistPopUpVisibility = playlistPopUpVisibility,
                 isPlaylist = false
             )
         }

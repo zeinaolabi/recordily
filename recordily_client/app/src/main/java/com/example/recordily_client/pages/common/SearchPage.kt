@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -34,11 +35,15 @@ import com.example.recordily_client.view_models.SearchPageViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
+    Log.i("popup", popUpVisibility.value.toString())
+    Log.i("playlist", playlistPopUpVisibility.value.toString())
+
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
@@ -84,7 +89,19 @@ fun CommonSearchPage(navController: NavController){
             Popup(
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
+                playlistPopUpVisibility = playlistPopUpVisibility,
                 isPlaylist = false
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }

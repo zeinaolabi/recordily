@@ -24,6 +24,7 @@ import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
@@ -67,7 +68,19 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
             Popup(
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
+                playlistPopUpVisibility = playlistPopUpVisibility,
                 isPlaylist = true
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }
