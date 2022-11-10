@@ -55,4 +55,12 @@ class Playlist extends Model
             ->where('song_id', $song_id)->first();
     }
 
+    public static function addToPlaylist(int $playlist_id, int $song_id): self
+    {
+        return self::create([
+            'playlist_id' => $playlist_id,
+            'song_id' => $song_id
+        ]);
+    }
+
 }
