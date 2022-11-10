@@ -55,15 +55,17 @@ fun PlaylistsPage(navController: NavController){
             PlaylistsPageContent(navController, playlists.value, playlistsViewModel, token)
         }
 
-        FloatingButton(
-            onClick={
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.CreatePlaylistPage.route,
-                    popUpTo = Screen.PlaylistPage.route
-                )
-            }
-        )
+        if(searchInput.value == "") {
+            FloatingButton(
+                onClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.CreatePlaylistPage.route,
+                        popUpTo = Screen.PlaylistPage.route
+                    )
+                }
+            )
+        }
     }
 }
 

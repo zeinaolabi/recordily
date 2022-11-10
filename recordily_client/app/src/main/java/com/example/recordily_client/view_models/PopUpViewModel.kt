@@ -4,25 +4,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.services.PlaylistService
 import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 
 class PopUpViewModel: ViewModel() {
-    val service = SongService()
+    private val songService = SongService()
+    private val playlistService = PlaylistService()
 
     private val isLikedResult = MutableLiveData<Boolean>()
     val isLikedResultLiveData : LiveData<Boolean>
         get() = isLikedResult
 
+    private val playlistsResult = MutableLiveData<List<PlaylistResponse>>()
+    val playlistsResultLiveData : LiveData<List<PlaylistResponse>>
+        get() = playlistsResult
+
     fun isLiked(token: String, song_id: Int){
         viewModelScope.launch {
-            isLikedResult.postValue(service.isLiked(token, song_id))
+            isLikedResult.postValue(songService.isLiked(token, song_id))
+        }
+    }
+
+    fun getPlaylists(token: String){
+        viewModelScope.launch {
+            playlistsResult.postValue(playlistService.getPlaylists(token))
         }
     }
 
     suspend fun likeSong(token: String, song_id: Int): Boolean {
         return try {
-            service.likeSong(token, song_id)
+            songService.likeSong(token, song_id)
             true
         } catch (exception: Throwable) {
             false
@@ -31,7 +44,25 @@ class PopUpViewModel: ViewModel() {
 
     suspend fun unlikeSong(token: String, song_id: Int): Boolean {
         return try {
-            service.unlikeSong(token, song_id)
+            songService.unlikeSong(token, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
+
+    suspend fun addToPlaylist(token: String, playlist_id: Int, song_id: Int): Boolean {
+        return try {
+            playlistService.addToPlaylist(token, playlist_id, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
+
+    suspend fun removeFromPlaylist(token: String, playlist_id: Int, song_id: Int): Boolean {
+        return try {
+            playlistService.removeFromPlaylist(token, playlist_id, song_id)
             true
         } catch (exception: Throwable) {
             false

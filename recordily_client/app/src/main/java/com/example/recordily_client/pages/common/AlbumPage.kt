@@ -48,13 +48,15 @@ fun AlbumPage(navController: NavController, album_id: String){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            ExitBar(navController, stringResource(id = R.string.album))
+            ExitBar(navController, stringResource(id =  R.string.album))
 
-            album?.let { AlbumHeader(it) }
+            album?.let {
+                AlbumHeader(it)
 
-            HorizontalLine()
+                HorizontalLine()
 
-            AlbumPageContent(navController, songs)
+                AlbumPageContent(navController, songs)
+            }
 
         }
 

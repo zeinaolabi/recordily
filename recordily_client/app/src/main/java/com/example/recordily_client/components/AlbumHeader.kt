@@ -31,7 +31,7 @@ fun AlbumHeader(album: AlbumResponse){
     ){
         Image(
             painter =
-            if(album.picture != ""){
+            if(album.picture !== null || album.picture != ""){
                 rememberAsyncImagePainter(album.picture)
             }
             else{
