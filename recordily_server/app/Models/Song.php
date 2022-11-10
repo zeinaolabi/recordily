@@ -38,6 +38,11 @@ class Song extends Model
         return $this->belongsTo(User::class, 'user_id')->select('name');
     }
 
+    public static function exists(int $song_id): bool
+    {
+        return (bool)self::find($song_id);
+    }
+
     public static function getArtistSongs(int $artist_id, int $limit): Collection
     {
         $is_published = 1;
