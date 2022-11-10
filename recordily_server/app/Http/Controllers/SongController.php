@@ -190,6 +190,23 @@ class SongController extends Controller
         return response()->json(Like::checkIfLiked($id, $song_id));
     }
 
+    public function likeSong(int $song_id): JsonResponse
+    {
+        $id = Auth::id();
+
+        if (!Song::exists($song_id)) {
+            return response()->json("Song Not Found", 400);
+        }
+
+        if (Like::checkIfLiked($id, $song_id)) {
+            return response()->json('Already Liked', 400);
+        }
+
+        Like::likeSong($id, $song_id);
+
+        return response()->json('Song Liked', 201);
+    }
+
     private function getPicture(Collection $array)
     {
         foreach ($array as $data) {
