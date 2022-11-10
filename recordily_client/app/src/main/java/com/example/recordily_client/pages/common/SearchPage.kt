@@ -1,6 +1,5 @@
 package com.example.recordily_client.pages.common
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -41,9 +40,6 @@ private val songID = mutableStateOf(-1)
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
-    Log.i("popup", popUpVisibility.value.toString())
-    Log.i("playlist", playlistPopUpVisibility.value.toString())
-
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()

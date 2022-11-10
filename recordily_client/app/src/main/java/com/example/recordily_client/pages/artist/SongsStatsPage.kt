@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
@@ -21,30 +25,73 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongsStatsViewModel
+import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
 fun SongsStatsPage(navController: NavController){
+    val loginViewModel: LoginViewModel = viewModel()
+    val songsStatsViewModel: SongsStatsViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    songsStatsViewModel.getUserSongs(token)
+
+    val songs by songsStatsViewModel.songsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ){
-        SongsStatsContent(navController)
+        songs?.let { SongsStatsContent(navController, it) }
+
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.Bottom
+        ){
+            BottomNavigationBar(navController)
+        }
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            Popup(
+                songID = songID.value,
+                popUpVisibility = popUpVisibility,
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
+            )
+        }
     }
 
 }
 
 @ExperimentalAnimationApi
 @Composable
-private fun SongsStatsContent(navController: NavController){
+private fun SongsStatsContent(navController: NavController, songs: List<SongResponse>){
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
-    
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -57,40 +104,78 @@ private fun SongsStatsContent(navController: NavController){
             navController = navController
         )
 
-        SearchResult(navController)
+        Column(
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_medium))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_very_large)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+        ) {
+            SearchTextField(searchInput)
 
-        Row(
-            modifier = Modifier.fillMaxHeight(),
-            verticalAlignment = Alignment.Bottom
-        ){
-            BottomNavigationBar(navController)
+            if(searchInput.value == ""){
+                SongsResult(navController, songs)
+            }
+            else{
+                SearchResult(navController, searchResult)
+            }
         }
     }
 }
 
 @Composable
-private fun SearchResult(navController: NavController){
+private fun SongsResult(navController: NavController, songs: List<SongResponse>) {
     Column(
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-    ){
-        SearchTextField(searchInput)
-
-        Column(modifier = Modifier.verticalScroll(ScrollState(0))){
-            for(i in 1..3){
+        modifier = Modifier
+            .verticalScroll(ScrollState(0))
+    ) {
+        if (songs.isEmpty()) {
+            EmptyState(message = stringResource(id = R.string.no_songs_found))
+        } else {
+            for (song in songs) {
                 SongCard(
-                    song = SongResponse(1,"",1,"","","",1,
-                    1,"","",1,""),
-                    onMoreClick = { },
+                    song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongStatsPage.route,
-                            popUpTo = Screen.SongsStatsPage.route
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.PlaylistPage.route
                         )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
                     }
                 )
             }
         }
+    }
+}
+
+
+@Composable
+private fun SearchResult(navController: NavController, searchResult: List<SongResponse>?){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
+    ){
+        if (searchResult != null) {
+            for(song in searchResult){
+                SongCard(
+                    song = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.LibraryPage.route
+                        )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
+                    }
+                )
+            }
+        }
+
     }
 }
