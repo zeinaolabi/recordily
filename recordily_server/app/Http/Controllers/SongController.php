@@ -207,6 +207,23 @@ class SongController extends Controller
         return response()->json('Song Liked', 201);
     }
 
+    public function unlikeSong(int $song_id): JsonResponse
+    {
+        $id = Auth::id();
+
+        if (!Song::exists($song_id)) {
+            return response()->json("Song Not Found", 400);
+        }
+
+        if (!Like::checkIfLiked($id, $song_id)) {
+            return response()->json('Not Liked', 400);
+        }
+
+        Like::unlikeSong($id, $song_id);
+
+        return response()->json('Song Unliked', 201);
+    }
+
     private function getPicture(Collection $array)
     {
         foreach ($array as $data) {
