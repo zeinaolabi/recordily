@@ -71,7 +71,7 @@ fun RecentlyPlayedSongsPage(navController: NavController){
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 playlistPopUpVisibility = playlistPopUpVisibility,
-                isPlaylist = false
+                playlistID = null
             )
         }
 

@@ -69,7 +69,7 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 playlistPopUpVisibility = playlistPopUpVisibility,
-                isPlaylist = true
+                playlistID = playlist_id.toInt()
             )
         }
 

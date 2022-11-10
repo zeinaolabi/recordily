@@ -62,7 +62,7 @@ fun ArtistSongsPage(navController: NavController, artist_id: String){
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 playlistPopUpVisibility = playlistPopUpVisibility,
-                isPlaylist = false
+                playlistID = null
             )
         }
 

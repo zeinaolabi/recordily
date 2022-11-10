@@ -66,7 +66,18 @@ fun LibraryPage(navController: NavController){
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 playlistPopUpVisibility = playlistPopUpVisibility,
-                isPlaylist = false
+                playlistID = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }

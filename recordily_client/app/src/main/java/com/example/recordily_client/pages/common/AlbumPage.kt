@@ -69,7 +69,7 @@ fun AlbumPage(navController: NavController, album_id: String){
                 songID = songID.value,
                 popUpVisibility = popUpVisibility,
                 playlistPopUpVisibility = playlistPopUpVisibility,
-                isPlaylist = false
+                playlistID = null
             )
         }
 

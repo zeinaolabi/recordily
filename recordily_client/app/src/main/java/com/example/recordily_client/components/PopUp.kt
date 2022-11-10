@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,7 +31,7 @@ fun Popup(
     songID: Int,
     popUpVisibility: MutableState<Boolean>,
     playlistPopUpVisibility: MutableState<Boolean>,
-    isPlaylist: Boolean
+    playlistID: Int?
 ){
     val loginViewModel: LoginViewModel = viewModel()
     val popUpViewModel: PopUpViewModel = viewModel()
@@ -74,15 +75,16 @@ fun Popup(
                     popUpVisibility.value = true
                 },
         ) {
-            if(isPlaylist){
+
+            if (playlistID != null) {
                 PlaylistPopupContent(
                     popUpViewModel,
                     token,
                     songID,
                     popUpVisibility,
-                    playlistPopUpVisibility
+                    playlistPopUpVisibility,
+                    playlistID
                 )
-
             }
             else{
                 RegularPopupContent(
@@ -125,7 +127,8 @@ private fun PlaylistPopupContent(
     token: String,
     songID: Int,
     popUpVisibility: MutableState<Boolean>,
-    playlistPopUpVisibility: MutableState<Boolean>
+    playlistPopUpVisibility: MutableState<Boolean>,
+    playlistID: Int
 ){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -141,15 +144,36 @@ private fun PlaylistPopupContent(
 
         AddToPlaylist(popUpVisibility, playlistPopUpVisibility)
 
-        DeleteFromPlaylist()
+        DeleteFromPlaylist(popUpViewModel, token, playlistID, songID)
 
     }
 }
 
 @Composable
-private fun DeleteFromPlaylist(){
+private fun DeleteFromPlaylist(
+    popUpViewModel: PopUpViewModel,
+    token: String,
+    playlistID: Int,
+    songID: Int
+){
+    val coroutinesScope = rememberCoroutineScope()
+    val context = popUpViewModel.context
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                coroutinesScope.launch {
+                    val removeFromPlaylist = popUpViewModel.removeFromPlaylist(token, playlistID, songID)
+                    if(!removeFromPlaylist){
+                        Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+
+                    Toast.makeText(context, "Song Deleted", Toast.LENGTH_SHORT).show()
+                }
+            }
     ){
         Icon(
             imageVector = Icons.Default.Delete,
@@ -166,9 +190,12 @@ private fun DeleteFromPlaylist(){
 }
 
 @Composable
-private fun AddToPlaylist(popUpVisibility: MutableState<Boolean>, playlistPopUpVisibility: MutableState<Boolean>){
+private fun AddToPlaylist(
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>
+){
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
         modifier = Modifier.clickable {
             popUpVisibility.value = false
             playlistPopUpVisibility.value = true
@@ -194,7 +221,7 @@ private fun AddToLikes(popUpViewModel: PopUpViewModel, token: String, songID: In
     val isLiked by popUpViewModel.isLikedResultLiveData.observeAsState()
 
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
         modifier = Modifier
             .clickable
             {
