@@ -84,6 +84,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_user_top_songs/{limit}',"getUserTopSongs");
             Route::get('recently_played_songs/{limit}',"getRecentlyPlayed");
             Route::post('edit_profile',"editProfile");
+            Route::get('get_user_songs',"getUserSongs");
         }
     );
 });
