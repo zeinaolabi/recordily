@@ -72,6 +72,18 @@ class UserController extends Controller
         return response()->json($result);
     }
 
+    public function getUserSongs(): JsonResponse
+    {
+        $id = Auth::id();
+        $published = 1;
+
+        $songs = Song::where('user_id', $id)->where('is_published', $published)->get();
+        $this->getArtistName($songs);
+        $this->getPicture($songs);
+
+        return response()->json($songs);
+    }
+
     private function getPicture(Collection $array)
     {
         foreach ($array as $data) {
