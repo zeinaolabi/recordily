@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Follow;
+use App\Models\Like;
 use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
@@ -139,6 +140,42 @@ class ArtistController extends Controller
         }
 
         return response()->json($playsArray);
+    }
+
+    public function getSongViewsPerMonth(int $song_id): JsonResponse
+    {
+        $plays = Play::getSongViewsPerMonth($song_id);
+
+        $playsCount = [];
+        $playsArray = [];
+
+        foreach ($plays as $key => $value) {
+            $playsCount[(int)$key] = count($value);
+        }
+
+        for ($i = 1; $i <= 12; $i++) {
+            if (!empty($playsCount[$i])) {
+                $playsArray[] = $playsCount[$i];
+            } else {
+                $playsArray[] = 0;
+            }
+        }
+
+        return response()->json($playsArray);
+    }
+
+    public function getSongLikes(int $song_id): JsonResponse
+    {
+        $likes = Like::where('song_id', $song_id)->count();
+
+        return response()->json($likes);
+    }
+
+    public function getSongViews(int $song_id): JsonResponse
+    {
+        $views = Play::where('song_id', $song_id)->count();
+
+        return response()->json($views);
     }
 
     private function getPicture(Collection $array)
