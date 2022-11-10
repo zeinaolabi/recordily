@@ -46,6 +46,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::post('edit_playlist', "editPlaylist");
             Route::get('delete_playlist/{playlist_id}',"deletePlaylist");
             Route::get('search_playlists/{input}', "searchPlaylists");
+            Route::get('add_to_playlist/{playlist_id}/{song_id}', "addToPlaylist");
+            Route::get('remove_to_playlist/{playlist_id}/{song_id}', "removeFromPlaylist");
         }
     );
 
@@ -61,6 +63,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_artist_top_songs/{artist_id}/{limit}', "getArtistTopSongs");
             Route::get('get_artist_songs/{artist_id}/{limit}',"getArtistSongs");
             Route::get('search_followed_artist/{input}',"searchFollowedArtist");
+            Route::get('get_views_per_month',"getViewsPerMonth");
         }
     );
 
@@ -71,6 +74,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('unreleased_albums/{limit}',"getUnreleasedAlbums");
             Route::post('create_album',"addAlbum");
             Route::get('publish_album/{limit}',"publishAlbum");
+            Route::get('get_albums',"getAlbums");
         }
     );
 
