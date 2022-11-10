@@ -78,6 +78,12 @@ interface SongsAPI {
         @Path("song_id") song_id: Int
     )
 
+    @GET("auth/unlike/{song_id}")
+    suspend fun unlikeSong(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: Int
+    )
+
     @Multipart
     @POST("auth/upload_song")
     suspend fun uploadSong(
