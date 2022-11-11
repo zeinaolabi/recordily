@@ -22,6 +22,8 @@ import com.example.recordily_client.view_models.ArtistSongsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -57,11 +59,23 @@ fun ArtistSongsPage(navController: NavController, artist_id: String){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
-                isPlaylist = false
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
             )
         }
 
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
+            )
+        }
     }
 }
 
@@ -83,7 +97,10 @@ private fun ArtistSongsContent(navController: NavController, songs: List<SongRes
                             popUpTo = Screen.ArtistSongsPage.route
                         )
                     },
-                    onMoreClick = { popUpVisibility.value = true }
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
+                    }
                 )
             }
         }

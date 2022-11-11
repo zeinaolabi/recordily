@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
-import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.UserResponse
 
 @Composable
-fun ArtistCard(artist: ArtistResponse, onClick: () -> (Unit)){
+fun ArtistCard(artist: UserResponse, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -44,11 +44,12 @@ fun ArtistCard(artist: ArtistResponse, onClick: () -> (Unit)){
 }
 
 @Composable
-private fun ArtistCardContent(artist: ArtistResponse){
+private fun ArtistCardContent(artist: UserResponse){
     Row(verticalAlignment = Alignment.CenterVertically)
     {
         Image(
-            painter = if(artist.profile_picture != ""){
+            painter =
+            if(artist.profile_picture != null && artist.profile_picture != ""){
                 rememberAsyncImagePainter(artist.profile_picture)
             }
             else{
@@ -62,7 +63,7 @@ private fun ArtistCardContent(artist: ArtistResponse){
         )
 
         Text(
-            text = artist.name,
+            text = artist.name ?: "User Name",
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))

@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,10 +20,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.view_models.UnreleasedViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun UnreleasedAlbumsCard(title: String, destination: ()->(Unit), onAlbumClick: ()->(Unit),onUploadClick: () -> (Unit)){
+fun UnreleasedAlbumsCard(
+    title: String,
+    navController: NavController,
+    albums: List<AlbumResponse>?,
+    destination: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String,
+    onUploadClick: () -> Unit,
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -34,12 +50,21 @@ fun UnreleasedAlbumsCard(title: String, destination: ()->(Unit), onAlbumClick: (
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(destination, onAlbumClick, onUploadClick)
+        CardsContent(albums, navController, destination, viewModel, token, onUploadClick)
     }
 }
 
 @Composable
-private fun CardsContent(destination: ()->(Unit), onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun CardsContent(
+    albums: List<AlbumResponse>?,
+    navController: NavController,
+    destination: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String,
+    onUploadClick: () -> Unit,
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,25 +72,34 @@ private fun CardsContent(destination: ()->(Unit), onAlbumClick: ()->(Unit), onUp
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            UnreleasedAlbumCard(
-                onAlbumClick = onAlbumClick,
-                onUploadClick = {onUploadClick()}
+        if(albums == null || albums.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_albums_found))
+        } else {
+            for (album in albums) {
+                UnreleasedAlbumCard(
+                    album = album,
+                    navController = navController,
+                    onUploadClick = {
+                        coroutinesScope.launch {
+                            viewModel.publishAlbum(token, album.id)
+                            onUploadClick()
+                        }
+                    }
+                )
+            }
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
             )
         }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-
     }
 }
 
 @Composable
-fun UnreleasedAlbumCard(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+fun UnreleasedAlbumCard(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -76,23 +110,23 @@ fun UnreleasedAlbumCard(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        AlbumCardContent(onAlbumClick, onUploadClick)
+        AlbumCardContent(album, navController, onUploadClick)
     }
 }
 
 @Composable
-private fun AlbumCardContent(onAlbumClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun AlbumCardContent(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        AlbumDetails(onAlbumClick)
+        AlbumDetails(album, navController)
 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .clickable{
+                .clickable {
                     onUploadClick()
                 },
             verticalArrangement = Arrangement.Center
@@ -108,7 +142,7 @@ private fun AlbumCardContent(onAlbumClick: ()->(Unit), onUploadClick: () -> (Uni
 }
 
 @Composable
-private fun AlbumDetails(onAlbumClick: ()->(Unit)){
+private fun AlbumDetails(album: AlbumResponse, navController: NavController){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -117,12 +151,22 @@ private fun AlbumDetails(onAlbumClick: ()->(Unit)){
                 interactionSource = remember { NoRippleInteractionSource() },
                 indication = null
             ) {
-                onAlbumClick()
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.UnreleasedAlbumPage.route + '/' + album.id,
+                    popUpTo = Screen.UnreleasedAlbumsPage.route
+                )
             }
     )
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(album.picture != null && album.picture != ""){
+                rememberAsyncImagePainter(album.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "album picture",
             modifier = Modifier
                 .size(50.dp)
@@ -134,7 +178,7 @@ private fun AlbumDetails(onAlbumClick: ()->(Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = "Album title",
+                text = album.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary

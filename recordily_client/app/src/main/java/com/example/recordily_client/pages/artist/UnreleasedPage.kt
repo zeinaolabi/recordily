@@ -5,22 +5,44 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.ProfileViewModel
+import com.example.recordily_client.view_models.UnreleasedViewModel
+
+private const val limit = 3
 
 @Composable
 fun UnreleasedPage(navController: NavController) {
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
+    val loginViewModel: LoginViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
+    val unreleasedViewModel: UnreleasedViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    profileViewModel.getInfo(token)
+    unreleasedViewModel.getUnreleasedSongs(token, limit)
+    unreleasedViewModel.getUnreleasedAlbums(token, limit)
+
+    val profile by profileViewModel.userInfoResultLiveData.observeAsState()
+    val unreleasedSongs by unreleasedViewModel.unreleasedSongsResultLiveData.observeAsState()
+    val unreleasedAlbums by unreleasedViewModel.unreleasedAlbumsResultLiveData.observeAsState()
 
     Scaffold(
         topBar = { ExitBar(navController, stringResource(id = R.string.profile)) },
@@ -28,17 +50,25 @@ fun UnreleasedPage(navController: NavController) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ){
-                ProfileHeader(navController)
+                profile?.let { it ->
+                    ProfileHeader(navController, it)
 
-                TopNavBar(
-                    pageOptions = pageOptions,
-                    currentPage = R.string.unreleased,
-                    navController = navController
-                )
+                    TopNavBar(
+                        pageOptions = pageOptions,
+                        currentPage = R.string.unreleased,
+                        navController = navController
+                    )
 
-                AddMusicRow(navController)
+                    AddMusicRow(navController)
 
-                UnreleasedContentColumn(navController)
+                    UnreleasedContentColumn(
+                        navController,
+                        unreleasedSongs,
+                        unreleasedAlbums,
+                        unreleasedViewModel,
+                        token
+                    )
+                }
             }
         }
     )
@@ -91,7 +121,13 @@ private fun AddMusicRow(navController: NavController){
 }
 
 @Composable
-private fun UnreleasedContentColumn(navController: NavController){
+private fun UnreleasedContentColumn(
+    navController: NavController,
+    unreleasedSongs: List<SongResponse>?,
+    unreleasedAlbums: List<AlbumResponse>?,
+    unreleasedViewModel: UnreleasedViewModel,
+    token: String
+){
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -99,6 +135,7 @@ private fun UnreleasedContentColumn(navController: NavController){
         ){
         UnreleasedSongsCard(
             title = stringResource(id = R.string.unreleased_songs),
+            songs = unreleasedSongs,
             destination = {
                        navigateTo(
                            navController = navController,
@@ -113,13 +150,16 @@ private fun UnreleasedContentColumn(navController: NavController){
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
-            onUploadClick = {
-                //Upload Song
-            }
+            viewModel = unreleasedViewModel,
+            token = token,
+            onUploadClick = { unreleasedViewModel.getUnreleasedSongs(token, limit) }
+
         )
 
         UnreleasedAlbumsCard(
             title = stringResource(id = R.string.unreleased_albums),
+            albums = unreleasedAlbums,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
@@ -127,16 +167,9 @@ private fun UnreleasedContentColumn(navController: NavController){
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
-            onAlbumClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.UnreleasedAlbumPage.route,
-                    popUpTo = Screen.UnreleasedPage.route
-                )
-            },
-            onUploadClick = {
-                //Upload Song
-            }
+            viewModel = unreleasedViewModel,
+            token = token,
+            onUploadClick = { unreleasedViewModel.getUnreleasedAlbums(token, limit) }
         )
     }
 }

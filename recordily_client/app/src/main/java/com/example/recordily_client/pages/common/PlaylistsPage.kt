@@ -11,7 +11,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -49,15 +55,17 @@ fun PlaylistsPage(navController: NavController){
             PlaylistsPageContent(navController, playlists.value, playlistsViewModel, token)
         }
 
-        FloatingButton(
-            onClick={
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.CreatePlaylistPage.route,
-                    popUpTo = Screen.PlaylistPage.route
-                )
-            }
-        )
+        if(searchInput.value == "") {
+            FloatingButton(
+                onClick = {
+                    navigateTo(
+                        navController = navController,
+                        destination = Screen.CreatePlaylistPage.route,
+                        popUpTo = Screen.PlaylistPage.route
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -99,12 +107,15 @@ private fun Playlists(navController: NavController, playlists: List<PlaylistResp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
     ){
 
-        if (playlists != null) {
+        if(playlists == null || playlists.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_playlists_found))
+        }
+        else {
             for(playlist in playlists){
                 PlaylistCard(
                     playlist = playlist,

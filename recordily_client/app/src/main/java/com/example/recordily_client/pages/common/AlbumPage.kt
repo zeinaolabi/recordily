@@ -23,6 +23,8 @@ import com.example.recordily_client.view_models.AlbumViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -46,13 +48,15 @@ fun AlbumPage(navController: NavController, album_id: String){
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            ExitBar(navController, stringResource(id = R.string.album))
+            ExitBar(navController, stringResource(id =  R.string.album))
 
-            album?.let { AlbumHeader(it) }
+            album?.let {
+                AlbumHeader(it)
 
-            HorizontalLine()
+                HorizontalLine()
 
-            AlbumPageContent(navController, songs)
+                AlbumPageContent(navController, songs)
+            }
 
         }
 
@@ -62,11 +66,23 @@ fun AlbumPage(navController: NavController, album_id: String){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
-                isPlaylist = false
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
             )
         }
 
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
+            )
+        }
     }
 }
 
@@ -88,7 +104,10 @@ private fun AlbumPageContent(navController: NavController, songs: List<SongRespo
                             popUpTo = Screen.AlbumPage.route
                         )
                     },
-                    onMoreClick = { popUpVisibility.value = true }
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
+                    }
                 )
             }
         }

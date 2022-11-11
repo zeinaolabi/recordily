@@ -29,18 +29,23 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SearchPageViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    searchPageViewModel.getSuggestedResult(limit)
+    searchPageViewModel.getSuggestedResult(token, limit)
 
     Box(
         modifier = Modifier
@@ -61,7 +66,7 @@ fun CommonSearchPage(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
-                SearchPageContent(navController, searchPageViewModel)
+                SearchPageContent(navController, searchPageViewModel, token)
             }
 
             Row(
@@ -78,8 +83,21 @@ fun CommonSearchPage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
-                isPlaylist = false
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }
@@ -87,7 +105,11 @@ fun CommonSearchPage(navController: NavController){
 
 @ExperimentalAnimationApi
 @Composable
-private fun SearchPageContent(navController: NavController, searchPageViewModel: SearchPageViewModel){
+private fun SearchPageContent(
+    navController: NavController,
+    searchPageViewModel: SearchPageViewModel,
+    token: String
+){
     val searchResult by searchPageViewModel.searchResultLiveData.observeAsState()
     val suggestedResult by searchPageViewModel.suggestedResultLiveData.observeAsState()
 
@@ -104,7 +126,7 @@ private fun SearchPageContent(navController: NavController, searchPageViewModel:
     if (searchInput.value == "") {
         SuggestedContent(navController, suggestedResult)
     } else {
-        searchPageViewModel.getSearchResult(searchInput.value)
+        searchPageViewModel.getSearchResult(token, searchInput.value)
         SearchResultContent(navController, searchResult)
     }
 }
@@ -128,7 +150,8 @@ private fun SuggestedContent(navController: NavController, data: List<SongRespon
                 popUpTo = Screen.SearchPage.route
             )
         },
-        onMoreClick = { popUpVisibility.value = true }
+        onMoreClick = { popUpVisibility.value = true },
+        songID = songID
     )
 }
 
@@ -137,35 +160,44 @@ private fun SearchResultContent(navController: NavController, data: SearchRespon
     Column(
         modifier = Modifier.verticalScroll(ScrollState(0))
     ){
-        if (data != null) {
-            for(artist in data.artists){
-                ArtistCard(
-                    artist = artist,
-                    onClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.ArtistProfilePage.route,
-                            popUpTo = Screen.SearchPage.route
-                        )
-                    }
-                )
-            }
-
-            for(song in data.songs){
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.PlaylistPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                    }
-                )
-            }
+        if(data == null || (data.artists.isEmpty() && data.songs.isEmpty())){
+            EmptyState(message = stringResource(id = R.string.no_results))
         }
+        else {
+            ResultData(navController, data)
+        }
+    }
+}
+
+@Composable
+private fun ResultData(navController: NavController, data: SearchResponse){
+    for(artist in data.artists){
+        ArtistCard(
+            artist = artist,
+            onClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.ArtistProfilePage.route,
+                    popUpTo = Screen.SearchPage.route
+                )
+            }
+        )
+    }
+
+    for(song in data.songs){
+        SongCard(
+            song = song,
+            onSongClick = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.SongPage.route,
+                    popUpTo = Screen.PlaylistPage.route
+                )
+            },
+            onMoreClick = {
+                popUpVisibility.value = true
+                songID.value = song.id
+            }
+        )
     }
 }

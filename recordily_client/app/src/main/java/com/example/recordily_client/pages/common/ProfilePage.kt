@@ -13,6 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,16 +30,32 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.ProfileViewModel
 
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
 fun CommonProfilePage(navController: NavController){
-    val loginViewModel : LoginViewModel = viewModel()
+    val limit = 3
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
+    val loginViewModel: LoginViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    profileViewModel.getInfo(token)
+    profileViewModel.getTopSongs(token, limit)
+    profileViewModel.getRecentlyPlayed(token, limit)
+    profileViewModel.getPlaylists(token, limit)
+
+    val profile by profileViewModel.userInfoResultLiveData.observeAsState()
+    val topSongs by profileViewModel.topSongsResultLiveData.observeAsState()
+    val recentlyPlayedSongs by profileViewModel.recentlyPlayedResultLiveData.observeAsState()
+    val playlists by profileViewModel.playlistsResultResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -49,20 +67,21 @@ fun CommonProfilePage(navController: NavController){
         ){
             ExitBar( navController, stringResource(id = R.string.profile))
 
-            ProfileHeader(navController)
+            profile?.let {
+                ProfileHeader(navController, it)
 
-            if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
-                TopNavBar(
-                    pageOptions = pageOptions,
-                    currentPage = R.string.profile,
-                    navController = navController
-                )
-            }
-            else{
-                HorizontalLine()
-            }
+                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0) {
+                    TopNavBar(
+                        pageOptions = pageOptions,
+                        currentPage = R.string.profile,
+                        navController = navController
+                    )
+                } else {
+                    HorizontalLine()
+                }
 
-            ProfileContentColumn(navController)
+                ProfileContentColumn(navController, topSongs, recentlyPlayedSongs, playlists)
+            }
         }
 
         AnimatedVisibility(
@@ -71,8 +90,21 @@ fun CommonProfilePage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
-                isPlaylist = false
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }
@@ -81,7 +113,12 @@ fun CommonProfilePage(navController: NavController){
 
 
 @Composable
-private fun ProfileContentColumn(navController: NavController){
+private fun ProfileContentColumn(
+    navController: NavController,
+    topSongs: List<SongResponse>?,
+    recentlyPlayedSongs: List<SongResponse>?,
+    playlists: List<PlaylistResponse>?
+){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
@@ -89,9 +126,7 @@ private fun ProfileContentColumn(navController: NavController){
     ){
         SongsCards(
             title = stringResource(id = R.string.top_songs),
-            songs = listOf(SongResponse(1,"",1,"","","",1,
-                1,"","",1,"")
-            ),
+            songs = topSongs,
             destination = {
                 navigateTo(
                     navController = navController,
@@ -108,15 +143,13 @@ private fun ProfileContentColumn(navController: NavController){
             },
             onMoreClick = {
                 popUpVisibility.value = true
-            }
+            },
+            songID = songID
         )
 
         SongsCards(
             title = stringResource(id = R.string.recently_played),
-            songs = listOf(
-                SongResponse(1,"",1,"","","",1,
-                1,"","",1,"")
-            ),
+            songs = recentlyPlayedSongs,
             destination = {
                 navigateTo(
                     navController = navController,
@@ -133,15 +166,13 @@ private fun ProfileContentColumn(navController: NavController){
             },
             onMoreClick = {
                 popUpVisibility.value = true
-            }
+            },
+            songID = songID
         )
 
         PlaylistsCard(
             title = stringResource(id = R.string.playlists),
-            playlists = listOf(
-                PlaylistResponse("", 1, "", "", "", 1)
-            )
-            ,
+            playlists = playlists,
             destination = {
                 navigateTo(
                     navController = navController,

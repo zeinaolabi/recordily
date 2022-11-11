@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,10 +22,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.UnreleasedViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun UnreleasedSongsCard(title: String, destination: ()->(Unit), onSongClick: ()->(Unit),onUploadClick: () -> (Unit)){
+fun UnreleasedSongsCard(
+    title: String,
+    songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String,
+    onUploadClick: () -> Unit,
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -36,38 +50,56 @@ fun UnreleasedSongsCard(title: String, destination: ()->(Unit), onSongClick: ()-
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(destination, onSongClick, onUploadClick)
+        CardsContent(songs, destination, onSongClick, viewModel, token, onUploadClick)
     }
 }
 
 @Composable
-private fun CardsContent(destination: ()->(Unit), onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun CardsContent(
+    songs: List<SongResponse>?,
+    destination: ()->(Unit),
+    onSongClick: ()->(Unit),
+    viewModel: UnreleasedViewModel,
+    token: String,
+    onUploadClick: () -> Unit,
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(260.dp)
-            .verticalScroll(ScrollState(0)),
+            .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(i in 1..3){
-            UnreleasedSongCard(
-                onSongClick = onSongClick,
-                onUploadClick = {onUploadClick()}
+        if(songs == null || songs.isEmpty()){
+            EmptyState(stringResource(id = R.string.no_songs_found))
+        }
+        else {
+            for (song in songs) {
+                UnreleasedSongCard(
+                    song = song,
+                    onSongClick = onSongClick,
+                    onUploadClick = {
+                        coroutinesScope.launch {
+                            viewModel.publishSong(token, song.id)
+                            onUploadClick()
+                        }
+                    }
+                )
+            }
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
             )
         }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-
     }
 }
 
 @Composable
-fun UnreleasedSongCard(onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
+fun UnreleasedSongCard(song: SongResponse, onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -78,12 +110,12 @@ fun UnreleasedSongCard(onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ){
-        SongCardContent(onSongClick, onUploadClick)
+        SongCardContent(song, onSongClick, onUploadClick)
     }
 }
 
 @Composable
-fun UnreleasedAlbumSongCard(onSongClick: ()->(Unit), onDeleteClick: ()->(Unit)){
+fun UnreleasedAlbumSongCard(song: SongResponse, onSongClick: ()->(Unit), onDeleteClick: ()->(Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -99,12 +131,12 @@ fun UnreleasedAlbumSongCard(onSongClick: ()->(Unit), onDeleteClick: ()->(Unit)){
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            SongDetails(onSongClick)
+            SongDetails(song, onSongClick)
 
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .clickable{
+                    .clickable {
                         onDeleteClick()
                     },
                 verticalArrangement = Arrangement.Center
@@ -121,18 +153,18 @@ fun UnreleasedAlbumSongCard(onSongClick: ()->(Unit), onDeleteClick: ()->(Unit)){
 }
 
 @Composable
-private fun SongCardContent(onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
+private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onUploadClick: () -> (Unit)){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        SongDetails(onSongClick)
+        SongDetails(song, onSongClick)
 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .clickable{
+                .clickable {
                     onUploadClick()
                 },
             verticalArrangement = Arrangement.Center
@@ -148,7 +180,7 @@ private fun SongCardContent(onSongClick: ()->(Unit), onUploadClick: () -> (Unit)
 }
 
 @Composable
-private fun SongDetails(onSongClick: ()->(Unit)){
+private fun SongDetails(song: SongResponse, onSongClick: ()->(Unit)){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -162,7 +194,13 @@ private fun SongDetails(onSongClick: ()->(Unit)){
     )
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(song.picture != null && song.picture != ""){
+                rememberAsyncImagePainter(song.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "song picture",
             modifier = Modifier
                 .size(50.dp)
@@ -174,7 +212,7 @@ private fun SongDetails(onSongClick: ()->(Unit)){
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium))
         ){
             Text(
-                text = "Song title",
+                text = song.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 color = MaterialTheme.colors.onPrimary

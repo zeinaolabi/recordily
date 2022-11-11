@@ -60,7 +60,7 @@ fun RegistrationPage(navController: NavController) {
 
         Box(
             modifier = Modifier
-                .fillMaxHeight(.85f)
+                .fillMaxHeight(.9f)
                 .fillMaxWidth(.9f)
                 .border(0.5.dp, MaterialTheme.colors.secondary, RoundedCornerShape(20.dp))
                 .clip(RoundedCornerShape(20.dp))

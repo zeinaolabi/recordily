@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,9 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,10 +20,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.R
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.PopUpViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
+fun Popup(
+    songID: Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>,
+    playlistID: Int?
+){
+    val loginViewModel: LoginViewModel = viewModel()
+    val popUpViewModel: PopUpViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    popUpViewModel.isLiked(token, songID)
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -56,23 +71,41 @@ fun Popup(popUpVisibility: MutableState<Boolean>, isPlaylist: Boolean){
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ){
+                ) {
                     popUpVisibility.value = true
                 },
         ) {
-            if(isPlaylist){
-                PlaylistPopupContent()
 
+            if (playlistID != null) {
+                PlaylistPopupContent(
+                    popUpViewModel,
+                    token,
+                    songID,
+                    popUpVisibility,
+                    playlistPopUpVisibility,
+                    playlistID
+                )
             }
             else{
-                RegularPopupContent()
+                RegularPopupContent(
+                    popUpViewModel,
+                    token,
+                    songID,
+                    popUpVisibility,
+                    playlistPopUpVisibility
+                )
             }
         }
     }
 }
 
 @Composable
-private fun RegularPopupContent(){
+private fun RegularPopupContent(
+    popUpViewModel: PopUpViewModel,
+    token: String, songID:Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>
+){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -82,14 +115,21 @@ private fun RegularPopupContent(){
                 horizontal = dimensionResource(id = R.dimen.padding_medium)
             )
     ){
-        AddToLikes()
+        AddToLikes(popUpViewModel, token, songID)
 
-        AddToPlaylist()
+        AddToPlaylist(popUpVisibility, playlistPopUpVisibility)
     }
 }
 
 @Composable
-private fun PlaylistPopupContent(){
+private fun PlaylistPopupContent(
+    popUpViewModel: PopUpViewModel,
+    token: String,
+    songID: Int,
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>,
+    playlistID: Int
+){
     Column(
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -100,19 +140,40 @@ private fun PlaylistPopupContent(){
             )
     ){
 
-        AddToLikes()
+        AddToLikes(popUpViewModel, token, songID)
 
-        AddToPlaylist()
+        AddToPlaylist(popUpVisibility, playlistPopUpVisibility)
 
-        DeleteFromPlaylist()
+        DeleteFromPlaylist(popUpViewModel, token, playlistID, songID)
 
     }
 }
 
 @Composable
-private fun DeleteFromPlaylist(){
+private fun DeleteFromPlaylist(
+    popUpViewModel: PopUpViewModel,
+    token: String,
+    playlistID: Int,
+    songID: Int
+){
+    val coroutinesScope = rememberCoroutineScope()
+    val context = popUpViewModel.context
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                coroutinesScope.launch {
+                    val removeFromPlaylist = popUpViewModel.removeFromPlaylist(token, playlistID, songID)
+                    if(!removeFromPlaylist){
+                        Toast.makeText(context, "Network error", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+
+                    Toast.makeText(context, "Song Deleted", Toast.LENGTH_SHORT).show()
+                }
+            }
     ){
         Icon(
             imageVector = Icons.Default.Delete,
@@ -129,9 +190,16 @@ private fun DeleteFromPlaylist(){
 }
 
 @Composable
-private fun AddToPlaylist(){
+private fun AddToPlaylist(
+    popUpVisibility: MutableState<Boolean>,
+    playlistPopUpVisibility: MutableState<Boolean>
+){
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = Modifier.clickable {
+            popUpVisibility.value = false
+            playlistPopUpVisibility.value = true
+        }
     ){
         Icon(
             imageVector = Icons.Default.Add,
@@ -148,19 +216,39 @@ private fun AddToPlaylist(){
 }
 
 @Composable
-private fun AddToLikes(){
+private fun AddToLikes(popUpViewModel: PopUpViewModel, token: String, songID: Int){
+    val coroutinesScope = rememberCoroutineScope()
+    val isLiked by popUpViewModel.isLikedResultLiveData.observeAsState()
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+        modifier = Modifier
+            .clickable
+            {
+                coroutinesScope.launch {
+                    if(isLiked == true){
+                        popUpViewModel.unlikeSong(token, songID)
+                    }
+                    else{
+                        popUpViewModel.likeSong(token, songID)
+                    }
+                    popUpViewModel.isLiked(token, songID)
+                }
+            }
     ){
         Icon(
-            painter = painterResource(id = R.drawable.heart),
+            painter =
+            if( isLiked == true )
+                painterResource(id = R.drawable.red_heart)
+            else
+                painterResource(id = R.drawable.heart),
             contentDescription = "delete",
             modifier = Modifier.size(20.dp),
-            tint = Color.White
+            tint = Color.Unspecified
         )
 
         Text(
-            text="Like",
+            text= if( isLiked == true ) "Unlike" else "Like",
             color = Color.White
         )
     }

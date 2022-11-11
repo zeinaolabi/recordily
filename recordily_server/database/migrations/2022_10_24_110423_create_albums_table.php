@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('picture');
             $table->foreignId('user_id');
+            $table->integer('is_published')->default(0);
             $table->timestamps();
         });
     }

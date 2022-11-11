@@ -1,16 +1,40 @@
 package com.example.recordily_client.apis
 
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.responses.ArtistResponse
 import com.example.recordily_client.responses.SongResponse
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
+import okhttp3.MultipartBody
+import retrofit2.http.*
 
 interface AlbumAPI {
-    @GET("get_album_info/{album_id}")
-    suspend fun getAlbumInfo(@Header("Authorization") token: String, @Path("album_id") album_id: String): AlbumResponse
+    @GET("auth/get_album_info/{album_id}")
+    suspend fun getAlbumInfo(
+        @Header("Authorization") token: String,
+        @Path("album_id") album_id: String
+    ): AlbumResponse
 
-    @GET("get_album_songs/{album_id}")
-    suspend fun getAlbumSongs(@Header("Authorization") token: String, @Path("album_id") album_id: String): List<SongResponse>
+    @GET("auth/get_album_songs/{album_id}")
+    suspend fun getAlbumSongs(
+        @Header("Authorization") token: String,
+        @Path("album_id") album_id: String
+    ): List<SongResponse>
+
+    @GET("auth/unreleased_albums/{limit}")
+    suspend fun getUnreleasedAlbums(
+        @Header("Authorization") token: String,
+        @Path("limit") limit: Int
+    ): List<AlbumResponse>
+
+    @GET("auth/publish_album/{album_id}")
+    suspend fun publishAlbum(
+        @Header("Authorization") token: String,
+        @Path("album_id") album_id: Int
+    )
+
+    @Multipart
+    @POST("auth/create_album")
+    suspend fun createAlbum(
+        @Header("Authorization") token: String,
+        @Part("name") name: String,
+        @Part file: MultipartBody.Part
+    )
 }

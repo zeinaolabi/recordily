@@ -21,6 +21,11 @@ class Playlist extends Model
         return $this->hasMany(Song::class, 'song_id');
     }
 
+    public static function exists(int $playlist_id): bool
+    {
+        return (bool)self::find($playlist_id);
+    }
+
     public static function createPlaylist(int $id, string $name, string $picture): bool
     {
         $isCreated = Playlist::create(
@@ -38,9 +43,9 @@ class Playlist extends Model
         return true;
     }
 
-    public static function searchPlaylist(int $id, string $input): Collection
+    public static function searchPlaylist(int $user_id, string $input): Collection
     {
-        return self::where('user_id', '=', $id)
+        return self::where('user_id', '=', $user_id)
             ->where('name', 'like', '%' . $input . '%')->get();
     }
 }

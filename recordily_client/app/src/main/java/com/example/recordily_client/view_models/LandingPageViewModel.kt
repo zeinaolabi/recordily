@@ -25,27 +25,27 @@ class LandingPageViewModel: ViewModel(){
     val recentlyPlayedResultLiveData : LiveData<List<SongResponse>>
         get() = recentlyPlayedResult
 
-    fun getTopPlayed(limit: Int) {
+    fun getTopPlayed(token: String, limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getTopPlayed(limit))
+            topPlayedResult.postValue(songService.getTopPlayed(token, limit))
         }
     }
 
-    fun getTopLiked(limit: Int) {
+    fun getTopLiked(token: String, limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getTopLiked(limit))
+            topLikedResult.postValue(songService.getTopLiked(token, limit))
         }
     }
 
-    fun getSuggested(limit: Int) {
+    fun getSuggested(token: String, limit: Int) {
         viewModelScope.launch {
-            suggestedResult.postValue(songService.getSuggested(limit))
+            suggestedResult.postValue(songService.getSuggested(token, limit))
         }
     }
 
-    fun getRecentlyPlayed(limit: Int) {
+    fun getRecentlyPlayed(token: String, limit: Int) {
         viewModelScope.launch {
-            topPlayedResult.postValue(songService.getRecentlyPlayed(limit))
+            recentlyPlayedResult.postValue(songService.getRecentlyPlayed(token, limit))
         }
     }
 }

@@ -4,9 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.recordily_client.requests.UploadSongRequest
+import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.services.ArtistService
 import com.example.recordily_client.services.SongService
+import com.example.recordily_client.services.UserService
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
@@ -15,10 +20,29 @@ class UploadSongViewModel(application: Application): AndroidViewModel(applicatio
 
     val context: Context = getApplication<Application>().applicationContext
     private val service = SongService()
+    private val userService = UserService()
 
-    fun uploadSong(uploadSongRequest: UploadSongRequest, file: MultipartBody.Part){
+    private val albumsResult = MutableLiveData<List<AlbumResponse>>()
+    val albumsResultLiveData : LiveData<List<AlbumResponse>>
+        get() = albumsResult
+
+    fun getAlbums(token: String){
         viewModelScope.launch {
-            service.uploadSong(uploadSongRequest, file)
+            albumsResult.postValue(userService.getAlbums(token))
+        }
+    }
+
+    suspend fun uploadSong(
+        token: String,
+        uploadSongRequest: UploadSongRequest,
+        song: MultipartBody.Part,
+        image: MultipartBody.Part
+    ): Boolean {
+        return try {
+            service.uploadSong(token, uploadSongRequest, song, image)
+            true
+        } catch (exception: Throwable) {
+            false
         }
     }
 }

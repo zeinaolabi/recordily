@@ -3,6 +3,8 @@ package com.example.recordily_client.pages.artist
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -30,9 +32,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Environment
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.view_models.LoginViewModel
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -45,10 +54,14 @@ import java.io.BufferedInputStream
 import java.io.FileInputStream
 import kotlin.collections.ArrayList
 
-
+private val errorMessage = mutableStateOf("")
+private val visible = mutableStateOf(false)
+private var image: File = File("")
+private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
 private var chunks: File = File("")
+private var selectedAlbum: MutableState<Int?> = mutableStateOf(null)
 
 @Composable
 fun UploadSongPage(navController: NavController) {
@@ -78,16 +91,46 @@ fun UploadSongPage(navController: NavController) {
 @Composable
 private fun UploadSongContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
+    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val intent = result.data
+            val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+
+            val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
+            val file = File(dir, fileName)
+
+            image = file
+
+            imgBitmap.value = BitmapFactory.decodeFile(image.absolutePath)
+        }
+    }
+
+    val coroutinesScope = rememberCoroutineScope()
     val uploadSongViewModel: UploadSongViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
 
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val id = loginViewModel.sharedPreferences.getInt("id", -1)
+
     Image(
-        painter = painterResource(id = logo),
+        painter =
+        if(imgBitmap.value != null) {
+            rememberImagePainter(data = imgBitmap.value)
+        }
+        else{
+            painterResource(id = logo)
+        },
         contentDescription = "logo",
         modifier = Modifier
             .size(160.dp)
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
+            .clickable {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                startForResult.launch(intent)
+            },
+        contentScale = ContentScale.FillBounds
     )
     
     TextField(
@@ -96,38 +139,93 @@ private fun UploadSongContent(){
         visibility = true
     )
 
-    DropDownAlbumMenu()
+    DropDownAlbumMenu(uploadSongViewModel, token)
 
     PickAudioRow()
 
     MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
-        val id = loginViewModel.sharedPreferences.getInt("id", -1)
+        if(songName.value == "" || image == File("")){
+            errorMessage.value = "Empty Field"
+            visible.value = true
+            return@MediumRoundButton
+        }
 
         val files = splitFile(chunks)
         val songID = System.currentTimeMillis().toString() + id
 
-
         files.forEachIndexed { index, file ->
-            val uploadSongRequest = UploadSongRequest(id, songName.value, "test", files.size, index, songID)
-
-            uploadSongViewModel.uploadSong(
-                uploadSongRequest,
-                MultipartBody.Part.createFormData("file", songName.value, RequestBody.create("audio/*".toMediaTypeOrNull(), file))
+            val uploadSongRequest = UploadSongRequest(
+                user_id =  id,
+                name = songName.value,
+                image ="test",
+                chunks_size = files.size,
+                chunk_num = index,
+                song_id = songID,
+                album_id = selectedAlbum.value
             )
 
-            file.delete()
+            coroutinesScope.launch {
+                val isCreated = uploadSongViewModel.uploadSong(
+                    token = token,
+                    uploadSongRequest = uploadSongRequest,
+                    song = MultipartBody.Part.createFormData(
+                        "file",
+                        songName.value,
+                        RequestBody.create("audio/*".toMediaTypeOrNull(),
+                            file)
+                    ),
+                    image = MultipartBody.Part.createFormData(
+                        "picture",
+                        "picture",
+                        RequestBody.create("image/*".toMediaTypeOrNull(),
+                            image
+                        )
+                    )
+                )
+
+                if(!isCreated){
+                    errorMessage.value = "Network error"
+                    visible.value = true
+                    return@launch
+                }
+            }
+
         }
+
+        errorMessage.value = "Successfully Created!"
+        visible.value = true
     })
+
+    AnimatedVisibility(
+        visible = visible.value,
+        enter = slideInHorizontally(
+            initialOffsetX = { -40 }
+        ),
+        exit = slideOutHorizontally()
+    ) {
+        Text(
+            text = errorMessage.value,
+            color = MaterialTheme.colors.primary,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
 
 @Composable
-private fun DropDownAlbumMenu(){
+private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: String){
     var expanded by remember { mutableStateOf(false) }
-    var selectedAlbum by remember { mutableStateOf("Single") }
-    val albumList = listOf(
-        "Single",
-        "Album names"
-    )
+    var selectedAlbumName by remember { mutableStateOf("Single") }
+    val albumList: HashMap<Int?, String> = HashMap()
+    albumList[null] = "Single"
+
+    uploadSongViewModel.getAlbums(token)
+    val albums = uploadSongViewModel.albumsResultLiveData.observeAsState()
+
+    if(albums.value != null) {
+        for (album in albums.value!!) {
+            albumList[album.id] = album.name
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -142,7 +240,7 @@ private fun DropDownAlbumMenu(){
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = selectedAlbum,
+            text = selectedAlbumName,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             color = colorResource(R.color.darker_gray),
             fontWeight = FontWeight.Bold
@@ -161,17 +259,20 @@ private fun DropDownAlbumMenu(){
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
+                .height(250.dp)
                 .background(colorResource(id = R.color.darker_gray))
+                .verticalScroll(ScrollState(0))
         ) {
-            albumList.forEach { album ->
+            albumList.keys.forEach { albumID ->
                 DropdownMenuItem(
                     onClick = {
                         expanded = false
-                        selectedAlbum = album
+                        selectedAlbumName = albumList[albumID].toString()
+                        selectedAlbum.value = albumID
                     }
                 ) {
                     Text(
-                        text = album,
+                        text = albumList[albumID].toString(),
                         color = MaterialTheme.colors.onPrimary
                     )
                 }
@@ -182,13 +283,15 @@ private fun DropDownAlbumMenu(){
 
 @Composable
 private fun PickAudioRow(){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)
 
             fileName.value = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
             val file = File(dir, fileName.value)
+            file.createNewFile()
 
             chunks = file
 
@@ -223,21 +326,21 @@ private fun PickAudioRow(){
 
 fun splitFile(file: File): ArrayList<File> {
     var partCounter = 1
-
     val sizeOfFiles = 1024 * 100
-    val buffer = ByteArray(sizeOfFiles)
-    val fileName: String = file.getName()
 
+    val buffer = ByteArray(sizeOfFiles)
+    val fileName: String = file.name
     val fileList = ArrayList<File>()
+
     FileInputStream(file).use { fis ->
         BufferedInputStream(fis).use { bis ->
-
             var bytesAmount = 0
             while (bis.read(buffer).also { it -> bytesAmount = it } > 0) {
 
                 //Write each chunk of data into separate file with different number in name
                 val filePartName = String.format("%s.%03d", fileName, partCounter++)
                 val newFile = File(file.parent, filePartName)
+
                 newFile.createNewFile()
                 FileOutputStream(newFile).use { out -> out.write(buffer, 0, bytesAmount) }
 

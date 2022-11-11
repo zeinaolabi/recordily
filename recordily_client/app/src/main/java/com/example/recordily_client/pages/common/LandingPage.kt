@@ -1,6 +1,5 @@
 package com.example.recordily_client.pages.common
 
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -23,23 +22,26 @@ import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun CommonLandingPage(navController: NavController){
-    val loginViewModel : LoginViewModel = viewModel()
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
-    val limit = 5
+    val loginViewModel : LoginViewModel = viewModel()
     val landingPageViewModel : LandingPageViewModel = viewModel()
 
-    landingPageViewModel.getTopPlayed(limit)
-    landingPageViewModel.getRecentlyPlayed(limit)
-    landingPageViewModel.getSuggested(limit)
-    landingPageViewModel.getTopLiked(limit)
+    val limit = 5
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    landingPageViewModel.getTopPlayed(token, limit)
+    landingPageViewModel.getRecentlyPlayed(token, limit)
+    landingPageViewModel.getSuggested(token, limit)
+    landingPageViewModel.getTopLiked(token, limit)
 
     Scaffold(
         topBar = { Header(navController) },
         content = {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
             ){
                 if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
                     TopNavBar(
@@ -73,13 +75,13 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
         SongsBox(
             title = stringResource(id = R.string.suggested),
             navController = navController,
-            data = getSuggestedResponse
+            songs = getSuggestedResponse
         )
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
             navController = navController,
-            data = getTopPlayedResponse
+            songs = getTopPlayedResponse
         )
 
         ArtistsBox(
@@ -90,13 +92,13 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
         SongsBox(
             title = stringResource(id = R.string.top_5_liked_songs),
             navController = navController,
-            data = getTopLikedResponse
+            songs = getTopLikedResponse
         )
 
         SongsBox(
             title = stringResource(id = R.string.recently_played),
             navController = navController,
-            data = getRecentlyPlayedResponse
+            songs = getRecentlyPlayedResponse
         )
     }
 }

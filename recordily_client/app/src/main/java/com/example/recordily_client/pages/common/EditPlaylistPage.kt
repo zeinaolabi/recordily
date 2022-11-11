@@ -34,7 +34,6 @@ import coil.compose.rememberImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.view_models.EditPlaylistViewModel
 import com.example.recordily_client.view_models.LoginViewModel
@@ -46,7 +45,7 @@ import java.io.File
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
-private var image: File = File("")
+private var image: File? = null
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
 @Composable
@@ -92,7 +91,7 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
 
             image = file
 
-            imgBitmap.value = BitmapFactory.decodeFile(image.absolutePath)
+            imgBitmap.value = BitmapFactory.decodeFile(image!!.absolutePath)
         }
     }
 
@@ -100,11 +99,15 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
     val playlistName = remember { mutableStateOf(playlist.name) }
 
     Image(
-        painter = if(imgBitmap.value != null) {
+        painter =
+        if(imgBitmap.value != null) {
             rememberImagePainter(data = imgBitmap.value)
         }
-        else{
+        else if(playlist.picture != null){
             rememberAsyncImagePainter(playlist.picture)
+        }
+        else{
+            painterResource(id = R.drawable.profile_picture)
         },
         contentDescription = "logo",
         modifier = Modifier
@@ -128,21 +131,23 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
     MediumRoundButton(
         text = stringResource(id = R.string.save),
         onClick = {
-            if(playlistName.value == "" || image == File("")){
-                errorMessage.value = "Empty Field"
-                visible.value = true
-                return@MediumRoundButton
-            }
+            val multipart =
+                if(image != null){
+                    MultipartBody.Part.createFormData("profile_picture", "profile_picture",
+                        RequestBody.create("image/*".toMediaTypeOrNull(),
+                            image!!
+                        )
+                    )
+                } else{ null }
 
             coroutineScope.launch{
                 val isEdited = editPlaylistModel.editPlaylist(
                     token,
                     playlist.id.toString(),
                     playlistName.value,
-                    MultipartBody.Part.createFormData("picture", "picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image
-                        )))
+                    multipart
+                )
+
                 if(!isEdited){
                     errorMessage.value = "Network Error"
                     visible.value = true
@@ -150,7 +155,7 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
                 }
 
                 errorMessage.value = "Successfully Edited!"
-                visible.value = true
+                visible.value = false
             }
 
         }

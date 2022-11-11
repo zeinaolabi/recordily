@@ -22,7 +22,7 @@ class EditPlaylistViewModel: ViewModel() {
         }
     }
 
-    suspend fun editPlaylist(token: String, id: String, name: String, image: MultipartBody.Part): Boolean {
+    suspend fun editPlaylist(token: String, id: String, name: String, image: MultipartBody.Part?): Boolean {
         return try {
             service.editPlaylist(token, id, name, image)
             true

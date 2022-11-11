@@ -10,6 +10,10 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.getPlaylists(token)
     }
 
+    suspend fun getLimitedPlaylists(token: String, limit: Int): List<PlaylistResponse>{
+        return RetrofitInstance.playlistAPI.getLimitedPlaylists(token, limit)
+    }
+
     suspend fun getPlaylistSongs(token: String, playlist_id: String): List<SongResponse>{
         return RetrofitInstance.playlistAPI.getPlaylistSongs(token, playlist_id)
     }
@@ -26,11 +30,19 @@ class PlaylistService {
         return RetrofitInstance.playlistAPI.addPlaylist(token, name, image)
     }
 
-    suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part){
+    suspend fun editPlaylist(token: String, playlist_id: String, name: String, image: MultipartBody.Part?){
         return RetrofitInstance.playlistAPI.editPlaylist(token, playlist_id, name, image)
     }
 
     suspend fun searchForPlaylist(token: String, input: String): List<PlaylistResponse> {
         return RetrofitInstance.playlistAPI.searchForPlaylist(token, input)
+    }
+
+    suspend fun addToPlaylist(token: String, playlist_id: Int, song_id: Int) {
+        return RetrofitInstance.playlistAPI.addToPlaylist(token, playlist_id, song_id)
+    }
+
+    suspend fun removeFromPlaylist(token: String, playlist_id: Int, song_id: Int) {
+        return RetrofitInstance.playlistAPI.removeFromPlaylist(token, playlist_id, song_id)
     }
 }

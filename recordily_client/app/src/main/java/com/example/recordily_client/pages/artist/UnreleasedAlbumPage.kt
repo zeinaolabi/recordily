@@ -5,23 +5,37 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
-import com.example.recordily_client.responses.AlbumResponse
-
-private val popUpVisibility = mutableStateOf(false)
+import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun UnreleasedAlbumPage(navController: NavController){
+fun UnreleasedAlbumPage(navController: NavController, album_id: String){
+    val loginViewModel: LoginViewModel = viewModel()
+    val unreleasedAlbumViewModel: UnreleasedAlbumViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    unreleasedAlbumViewModel.getAlbumInfo(token, album_id)
+    unreleasedAlbumViewModel.getAlbumSongs(token, album_id)
+
+    val album by unreleasedAlbumViewModel.albumInfoResultLiveData.observeAsState()
+    val songs by unreleasedAlbumViewModel.albumSongsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -33,47 +47,53 @@ fun UnreleasedAlbumPage(navController: NavController){
         ){
             ExitBar(navController, stringResource(id = R.string.album))
 
-            AlbumHeader(AlbumResponse("", 0, "", "", "", 0, ""))
+            album?.let {
+                AlbumHeader(it)
 
-            HorizontalLine()
+                HorizontalLine()
 
-            UnreleasedAlbumContent(navController)
+                UnreleasedAlbumContent(navController, songs, unreleasedAlbumViewModel, token)
+            }
 
-        }
-
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            Popup(
-                popUpVisibility = popUpVisibility,
-                isPlaylist = false
-            )
         }
     }
 }
 
 @Composable
-private fun UnreleasedAlbumContent(navController: NavController){
+private fun UnreleasedAlbumContent(
+    navController: NavController,
+    songs: List<SongResponse>?,
+    unreleasedAlbumViewModel: UnreleasedAlbumViewModel,
+    token: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(i in 1..3){
-            UnreleasedAlbumSongCard(
-                onSongClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.SongPage.route,
-                        popUpTo = Screen.UnreleasedAlbumsPage.route
-                    )
-                },
-                onDeleteClick = {
-                    //Delete Song from album
-                }
-            )
+        if(songs == null || songs.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_songs_found))
+        }
+        else {
+            for (song in songs) {
+                UnreleasedAlbumSongCard(
+                    song = song,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route,
+                            popUpTo = Screen.UnreleasedAlbumsPage.route
+                        )
+                    },
+                    onDeleteClick = {
+                        coroutinesScope.launch {
+                            unreleasedAlbumViewModel.deleteFromAlbum(token, song.id)
+                        }
+                    }
+                )
+            }
         }
     }
 }

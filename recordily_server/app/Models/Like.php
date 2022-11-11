@@ -32,4 +32,31 @@ class Like extends BaseModel
             }
         )->where('name', 'like', '%' . $input . '%')->get();
     }
+
+    public static function checkIfLiked(int $id, int $song_id): bool
+    {
+        $isLiked = self::where('user_id', $id)
+            ->where('song_id', $song_id)->get();
+
+        if ($isLiked->isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function likeSong(int $id, int $song_id): self
+    {
+        return self::create([
+            'user_id' => $id,
+            'song_id' => $song_id
+        ]);
+    }
+
+    public static function unlikeSong(int $id, int $song_id): int
+    {
+        return self::where('user_id', $id)
+            ->where('song_id', $song_id)
+            ->delete();
+    }
 }

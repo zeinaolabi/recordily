@@ -1,29 +1,38 @@
 package com.example.recordily_client.pages.artist
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
-import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.UnreleasedAlbumsViewModel
+import kotlinx.coroutines.launch
 
-private val popUpVisibility = mutableStateOf(false)
+private const val limit = 40
 
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedAlbumsPage(navController: NavController){
+    val loginViewModel: LoginViewModel = viewModel()
+    val unreleasedAlbumsViewModel: UnreleasedAlbumsViewModel = viewModel()
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    unreleasedAlbumsViewModel.getUnreleasedSongs(token, limit)
+
+    val unreleasedAlbums by unreleasedAlbumsViewModel.unreleasedAlbumsResultLiveData.observeAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -42,44 +51,42 @@ fun UnreleasedAlbumsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                UnreleasedAlbumsContent(navController)
+                UnreleasedAlbumsContent(navController, unreleasedAlbums, unreleasedAlbumsViewModel, token)
             }
-        }
-
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            Popup(
-                popUpVisibility = popUpVisibility,
-                isPlaylist = false
-            )
         }
     }
 }
 
 @Composable
-private fun UnreleasedAlbumsContent(navController: NavController){
+private fun UnreleasedAlbumsContent(
+    navController: NavController,
+    unreleasedAlbums: List<AlbumResponse>?,
+    viewModel: UnreleasedAlbumsViewModel,
+    token: String
+){
+    val coroutinesScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(i in 1..3){
-            UnreleasedAlbumCard(
-                onAlbumClick = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.UnreleasedAlbumPage.route,
-                        popUpTo = Screen.UnreleasedAlbumsPage.route
-                    )
-                },
-                onUploadClick = {
-                    //Upload Song
-                }
-            )
+        if(unreleasedAlbums == null || unreleasedAlbums.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_albums_found))
         }
-
+        else {
+            for (album in unreleasedAlbums) {
+                UnreleasedAlbumCard(
+                    album = album,
+                    navController = navController,
+                    onUploadClick = {
+                        coroutinesScope.launch {
+                            viewModel.publishAlbum(token, album.id)
+                            viewModel.getUnreleasedSongs(token, limit)
+                        }
+                    }
+                )
+            }
+        }
     }
 }

@@ -16,22 +16,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.RoundButton
-import com.example.recordily_client.navigation.Screen
-import com.example.recordily_client.requests.LoginRequest
 import com.example.recordily_client.validation.isValidEmail
-import com.example.recordily_client.validation.isValidPassword
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import com.example.recordily_client.components.TextField
-import com.example.recordily_client.navigation.navigateTo
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)

@@ -13,7 +13,11 @@ abstract class BaseModel extends Model
 
     public static function getTopSongs(string $credentials, int $limit, string $order_by): Collection
     {
+        $is_published = 1;
+
         return self::select('song_id', DB::raw('count(*) as ' . $credentials))
+            ->join('songs', 'song_id', '=', 'songs.id')
+            ->where('is_published', $is_published)
             ->groupBy('song_id')
             ->orderBy($order_by, 'desc')
             ->limit($limit)

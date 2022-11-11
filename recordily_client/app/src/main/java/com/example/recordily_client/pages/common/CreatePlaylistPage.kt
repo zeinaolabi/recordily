@@ -131,7 +131,9 @@ private fun CreatePlaylistContent(){
                     MultipartBody.Part.createFormData("picture", "picture",
                         RequestBody.create("image/*".toMediaTypeOrNull(),
                             image
-                        )))
+                        )
+                    )
+                )
                 if(!isCreated){
                     errorMessage.value = "Network Error"
                     visible.value = true
@@ -141,7 +143,6 @@ private fun CreatePlaylistContent(){
                 errorMessage.value = "Successfully Created!"
                 visible.value = true
             }
-
         }
     )
 

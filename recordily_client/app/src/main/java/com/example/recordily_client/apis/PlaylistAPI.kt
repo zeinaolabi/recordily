@@ -6,23 +6,57 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface PlaylistAPI {
-    @GET("get_playlists")
-    suspend fun getPlaylists(@Header("Authorization") token: String): List<PlaylistResponse>
+    @GET("auth/get_playlists")
+    suspend fun getPlaylists(
+        @Header("Authorization") token: String,
+    ): List<PlaylistResponse>
 
-    @GET("get_playlist_songs/{playlist_id}")
-    suspend fun getPlaylistSongs(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): List<SongResponse>
+    @GET("auth/get_limited_playlists/{limit}")
+    suspend fun getLimitedPlaylists(
+        @Header("Authorization") token: String,
+        @Path("limit") limit: Int?
+    ): List<PlaylistResponse>
 
-    @GET("get_playlist/{playlist_id}")
-    suspend fun getPlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String): PlaylistResponse
+    @GET("auth/get_playlist_songs/{playlist_id}")
+    suspend fun getPlaylistSongs(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: String
+    ): List<SongResponse>
 
-    @GET("delete_playlist/{playlist_id}")
-    suspend fun deletePlaylist(@Header("Authorization") token: String, @Path("playlist_id") playlist_id: String)
+    @GET("auth/get_playlist/{playlist_id}")
+    suspend fun getPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: String
+    ): PlaylistResponse
 
-    @GET("search_playlists/{input}")
-    suspend fun searchForPlaylist(@Header("Authorization") token: String, @Path("input") input: String): List<PlaylistResponse>
+    @GET("auth/delete_playlist/{playlist_id}")
+    suspend fun deletePlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: String
+    )
+
+    @GET("auth/search_playlists/{input}")
+    suspend fun searchForPlaylist(
+        @Header("Authorization") token: String,
+        @Path("input") input: String
+    ): List<PlaylistResponse>
+
+    @GET("auth/add_to_playlist/{playlist_id}/{song_id}")
+    suspend fun addToPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: Int,
+        @Path("song_id") song_id: Int
+    )
+
+    @GET("auth/remove_to_playlist/{playlist_id}/{song_id}")
+    suspend fun removeFromPlaylist(
+        @Header("Authorization") token: String,
+        @Path("playlist_id") playlist_id: Int,
+        @Path("song_id") song_id: Int
+    )
 
     @Multipart
-    @POST("add_playlist")
+    @POST("auth/add_playlist")
     suspend fun addPlaylist(
         @Header("Authorization") token: String,
         @Part("name") name: String,
@@ -30,11 +64,11 @@ interface PlaylistAPI {
     )
 
     @Multipart
-    @POST("edit_playlist")
+    @POST("auth/edit_playlist")
     suspend fun editPlaylist(
         @Header("Authorization") token: String,
         @Part("playlist_id") playlist_id: String,
         @Part("name") name: String,
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part?
     )
 }

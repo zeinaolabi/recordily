@@ -2,15 +2,15 @@ package com.example.recordily_client.services
 
 import com.example.recordily_client.apis.RetrofitInstance
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.responses.ArtistResponse
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.responses.SongResponse
 
 class ArtistService {
-    suspend fun followedArtists(token: String): List<ArtistResponse>{
+    suspend fun followedArtists(token: String): List<UserResponse>{
         return RetrofitInstance.artistAPI.followedArtists(token)
     }
 
-    suspend fun getArtist(token: String, artist_id: String): ArtistResponse{
+    suspend fun getArtist(token: String, artist_id: String): UserResponse{
         return RetrofitInstance.artistAPI.getArtist(token, artist_id)
     }
 
@@ -42,7 +42,11 @@ class ArtistService {
         return RetrofitInstance.artistAPI.getArtistSongs(token, artist_id, limit)
     }
 
-    suspend fun searchFollowedArtist(token: String, input: String): List<ArtistResponse>{
+    suspend fun searchFollowedArtist(token: String, input: String): List<UserResponse>{
         return RetrofitInstance.artistAPI.searchFollowedArtists(token, input)
+    }
+
+    suspend fun getViewsPerMonth(token: String): Array<Int>{
+        return RetrofitInstance.artistAPI.getViewsPerMonth(token)
     }
 }

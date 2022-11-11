@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -29,6 +30,8 @@ import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
+private val playlistPopUpVisibility = mutableStateOf(false)
+private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -60,8 +63,21 @@ fun LibraryPage(navController: NavController){
             exit = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
         ) {
             Popup(
+                songID = songID.value,
                 popUpVisibility = popUpVisibility,
-                isPlaylist = false
+                playlistPopUpVisibility = playlistPopUpVisibility,
+                playlistID = null
+            )
+        }
+
+        AnimatedVisibility(
+            visible = playlistPopUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = songID.value,
+                popUpVisibility = playlistPopUpVisibility
             )
         }
     }
@@ -69,7 +85,7 @@ fun LibraryPage(navController: NavController){
 
 @Composable
 private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?, token: String, likesPageViewModel: LikesPageViewModel){
-    val searchResult = likesPageViewModel.likedSongsResultLiveData.observeAsState()
+    val searchResult = likesPageViewModel.searchResultLiveData.observeAsState()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -104,12 +120,15 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
     ){
 
-        if (songsLiked != null) {
+        if(songsLiked == null || songsLiked.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_songs_found))
+        }
+        else{
             for(song in songsLiked){
                 Log.i("song", song.toString())
                 SongCard(
@@ -123,6 +142,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
                     },
                     onMoreClick = {
                         popUpVisibility.value = true
+                        songID.value = song.id
                     }
                 )
             }
@@ -157,6 +177,7 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
                     },
                     onMoreClick = {
                         popUpVisibility.value = true
+                        songID.value = song.id
                     }
                 )
             }
