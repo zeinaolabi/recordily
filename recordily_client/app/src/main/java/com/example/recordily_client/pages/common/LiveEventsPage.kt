@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 
 private val liveEventName = mutableStateOf("")
 private val openDialog = mutableStateOf(false)
@@ -33,7 +35,13 @@ fun CommonLiveEventsPage(navController: NavController){
                 LiveEventsContent()
 
                 for( i in 1..3){
-                    LiveEventCard(navController)
+                    LiveEventCard{
+                        navigateTo(
+                            navController,
+                            Screen.LiveEventPage.route + '/' + '1',
+                            Screen.LiveEventsPage.route
+                        )
+                    }
                 }
             }
 

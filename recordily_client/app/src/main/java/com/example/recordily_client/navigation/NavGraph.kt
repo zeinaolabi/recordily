@@ -232,5 +232,12 @@ fun SetupNavGraph(navController: NavHostController){
         ){  backStackEntry ->
             backStackEntry.arguments?.getString("playlist_id")?.let { EditPlaylistPage(navController, it) }
         }
+
+        composable(
+            route = Screen.LiveEventPage.route + "/{live_event_id}",
+            arguments = listOf(navArgument("live_event_id") { type = NavType.StringType })
+        ){  backStackEntry ->
+            backStackEntry.arguments?.getString("live_event_id")?.let { LiveEventPage(navController, it) }
+        }
     }
 }

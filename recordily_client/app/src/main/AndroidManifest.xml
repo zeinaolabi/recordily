@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Recordily_client"
         android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:windowSoftInputMode="adjustResize">
         <activity
             android:name=".MainActivity"
             android:exported="true"

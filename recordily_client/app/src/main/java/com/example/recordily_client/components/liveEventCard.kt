@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 
 @Composable
-fun LiveEventCard(navController: NavController){
+fun LiveEventCard(onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -42,7 +42,7 @@ fun LiveEventCard(navController: NavController){
             verticalArrangement = Arrangement.Bottom
         ){
             SmallRoundButton(text = "Join Event", onClick = {
-                //Open Live event
+                onClick()
             })
         }
     }
