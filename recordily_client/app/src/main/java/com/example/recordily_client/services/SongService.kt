@@ -67,4 +67,20 @@ class SongService {
     suspend fun unlikeSong(token: String, song_id: Int) {
         return RetrofitInstance.songAPI.unlikeSong(token, song_id)
     }
+
+    suspend fun getSongViewsPerMonth(token: String, song_id: String): Array<Int> {
+        return RetrofitInstance.songAPI.getSongViewsPerMonth(token, song_id)
+    }
+
+    suspend fun getSongLikes(token: String, song_id: String): Int {
+        return RetrofitInstance.songAPI.getSongLikes(token, song_id)
+    }
+
+    suspend fun getSongViews(token: String, song_id: String): Int {
+        return RetrofitInstance.songAPI.getSongViews(token, song_id)
+    }
+
+    suspend fun getSong(token: String, song_id: String): SongResponse {
+        return RetrofitInstance.songAPI.getSong(token, song_id)
+    }
 }
