@@ -231,7 +231,7 @@ class SongController extends Controller
     {
         $song = Song::find($song_id);
 
-        if($song === null) {
+        if ($song === null) {
             return response()->json("Song not found", 400);
         }
 
