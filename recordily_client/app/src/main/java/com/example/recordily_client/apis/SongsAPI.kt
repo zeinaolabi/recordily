@@ -84,6 +84,30 @@ interface SongsAPI {
         @Path("song_id") song_id: Int
     )
 
+    @GET("auth/get_song_monthly_views/{song_id}")
+    suspend fun getSongViewsPerMonth(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: String
+    ): Array<Int>
+
+    @GET("auth/get_song_likes/{song_id}")
+    suspend fun getSongLikes(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: String
+    ): Int
+
+    @GET("auth/get_song_plays/{song_id}")
+    suspend fun getSongViews(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: String
+    ): Int
+
+    @GET("auth/get_song/{song_id}")
+    suspend fun getSong(
+        @Header("Authorization") token: String,
+        @Path("song_id") song_id: String
+    ): SongResponse
+
     @Multipart
     @POST("auth/upload_song")
     suspend fun uploadSong(
