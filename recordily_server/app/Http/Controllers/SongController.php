@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Psy\Util\Json;
 use wapmorgan\Mp3Info\Mp3Info;
 
 class SongController extends Controller
@@ -224,6 +225,20 @@ class SongController extends Controller
         Like::unlikeSong($id, $song_id);
 
         return response()->json('Song Unliked', 201);
+    }
+
+    public function getSong(int $song_id): JsonResponse
+    {
+        $song = Song::find($song_id);
+
+        if($song === null) {
+            return response()->json("Song not found", 400);
+        }
+
+        $song->artist_name = $song->user->name;
+        $song->picture = URL::to($song->picture);
+
+        return response()->json($song);
     }
 
     private function getPicture(Collection $array)
