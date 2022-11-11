@@ -2,9 +2,9 @@
 
 <div align="center">
 
-> Hi! This is the project’s summarized description.  
+> Hello, world! This is the project’s summary that describes the project plain and simple, limited to the space available.   
 
-**[PROJECT PHILOSOPHY]() • [WIREFRAMES](https://www.figma.com/file/EHou6O5cN6uPCUkP06TuUm/Zena-Olabi---SEF-FSW05-Final-Project?node-id=0%3A1&t=dutUbHhsOdaoYGTZ-1) • [TECH STACK]() • [IMPLEMENTATION]() • [HOW TO RUN?]()**
+**[PROJECT PHILOSOPHY](https://github.com/zeinaolabi/recordily_client#-project-philosophy) • [WIREFRAMES](https://github.com/zeinaolabi/recordily_client#-wireframes) • [TECH STACK](https://github.com/zeinaolabi/recordily_client#-tech-stack) • [IMPLEMENTATION](hhttps://github.com/zeinaolabi/recordily_client#-impplementation) • [HOW TO RUN?](https://github.com/zeinaolabi/recordily_client#-how-to-run)**
 
 </div>
 
@@ -17,14 +17,16 @@
 by hosting live events for people to enjoy.
 > 
 
-### User Stories
+### Artist Stories
 - As an artist, I want to upload my songs, so people can enjoy them
 - As an artist, I want to host live events, to introduce people to my music
 - As an artist, I want to record my own songs, to upload them 
 - As an artist, I want check my songs statistics, to keep track of my progress 
 - As a listener, I want to save songs, so I can check them later
+
+### User Stories
 - As a listener, I want to create playlists, so I can customize my music
-- As a listener, I want to follow other artists To keep up with the music industry
+- As a listener, I want to follow artists, to keep up with the music industry
 
 <br><br>
 
