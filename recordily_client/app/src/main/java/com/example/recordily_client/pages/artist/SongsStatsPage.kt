@@ -145,8 +145,8 @@ private fun SongsResult(navController: NavController, songs: List<SongResponse>)
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.PlaylistPage.route
+                            destination = Screen.SongStatsPage.route + '/' + song.id,
+                            popUpTo = Screen.SongsStatsPage.route
                         )
                     },
                     onMoreClick = {
@@ -164,7 +164,6 @@ private fun SongsResult(navController: NavController, songs: List<SongResponse>)
 private fun SearchResult(navController: NavController, searchResult: List<SongResponse>?){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
         if (searchResult != null) {
             for(song in searchResult){
@@ -173,8 +172,8 @@ private fun SearchResult(navController: NavController, searchResult: List<SongRe
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.LibraryPage.route
+                            destination = Screen.SongStatsPage.route + '/' + song.id.toString(),
+                            popUpTo = Screen.SongsStatsPage.route
                         )
                     },
                     onMoreClick = {
