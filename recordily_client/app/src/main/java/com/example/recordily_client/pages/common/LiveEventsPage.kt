@@ -39,7 +39,8 @@ fun CommonLiveEventsPage(navController: NavController){
     liveEventsViewModel.getLiveEvents()
 
     val id = loginViewModel.sharedPreferences.getInt("id", -1)
-    val userType = loginViewModel.sharedPreferences.getInt("id", -1)
+    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
+    val token = "Bearer" + loginViewModel.sharedPreferences.getString("token", "").toString()
     val lives = liveEventsViewModel.liveEventsResultLiveData.observeAsState()
 
     Scaffold(
@@ -58,12 +59,19 @@ fun CommonLiveEventsPage(navController: NavController){
 
                 if(lives.value != null){
                     for(live in lives.value!!){
-                        LiveEventCard(live.name){
-                            navigateTo(
-                                navController,
-                                Screen.LiveEventPage.route + '/' + live.id,
-                                Screen.LiveEventsPage.route
-                            )
+
+                        liveEventsViewModel.getArtist(token, live.hostID.toString())
+
+                        val artist = liveEventsViewModel.artistInfoResultLiveData.observeAsState().value
+
+                        artist?.name?.let { it1 ->
+                            LiveEventCard(live.name, artist.profile_picture, it1){
+                                navigateTo(
+                                    navController,
+                                    Screen.LiveEventPage.route + '/' + live.id,
+                                    Screen.LiveEventsPage.route
+                                )
+                            }
                         }
                     }
                 }

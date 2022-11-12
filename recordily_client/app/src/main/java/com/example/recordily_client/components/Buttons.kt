@@ -171,7 +171,7 @@ fun FloatingButton(onClick: () -> (Unit)){
 fun RoundSendButton(onClick: () -> (Unit)){
     Button(
         modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.padding_small))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
             .size(55.dp),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(

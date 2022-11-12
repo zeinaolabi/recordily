@@ -5,7 +5,7 @@ data class LiveEvent(
     val name: String,
     val hostID: Int,
     val createdAt: Long,
-    val messages: ChatMessage?
+    val messages: HashMap<String, ChatMessage>
 ) {
-    constructor(): this( "",  "", -1, -1, null)
+    constructor(): this( "",  "", -1, -1, hashMapOf<String, ChatMessage>())
 }
