@@ -114,7 +114,7 @@ class SongController extends Controller
         $songsCount = Song::where('is_published', $published)->count();
 
         if ($songsCount === 0) {
-            return response()->json("No Songs Found", 400);
+            return response()->json([]);
         }
 
         if ($songsCount < $limit) {
