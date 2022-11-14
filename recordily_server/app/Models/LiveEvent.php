@@ -11,6 +11,7 @@ class LiveEvent extends Model
 
     protected $fillable = [
         'name',
-        'user_id'
+        'user_id',
+        'firebase_id'
     ];
 }

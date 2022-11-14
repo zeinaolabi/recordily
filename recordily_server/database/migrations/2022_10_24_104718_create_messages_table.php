@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('message');
             $table->foreignId('user_id');
-            $table->foreignId('live_event_id');
+            $table->string('live_event_id');
             $table->timestamps();
         });
     }

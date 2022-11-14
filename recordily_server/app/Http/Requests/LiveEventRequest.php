@@ -14,7 +14,8 @@ class LiveEventRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|required'
+            'name' => 'string|required',
+            'firebase_id' => 'string|required'
         ];
     }
 }

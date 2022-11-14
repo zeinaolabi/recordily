@@ -15,12 +15,15 @@ class LiveEventController extends Controller
     {
         $id = Auth::id();
 
-        $created = LiveEvent::create([
+        $created = LiveEvent::create(
+            [
             'name' => $request->get("name"),
+            'firebase_id' => $request->get("firebase_id"),
             'user_id' => $id
-        ]);
+            ]
+        );
 
-        if(!$created){
+        if (!$created) {
             return response()->json("Failed to add live event", 400);
         }
 
@@ -30,13 +33,15 @@ class LiveEventController extends Controller
     {
         $id = Auth::id();
 
-        $created = Message::create([
+        $created = Message::create(
+            [
             'message' => $request->get("message"),
             'user_id' => $id,
             'live_event_id' => $request->get("live_event_id")
-        ]);
+            ]
+        );
 
-        if(!$created){
+        if (!$created) {
             return response()->json("Failed to add message", 400);
         }
 
