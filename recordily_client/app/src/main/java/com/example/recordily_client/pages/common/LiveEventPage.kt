@@ -6,10 +6,8 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +26,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.components.RoundSendButton
 import com.example.recordily_client.requests.MessageRequest
+import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.LiveEventViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 
 private val message = mutableStateOf("")
+private val chatMessages: LinkedHashMap<String, ChatMessage> =
+    mutableMapOf<String, ChatMessage>() as LinkedHashMap<String, ChatMessage>
+private val senderInfo: HashMap<Int, UserResponse> =
+    mutableMapOf<Int, UserResponse>() as HashMap<Int, UserResponse>
 
 @Composable
 fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
@@ -43,8 +46,22 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
     liveEventViewModel.getHostImage(token, host_id)
+    liveEventViewModel.getMessages(live_event_id)
 
     val hostPicture = liveEventViewModel.hostPictureResultLiveData.observeAsState()
+    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+
+    if(chatMessage.value !== null){
+        if(!chatMessages.containsKey(chatMessage.value!!.id)){
+            chatMessages[chatMessage.value!!.id] = chatMessage.value!!
+        }
+
+        if(!senderInfo.containsKey(chatMessage.value!!.fromID)){
+            liveEventViewModel.getArtist(token, chatMessage.value!!.fromID.toString())
+            val userInfo = liveEventViewModel.userInfoResultLiveData.observeAsState().value
+            userInfo?.let { senderInfo[chatMessage.value!!.fromID] = it }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -54,11 +71,11 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            hostPicture.value?.let { LiveHeader(it, live_name) }
+            LiveHeader(hostPicture.value, live_name)
 
             SongPlaying()
 
-            ChatSection(id, liveEventViewModel, token, live_event_id)
+            ChatSection(id, liveEventViewModel)
         }
 
         SendMessageRow(token, id, live_event_id, liveEventViewModel)
@@ -66,12 +83,8 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
 }
 
 @Composable
-private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: String, live_event_id: String){
-
-    liveEventViewModel.getMessages(live_event_id)
-
-    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
-    val artist = liveEventViewModel.userInfoResultLiveData.observeAsState().value
+private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel){
+    liveEventViewModel.messagesResultLiveData.observeAsState()
 
     Column(
         modifier = Modifier
@@ -81,29 +94,26 @@ private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: 
             .background(MaterialTheme.colors.background)
             .verticalScroll(ScrollState(rememberScrollState().maxValue))
     ){
-        if(chatMessage.value != null){
-//            for(message in chatMessage.value!!){
-//                liveEventViewModel.getArtist(token, message.fromID.toString())
-//
-//                if (message.fromID == id) {
-//                    Row(modifier = Modifier.align(Alignment.End)) {
-//                        ToMessage(
-//                            message = message.message,
-//                            time = convertDate(message.createdAt, "hh:mm"),
-//                            picture = artist?.profile_picture
-//                        )
-//                    }
-//                } else {
-//                    Row(modifier = Modifier.align(Alignment.Start)) {
-//                        FromMessage(
-//                            message = message.message,
-//                            time = convertDate(message.createdAt, "hh:mm"),
-//                            name = artist?.name,
-//                            picture = artist?.profile_picture
-//                        )
-//                    }
-//                }
-//            }
+        for(message in chatMessages.values){
+            if (message.fromID == id) {
+                Row(modifier = Modifier.align(Alignment.End)) {
+                    ToMessage(
+                        message = message.message,
+                        time = convertDate(message.createdAt, "hh:mm"),
+                        picture = senderInfo[message.fromID]?.profile_picture
+                    )
+                }
+            } else {
+                Row(modifier = Modifier.align(Alignment.Start)) {
+                    FromMessage(
+                        message = message.message,
+                        time = convertDate(message.createdAt, "hh:mm"),
+                        name = senderInfo[message.fromID]?.name,
+                        picture = senderInfo[message.fromID]?.profile_picture
+                    )
+                }
+            }
+
         }
     }
 }
@@ -163,9 +173,9 @@ private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEv
 
 
 @Composable
-private fun LiveHeader(hostInfo: UserResponse, liveName: String){
-    val hostPicture = hostInfo.profile_picture
-    val hostName = hostInfo.name
+private fun LiveHeader(hostInfo: UserResponse?, liveName: String){
+    val hostPicture = hostInfo?.profile_picture
+    val hostName = hostInfo?.name
 
     Column(
         modifier = Modifier
