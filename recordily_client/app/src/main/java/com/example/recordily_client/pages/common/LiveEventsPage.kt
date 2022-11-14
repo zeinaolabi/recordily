@@ -10,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ fun CommonLiveEventsPage(navController: NavController){
     val id = loginViewModel.sharedPreferences.getInt("id", -1)
     val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
     val token = "Bearer" + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val lives = liveEventsViewModel.liveEventsResultLiveData.observeAsState()
+    val lives by liveEventsViewModel.liveEventsResultLiveData.observeAsState()
 
     Scaffold(
         topBar = { Header(navController) },
@@ -57,18 +58,18 @@ fun CommonLiveEventsPage(navController: NavController){
 
                 LiveEventsContent(userType)
 
-                if(lives.value != null){
-                    for(live in lives.value!!){
+                if(lives != null){
+                    for(live in lives!!){
 
                         liveEventsViewModel.getArtist(token, live.hostID.toString())
 
                         val artist = liveEventsViewModel.artistInfoResultLiveData.observeAsState().value
 
-                        artist?.name?.let { it1 ->
-                            LiveEventCard(live.name, artist.profile_picture, it1){
+                        artist?.name?.let { it ->
+                            LiveEventCard(live.name, artist.profile_picture, it){
                                 navigateTo(
                                     navController,
-                                    Screen.LiveEventPage.route + '/' + live.id,
+                                    Screen.LiveEventPage.route + '/' + live.id + '/' + live.hostID + '/' + live.name,
                                     Screen.LiveEventsPage.route
                                 )
                             }

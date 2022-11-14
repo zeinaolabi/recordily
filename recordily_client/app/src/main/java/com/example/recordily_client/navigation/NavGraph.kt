@@ -1,7 +1,6 @@
 package com.example.recordily_client.navigation
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
@@ -234,10 +233,16 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.LiveEventPage.route + "/{live_event_id}",
-            arguments = listOf(navArgument("live_event_id") { type = NavType.StringType })
+            route = Screen.LiveEventPage.route + "/{live_event_id}" + "/{host_id}" + "/{live_name}",
+            arguments = listOf(navArgument("live_event_id") { type = NavType.StringType }, navArgument("host_id") { type = NavType.StringType })
         ){  backStackEntry ->
-            backStackEntry.arguments?.getString("live_event_id")?.let { LiveEventPage(navController, it) }
+            backStackEntry.arguments?.getString("live_event_id")?.let { live_event_id ->
+                backStackEntry.arguments?.getString("host_id")?.let { host_id ->
+                    backStackEntry.arguments?.getString("live_name")?.let { live_name ->
+                        LiveEventPage(live_event_id, host_id, live_name)
+                    }
+                }
+            }
         }
     }
 }

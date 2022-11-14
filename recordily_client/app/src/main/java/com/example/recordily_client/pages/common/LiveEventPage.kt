@@ -27,22 +27,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.components.RoundSendButton
 import com.example.recordily_client.requests.ChatMessage
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.LiveEventViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.google.firebase.database.*
 
 private val message = mutableStateOf("")
-private val messages = mutableStateListOf<ChatMessage>()
 
 @Composable
-fun LiveEventPage(navController: NavController, live_event_id: String){
+fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
     val loginViewModel: LoginViewModel = viewModel()
     val liveEventViewModel: LiveEventViewModel = viewModel()
     val id = loginViewModel.sharedPreferences.getInt("id", -1)
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    getMessages(live_event_id)
+    liveEventViewModel.getHostImage(token, host_id)
+
+    val hostPicture = liveEventViewModel.hostPictureResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -52,11 +56,11 @@ fun LiveEventPage(navController: NavController, live_event_id: String){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            LiveHeader()
+            hostPicture.value?.let { LiveHeader(it, live_name) }
 
             SongPlaying()
 
-            ChatSection(id, liveEventViewModel, live_event_id)
+            ChatSection(id, liveEventViewModel, token, live_event_id)
         }
 
         SendMessageRow(id, live_event_id, liveEventViewModel)
@@ -64,9 +68,12 @@ fun LiveEventPage(navController: NavController, live_event_id: String){
 }
 
 @Composable
-private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, live_event_id: String){
+private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: String, live_event_id: String){
 
-//    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+    liveEventViewModel.getMessages(live_event_id)
+
+    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+    val artist = liveEventViewModel.userInfoResultLiveData.observeAsState().value
 
     Column(
         modifier = Modifier
@@ -76,24 +83,29 @@ private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, live_ev
             .background(MaterialTheme.colors.background)
             .verticalScroll(ScrollState(rememberScrollState().maxValue))
     ){
-        for(message in messages){
-            if (message.fromID == id) {
-                Row(modifier = Modifier.align(Alignment.End)) {
-                    ToMessage(
-                        message = message.message,
-                        time = convertDate(message.createdAt, "hh:mm"
-                        )
-                    )
-                }
-            } else {
-                Row(modifier = Modifier.align(Alignment.Start)) {
-                    FromMessage(
-                        message = message.message,
-                        time = convertDate(message.createdAt, "hh:mm"
-                        )
-                    )
-                }
-            }
+        if(chatMessage.value != null){
+//            for(message in chatMessage.value!!){
+//                liveEventViewModel.getArtist(token, message.fromID.toString())
+//
+//                if (message.fromID == id) {
+//                    Row(modifier = Modifier.align(Alignment.End)) {
+//                        ToMessage(
+//                            message = message.message,
+//                            time = convertDate(message.createdAt, "hh:mm"),
+//                            picture = artist?.profile_picture
+//                        )
+//                    }
+//                } else {
+//                    Row(modifier = Modifier.align(Alignment.Start)) {
+//                        FromMessage(
+//                            message = message.message,
+//                            time = convertDate(message.createdAt, "hh:mm"),
+//                            name = artist?.name,
+//                            picture = artist?.profile_picture
+//                        )
+//                    }
+//                }
+//            }
         }
     }
 }
@@ -142,7 +154,10 @@ private fun SendMessageRow(id: Int, live_event_id: String, liveEventViewModel: L
 
 
 @Composable
-private fun LiveHeader(){
+private fun LiveHeader(hostInfo: UserResponse, liveName: String){
+    val hostPicture = hostInfo.profile_picture
+    val hostName = hostInfo.name
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,7 +166,7 @@ private fun LiveHeader(){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            text = "Live Name",
+            text = liveName,
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary
@@ -165,14 +180,20 @@ private fun LiveHeader(){
                 .padding(vertical = dimensionResource(id = R.dimen.padding_small))
         ){
             Text(
-                text = "Live Hosted by",
+                text = "Live Hosted By",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary
             )
 
             Image(
-                painter = painterResource(id = R.drawable.profile_picture),
+                painter =
+                if(hostPicture != null && hostPicture != ""){
+                    rememberAsyncImagePainter(hostPicture)
+                }
+                else{
+                    painterResource(id = R.drawable.profile_picture)
+                },
                 contentDescription = "Host image",
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
@@ -182,7 +203,12 @@ private fun LiveHeader(){
             )
 
             Text(
-                text = "Host name ",
+                text =
+                if(hostName == null || hostName === ""){
+                    "Username"
+                } else {
+                    "$hostName"
+                },
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary
@@ -192,7 +218,7 @@ private fun LiveHeader(){
 }
 
 @Composable
-private fun ToMessage(message: String, time: String) {
+private fun ToMessage(message: String, time: String, picture: String?) {
     Row(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
@@ -237,18 +263,25 @@ private fun ToMessage(message: String, time: String) {
         }
 
         Image(
-            painter = painterResource(id = R.drawable.profile_picture),
+            painter =
+            if(picture != null && picture != ""){
+                rememberAsyncImagePainter(picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "user profile",
             modifier = Modifier
                 .padding(vertical = dimensionResource(id = R.dimen.padding_very_small))
                 .size(40.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
     }
 }
 
 @Composable
-private fun FromMessage(message: String, time: String) {
+private fun FromMessage(message: String, time: String, name: String?, picture: String?) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
@@ -257,16 +290,23 @@ private fun FromMessage(message: String, time: String) {
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ) {
         Image(
-            painter = painterResource(id = R.drawable.profile_picture),
+            painter =
+            if(picture != null && picture != ""){
+                rememberAsyncImagePainter(picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "user profile",
             modifier = Modifier
                 .size(40.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
         
         Column(modifier = Modifier.fillMaxWidth()){
             Text(
-                text = "User name",
+                text = name ?: "Username",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colors.onPrimary,
@@ -366,41 +406,4 @@ private fun SongPlaying(){
 
 fun convertDate(dateInMilliseconds: Long, dateFormat: String): String {
     return DateFormat.format(dateFormat, dateInMilliseconds).toString()
-}
-
-fun getMessages(live_event_id: String){
-    val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
-    val reference = database.getReference("rooms/$live_event_id/messages/")
-
-    messages.clear()
-
-    reference.addChildEventListener(object: ChildEventListener {
-        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            val chatMessage = snapshot.getValue(ChatMessage::class.java)
-
-            if (chatMessage != null) {
-                messages.add(
-                    ChatMessage(
-                        chatMessage.id,
-                        chatMessage.message,
-                        chatMessage.fromID,
-                        chatMessage.roomID,
-                        chatMessage.createdAt
-                    )
-                )
-            }
-        }
-
-        override fun onCancelled(error: DatabaseError) {
-        }
-
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-        }
-
-        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-        }
-
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-        }
-    })
 }
