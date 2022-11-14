@@ -32,6 +32,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Environment
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -63,6 +64,7 @@ private val fileName = mutableStateOf("")
 private var chunks: File = File("")
 private var selectedAlbum: MutableState<Int?> = mutableStateOf(null)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UploadSongPage(navController: NavController) {
     Scaffold(
@@ -261,7 +263,6 @@ private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: S
                 .fillMaxWidth(0.9f)
                 .height(250.dp)
                 .background(colorResource(id = R.color.darker_gray))
-                .verticalScroll(ScrollState(0))
         ) {
             albumList.keys.forEach { albumID ->
                 DropdownMenuItem(
