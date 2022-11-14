@@ -1,6 +1,8 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -8,11 +10,8 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -27,6 +26,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.view_models.LiveEventsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
+import kotlinx.coroutines.launch
 
 private val liveEventName = mutableStateOf("")
 private val openDialog = mutableStateOf(false)
@@ -79,7 +79,7 @@ fun CommonLiveEventsPage(navController: NavController){
             }
 
             if(openDialog.value){
-                StartLiveEventDialog(openDialog, liveEventName, navController, id, liveEventsViewModel)
+                StartLiveEventDialog(openDialog, liveEventName, navController, id, token, liveEventsViewModel)
             }
         },
         bottomBar = { BottomNavigationBar(navController) }
@@ -114,8 +114,11 @@ fun StartLiveEventDialog(
     eventName: MutableState<String>,
     navController: NavController,
     id: Int,
+    token: String,
     liveEventsViewModel: LiveEventsViewModel
 ){
+    val coroutineScope = rememberCoroutineScope()
+
     AlertDialog(
         onDismissRequest = {
             isOpen.value = false
@@ -151,16 +154,22 @@ fun StartLiveEventDialog(
                 SmallRoundButton(
                     text = stringResource(id = R.string.start),
                     onClick = {
-                        val key = liveEventsViewModel.addLiveEvent(liveEventName.value, id)
+                        coroutineScope.launch {
+                            val key = liveEventsViewModel.addLiveEvent(token, liveEventName.value, id)
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.LiveEventPage.route + '/' + key,
-                            popUpTo = Screen.LiveEventsPage.route
-                        )
+                            if(key !== null){
+                                navigateTo(
+                                    navController = navController,
+                                    destination = Screen.LiveEventPage.route + '/' + key + '/' + id + '/' + liveEventName.value,
+                                    popUpTo = Screen.LiveEventsPage.route
+                                )
 
-                        liveEventName.value = ""
-                        isOpen.value = false
+                                liveEventName.value = ""
+                                isOpen.value = false
+                            } else {
+                                Toast.makeText(liveEventsViewModel.context, "Failed to create live event", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 )
             }

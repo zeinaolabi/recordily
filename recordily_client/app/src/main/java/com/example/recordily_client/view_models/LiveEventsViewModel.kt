@@ -1,24 +1,30 @@
 package com.example.recordily_client.view_models
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.*
 import com.example.recordily_client.requests.ChatMessage
 import com.example.recordily_client.requests.LiveEvent
+import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
+import com.example.recordily_client.services.LiveEventService
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 
-class LiveEventsViewModel: ViewModel() {
+class LiveEventsViewModel(application: Application): AndroidViewModel(application) {
     private val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
     private val reference = database.getReference("rooms/")
+    @SuppressLint("StaticFieldLeak")
+    val context: Context = getApplication<Application>().applicationContext
 
     private val artistService = ArtistService()
+    private val liveEventService = LiveEventService()
 
     private val liveEventsResult = MutableLiveData<List<LiveEvent>>()
     val liveEventsResultLiveData: LiveData<List<LiveEvent>>
@@ -70,20 +76,27 @@ class LiveEventsViewModel: ViewModel() {
         })
     }
 
-    fun addLiveEvent(liveEventName: String, id: Int): String? {
-        val room = database.getReference("rooms/").push()
+    suspend fun addLiveEvent(token: String, liveEventName: String, id: Int): String? {
 
-        val sentMessage = room.key?.let {
-            LiveEvent(
-                it,
-                liveEventName,
-                id,
-                System.currentTimeMillis(),
-                hashMapOf())
+        return try {
+            liveEventService.addLiveEvent(token, liveEventName)
+
+            val room = database.getReference("rooms/").push()
+
+            val sentMessage = room.key?.let {
+                LiveEvent(
+                    it,
+                    liveEventName,
+                    id,
+                    System.currentTimeMillis(),
+                    hashMapOf())
+            }
+
+            room.setValue(sentMessage)
+
+            room.key
+        } catch (exception: Throwable) {
+            null
         }
-
-        room.setValue(sentMessage)
-
-        return room.key
     }
 }
