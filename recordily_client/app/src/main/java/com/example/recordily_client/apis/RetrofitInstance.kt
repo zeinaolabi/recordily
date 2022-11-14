@@ -23,6 +23,7 @@ object RetrofitInstance {
     val playlistAPI: PlaylistAPI = retrofit.create(PlaylistAPI::class.java)
     val artistAPI: ArtistAPI = retrofit.create(ArtistAPI::class.java)
     val albumAPI: AlbumAPI = retrofit.create(AlbumAPI::class.java)
+    val liveEventsAPI: LiveEventsAPI = retrofit.create(LiveEventsAPI::class.java)
 
     private fun getLoggingHttpClient(): OkHttpClient{
         val client = OkHttpClient.Builder()
