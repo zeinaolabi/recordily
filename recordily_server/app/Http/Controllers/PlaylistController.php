@@ -26,6 +26,7 @@ class PlaylistController extends Controller
     public function getPlaylists(): JsonResponse
     {
         $playlists = Playlist::where('user_id', $this->authManager->guard()->id())
+            ->orderBy('created_at', 'DESC')
             ->get()
             ->each(fn(Playlist $playlist) => $playlist->picture = $this->urlGenerator->to($playlist->picture));
 

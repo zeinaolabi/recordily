@@ -71,6 +71,7 @@ class ArtistController extends Controller
         if (!$artist) {
             return response()->json('Invalid ID', 400);
         }
+        $artist->profile_picture = URL::to($artist->profile_picture);
 
         return response()->json($artist);
     }
