@@ -1,18 +1,21 @@
 package com.example.recordily_client.pages.common
 
+import android.text.format.DateFormat
+import android.util.Log
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -23,58 +26,88 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.recordily_client.components.BottomNavigationBar
-import com.example.recordily_client.components.Header
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.components.RoundSendButton
-import com.example.recordily_client.components.TopNavBar
+import com.example.recordily_client.requests.ChatMessage
+import com.example.recordily_client.view_models.LiveEventViewModel
+import com.example.recordily_client.view_models.LoginViewModel
+import com.google.firebase.database.*
 
 private val message = mutableStateOf("")
+private val messages = mutableStateListOf<ChatMessage>()
 
 @Composable
 fun LiveEventPage(navController: NavController, live_event_id: String){
+    val loginViewModel: LoginViewModel = viewModel()
+    val liveEventViewModel: LiveEventViewModel = viewModel()
+    val id = loginViewModel.sharedPreferences.getInt("id", -1)
+
+    getMessages(live_event_id)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .zIndex(0f)
             .background(MaterialTheme.colors.background)
     ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
         ){
             LiveHeader()
 
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight(0.88f)
-                    .fillMaxWidth()
-                    .background(Color.Red)
-                    .verticalScroll(rememberScrollState())
-                    .padding(
-                        vertical = dimensionResource(id = R.dimen.padding_large),
-                        horizontal = dimensionResource(id = R.dimen.padding_medium)
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-            ){
+            SongPlaying()
 
-            }
+            ChatSection(id, liveEventViewModel, live_event_id)
         }
-    }
 
-    SendMessageRow()
+        SendMessageRow(id, live_event_id, liveEventViewModel)
+    }
 }
 
 @Composable
-private fun SendMessageRow(){
+private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, live_event_id: String){
+
+//    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+
+    Column(
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .fillMaxHeight(0.88f)
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
+            .verticalScroll(ScrollState(rememberScrollState().maxValue))
+    ){
+        for(message in messages){
+            if (message.fromID == id) {
+                Row(modifier = Modifier.align(Alignment.End)) {
+                    ToMessage(
+                        message = message.message,
+                        time = convertDate(message.createdAt, "hh:mm"
+                        )
+                    )
+                }
+            } else {
+                Row(modifier = Modifier.align(Alignment.Start)) {
+                    FromMessage(
+                        message = message.message,
+                        time = convertDate(message.createdAt, "hh:mm"
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SendMessageRow(id: Int, live_event_id: String, liveEventViewModel: LiveEventViewModel){
     Row(
         modifier = Modifier
-            .imePadding()
             .fillMaxSize()
-            .zIndex(2f)
-            .padding(dimensionResource(id = R.dimen.padding_small)),
+            .padding(
+                vertical = dimensionResource(id = R.dimen.padding_medium),
+                horizontal = dimensionResource(id = R.dimen.padding_small)
+            )
+            .imePadding(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Bottom
     ) {
@@ -99,7 +132,11 @@ private fun SendMessageRow(){
             )
         )
 
-        RoundSendButton(onClick = {})
+        RoundSendButton(onClick = {
+            liveEventViewModel.sendMessage(message.value, live_event_id, id)
+            message.value = ""
+        }
+        )
     }
 }
 
@@ -107,12 +144,11 @@ private fun SendMessageRow(){
 @Composable
 private fun LiveHeader(){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.15f)
-            .padding(vertical = dimensionResource(id = R.dimen.padding_medium))
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
             text = "Live Name",
@@ -120,7 +156,7 @@ private fun LiveHeader(){
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary
         )
-        
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -134,7 +170,7 @@ private fun LiveHeader(){
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary
             )
-            
+
             Image(
                 painter = painterResource(id = R.drawable.profile_picture),
                 contentDescription = "Host image",
@@ -153,4 +189,218 @@ private fun LiveHeader(){
             )
         }
     }
+}
+
+@Composable
+private fun ToMessage(message: String, time: String) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
+        modifier = Modifier
+            .fillMaxWidth(0.8f)
+            .padding(vertical = dimensionResource(id = R.dimen.padding_small))
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(0.8f)){
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clip(MaterialTheme.shapes.large)
+                    .background(colorResource(id = R.color.darker_gray))
+                    .padding(
+                        vertical = dimensionResource(id = R.dimen.padding_chat_padding),
+                        horizontal = dimensionResource(id = R.dimen.padding_medium)
+                    ),
+                contentAlignment = Alignment.CenterStart
+            ) {
+
+                Text(
+                    text = message,
+                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                    color = Color.White
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ){
+                Text(
+                    text = time,
+                    fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(id = R.dimen.padding_small))
+                        .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+                )
+            }
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.profile_picture),
+            contentDescription = "user profile",
+            modifier = Modifier
+                .padding(vertical = dimensionResource(id = R.dimen.padding_very_small))
+                .size(40.dp)
+                .clip(CircleShape)
+        )
+    }
+}
+
+@Composable
+private fun FromMessage(message: String, time: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small)),
+        modifier = Modifier
+            .fillMaxWidth(0.8f)
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.profile_picture),
+            contentDescription = "user profile",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+        )
+        
+        Column(modifier = Modifier.fillMaxWidth()){
+            Text(
+                text = "User name",
+                fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colors.primaryVariant)
+                    .padding(
+                        vertical = dimensionResource(id = R.dimen.padding_chat_padding),
+                        horizontal = dimensionResource(id = R.dimen.padding_medium)
+                    ),
+                contentAlignment = Alignment.CenterStart
+            ) {
+
+                Text(
+                    text = message,
+                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                    color = Color.White
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ){
+                Text(
+                    text = time,
+                    fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(id = R.dimen.padding_small))
+                        .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SongPlaying(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp)
+            .shadow(5.dp)
+            .background(MaterialTheme.colors.secondary)
+            .padding(dimensionResource(id = R.dimen.padding_small)),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Image(
+            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            contentDescription = "Song picture",
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .fillMaxHeight()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.SpaceEvenly
+        ){
+            Text(
+                text = "Song name",
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White
+            )
+
+            LinearProgressIndicator(
+                color = Color.White,
+                progress = 0.7f,
+                modifier = Modifier
+                    .fillMaxWidth()
+
+            )
+        }
+
+        Icon(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "like",
+            modifier = Modifier
+                .size(30.dp),
+            tint = Color.White
+        )
+    }
+}
+
+fun convertDate(dateInMilliseconds: Long, dateFormat: String): String {
+    return DateFormat.format(dateFormat, dateInMilliseconds).toString()
+}
+
+fun getMessages(live_event_id: String){
+    val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
+    val reference = database.getReference("rooms/$live_event_id/messages/")
+
+    messages.clear()
+
+    reference.addChildEventListener(object: ChildEventListener {
+        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+            val chatMessage = snapshot.getValue(ChatMessage::class.java)
+
+            if (chatMessage != null) {
+                messages.add(
+                    ChatMessage(
+                        chatMessage.id,
+                        chatMessage.message,
+                        chatMessage.fromID,
+                        chatMessage.roomID,
+                        chatMessage.createdAt
+                    )
+                )
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+        }
+
+        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+        }
+
+        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+        }
+
+        override fun onChildRemoved(snapshot: DataSnapshot) {
+        }
+    })
 }
