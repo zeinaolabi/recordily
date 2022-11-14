@@ -1,4 +1,4 @@
-package com.example.recordily_client.requests
+package com.example.recordily_client.responses
 
 data class LiveEvent(
     val id : String,

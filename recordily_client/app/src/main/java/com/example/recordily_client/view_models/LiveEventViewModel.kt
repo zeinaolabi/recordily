@@ -1,22 +1,27 @@
 package com.example.recordily_client.view_models
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.recordily_client.requests.ChatMessage
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.*
+import com.example.recordily_client.responses.ChatMessage
+import com.example.recordily_client.requests.MessageRequest
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
+import com.example.recordily_client.services.LiveEventService
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
-class LiveEventViewModel: ViewModel() {
+@SuppressLint("StaticFieldLeak")
+class LiveEventViewModel(application: Application): AndroidViewModel(application) {
     private val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
+    val context: Context = getApplication<Application>().applicationContext
 
     private val artistService = ArtistService()
+    private val liveEventService = LiveEventService()
 
     private val messagesResult = MutableLiveData<List<ChatMessage>>()
     val messagesResultLiveData: LiveData<List<ChatMessage>>
@@ -79,13 +84,20 @@ class LiveEventViewModel: ViewModel() {
         })
     }
 
-    fun sendMessage(message: String, live_event_id: String, id: Int){
-        val reference = database.getReference("rooms/$live_event_id/messages").push()
+    suspend fun sendMessage(token: String, messageRequest: MessageRequest, id: Int): Boolean{
+        val reference = database.getReference("rooms/${messageRequest.live_event_id}/messages").push()
 
-        val sentMessage = reference.key?.let {
-            ChatMessage(it, message, id, live_event_id, System.currentTimeMillis())
+        return try {
+            liveEventService.addMessage(token, messageRequest)
+
+            val sentMessage = reference.key?.let {
+                ChatMessage(it, messageRequest.message, id, messageRequest.live_event_id, System.currentTimeMillis())
+            }
+
+            reference.setValue(sentMessage)
+            true
+        } catch (exception: Throwable) {
+            false
         }
-
-        reference.setValue(sentMessage)
     }
 }

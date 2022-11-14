@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
-import com.example.recordily_client.requests.ChatMessage
-import com.example.recordily_client.requests.LiveEvent
-import com.example.recordily_client.requests.UploadSongRequest
+import com.example.recordily_client.requests.LiveEventRequest
+import com.example.recordily_client.responses.LiveEvent
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
 import com.example.recordily_client.services.LiveEventService
@@ -15,7 +14,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 
 class LiveEventsViewModel(application: Application): AndroidViewModel(application) {
     private val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
@@ -77,11 +75,10 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
     }
 
     suspend fun addLiveEvent(token: String, liveEventName: String, id: Int): String? {
-
         return try {
-            liveEventService.addLiveEvent(token, liveEventName)
-
             val room = database.getReference("rooms/").push()
+
+            val liveEventRequest = room.key?.let { LiveEventRequest(liveEventName, it) }
 
             val sentMessage = room.key?.let {
                 LiveEvent(
@@ -93,6 +90,11 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
             }
 
             room.setValue(sentMessage)
+
+
+            if (liveEventRequest != null) {
+                liveEventService.addLiveEvent(token, liveEventRequest)
+            }
 
             room.key
         } catch (exception: Throwable) {

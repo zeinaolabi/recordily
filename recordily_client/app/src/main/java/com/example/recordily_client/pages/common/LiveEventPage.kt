@@ -1,15 +1,15 @@
 package com.example.recordily_client.pages.common
 
 import android.text.format.DateFormat
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,20 +20,18 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.recordily_client.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.components.RoundSendButton
-import com.example.recordily_client.requests.ChatMessage
+import com.example.recordily_client.requests.MessageRequest
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.LiveEventViewModel
 import com.example.recordily_client.view_models.LoginViewModel
-import com.google.firebase.database.*
+import kotlinx.coroutines.launch
 
 private val message = mutableStateOf("")
 
@@ -63,7 +61,7 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
             ChatSection(id, liveEventViewModel, token, live_event_id)
         }
 
-        SendMessageRow(id, live_event_id, liveEventViewModel)
+        SendMessageRow(token, id, live_event_id, liveEventViewModel)
     }
 }
 
@@ -111,7 +109,9 @@ private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: 
 }
 
 @Composable
-private fun SendMessageRow(id: Int, live_event_id: String, liveEventViewModel: LiveEventViewModel){
+private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEventViewModel: LiveEventViewModel){
+    val coroutinesScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -145,8 +145,17 @@ private fun SendMessageRow(id: Int, live_event_id: String, liveEventViewModel: L
         )
 
         RoundSendButton(onClick = {
-            liveEventViewModel.sendMessage(message.value, live_event_id, id)
-            message.value = ""
+            coroutinesScope.launch {
+                val liveEventRequest = MessageRequest(message.value, live_event_id)
+                val messageSent = liveEventViewModel.sendMessage(token, liveEventRequest, id)
+
+                if(!messageSent){
+                    Toast.makeText(liveEventViewModel.context, "Failed to send message", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                message.value = ""
+            }
         }
         )
     }
