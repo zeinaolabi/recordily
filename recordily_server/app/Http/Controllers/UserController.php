@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\URL;
 
 class UserController extends Controller
@@ -27,6 +28,12 @@ class UserController extends Controller
     {
         $id = Auth::id();
         $user = User::find($id);
+
+        $path = public_path() . '/images/' . $id;
+
+        if (!File::exists($path)) {
+            File::makeDirectory($path);
+        }
 
         if ($request->file('profile_picture')) {
             try {

@@ -4,6 +4,7 @@ use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\LiveEventController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
@@ -90,6 +91,13 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::post('edit_profile',"editProfile");
             Route::get('get_user_songs',"getUserSongs");
             Route::get('search_released_songs/{input}',"searchReleasedSongs");
+        }
+    );
+
+    Route::controller(LiveEventController::class)->group(
+        function () {
+            Route::post('add_live_event',"addLiveEvent");
+            Route::post('add_message',"addMessage");
         }
     );
 });

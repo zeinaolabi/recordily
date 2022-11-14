@@ -33,4 +33,5 @@ sealed class Screen(val route: String){
     object UnreleasedAlbumPage: Screen(route = "unreleased_album_page")
     object ResetPasswordPage: Screen(route = "reset_password_page")
     object EditPlaylistPage: Screen(route = "edit_playlist_page")
+    object LiveEventPage: Screen(route = "live_event_page")
 }

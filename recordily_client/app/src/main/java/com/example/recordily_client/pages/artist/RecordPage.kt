@@ -154,7 +154,7 @@ private fun RecordTimer(){
 private fun RecordButton(recordViewModel: RecordViewModel){
     Box(
         modifier = Modifier
-            .size(220.dp)
+            .size(200.dp)
             .clip(CircleShape)
             .shadow(15.dp)
             .background(MaterialTheme.colors.primary)

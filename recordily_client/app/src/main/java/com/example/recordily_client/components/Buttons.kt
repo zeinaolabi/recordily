@@ -3,10 +3,12 @@ package com.example.recordily_client.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -162,5 +164,29 @@ fun FloatingButton(onClick: () -> (Unit)){
                 tint = Color.White
             )
         }
+    }
+}
+
+@Composable
+fun RoundSendButton(onClick: () -> (Unit)){
+    Button(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
+            .size(55.dp),
+        shape = CircleShape,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.primary
+        ),
+        elevation = ButtonDefaults.elevation(
+            defaultElevation = 0.dp,
+        ),
+        onClick = { onClick() })
+    {
+        Icon(
+            Icons.Default.Send,
+            contentDescription = "Send button",
+            tint= Color.White
+        )
+
     }
 }

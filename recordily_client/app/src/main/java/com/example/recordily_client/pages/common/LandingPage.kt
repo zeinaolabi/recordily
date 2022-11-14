@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.view_models.LandingPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CommonLandingPage(navController: NavController){
     val pageOptions = listOf(
@@ -29,7 +31,9 @@ fun CommonLandingPage(navController: NavController){
     val landingPageViewModel : LandingPageViewModel = viewModel()
 
     val limit = 5
+    val artistType = 0
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
 
     landingPageViewModel.getTopPlayed(token, limit)
     landingPageViewModel.getRecentlyPlayed(token, limit)
@@ -43,7 +47,7 @@ fun CommonLandingPage(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_medium))
             ){
-                if(loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0){
+                if(userType == artistType){
                     TopNavBar(
                         pageOptions = pageOptions,
                         currentPage = R.string.home,

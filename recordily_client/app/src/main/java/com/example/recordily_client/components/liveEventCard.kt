@@ -18,10 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 
 @Composable
-fun LiveEventCard(navController: NavController){
+fun LiveEventCard(eventName: String, picture: String?, name: String, onClick: () -> (Unit)){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -33,7 +34,7 @@ fun LiveEventCard(navController: NavController){
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        EventCardContent()
+        EventCardContent(eventName, picture, name)
 
         Column(
             modifier = Modifier
@@ -42,17 +43,23 @@ fun LiveEventCard(navController: NavController){
             verticalArrangement = Arrangement.Bottom
         ){
             SmallRoundButton(text = "Join Event", onClick = {
-                //Open Live event
+                onClick()
             })
         }
     }
 }
 
 @Composable
-private fun EventCardContent(){
+private fun EventCardContent(eventName: String, picture: String?, name: String){
     Row{
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(picture !== null || picture != ""){
+                rememberAsyncImagePainter(picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "logo",
             modifier = Modifier
                 .size(70.dp)
@@ -65,13 +72,13 @@ private fun EventCardContent(){
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ){
             Text(
-                text = "Live Name",
+                text = eventName,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp
             )
 
             Text(
-                text = "Hosted by: Artist name",
+                text = "Hosted by: $name",
                 fontWeight = FontWeight.Medium,
                 fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp
             )

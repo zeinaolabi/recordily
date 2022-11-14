@@ -5,9 +5,11 @@ import androidx.navigation.NavController
 fun navigateTo(navController: NavController, destination: String, popUpTo: String){
     navController.navigate(destination) {
 
-        popUpTo(popUpTo)
+        popUpTo(popUpTo){
+            saveState = false
+        }
 
-        launchSingleTop = true
-        restoreState = true
+        restoreState = false
+        launchSingleTop = false
     }
 }
