@@ -34,6 +34,10 @@ import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import android.os.CountDownTimer
+
+
+
 
 private val isPlaying = mutableStateOf(false)
 private val isPaused = mutableStateOf(false)
@@ -127,16 +131,28 @@ private fun SongDetails(navController: NavController, song: SongResponse, songVi
     val durationString = songViewModel.getDurationAsString(song.path)
     val duration = songViewModel.getDuration(song.path)
     val progress = remember { mutableStateOf(0f) }
+    val finishedSeconds = remember { mutableStateOf(0L) }
 
     LaunchedEffect(key1 = currentTime.value, key2 = isPlaying.value, key3 = isPaused.value) {
-        if (isPlaying.value && !isPaused.value) {
-            delay(100L)
-            currentTime.value += 100L
-            progress.value = currentTime.value.toFloat()/ duration!!
+        val timer = object : CountDownTimer(duration!!, 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                finishedSeconds.value = duration!! - millisUntilFinished
+                val total = finishedSeconds.value / duration.toFloat()
+                progress.value = total
 
-            if(progress.value > 1){
-                currentTime.value = 0L
+                if(isPaused.value) {
+                    this.cancel()
+                }
             }
+
+            override fun onFinish() {
+                this.cancel()
+                this.start()
+            }
+        }
+
+        if (isPlaying.value && !isPaused.value) {
+            timer.start()
         }
     }
 
@@ -248,10 +264,10 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                     .clickable(
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
-                    ){
+                    ) {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route ,
+                            destination = Screen.SongPage.route,
                             popUpTo = Screen.LandingPage.route
                         )
                     }
@@ -269,7 +285,7 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                         .clickable(
                             interactionSource = remember { NoRippleInteractionSource() },
                             indication = null
-                        ){
+                        ) {
                             isPaused.value = true
                             songViewModel.pauseSong()
                         }
@@ -287,9 +303,9 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                         .clickable(
                             interactionSource = remember { NoRippleInteractionSource() },
                             indication = null
-                        ){
+                        ) {
                             isPlaying.value = true
-                            if(isPaused.value){
+                            if (isPaused.value) {
                                 songViewModel.resumeSong()
                                 isPaused.value = false
                             } else {
@@ -312,13 +328,13 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                     .clickable(
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
-                    ){
+                    ) {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route ,
+                            destination = Screen.SongPage.route,
                             popUpTo = Screen.LandingPage.route
                         )
-                     },
+                    },
                 tint = Color.Unspecified
             )
         }
@@ -332,7 +348,7 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ){
+                ) {
                     popUpVisibility.value = true
                 },
             tint = Color.Unspecified,
