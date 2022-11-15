@@ -136,17 +136,11 @@ private fun SuggestedContent(navController: NavController, data: List<SongRespon
     SongsCards(
         title = stringResource(id = R.string.suggested),
         songs = data,
+        navController = navController,
         destination = {
             navigateTo(
                 navController = navController,
                 destination = Screen.SuggestedSongsPage.route,
-                popUpTo = Screen.SearchPage.route
-            )
-        },
-        onSongClick = {
-            navigateTo(
-                navController = navController,
-                destination = Screen.SongPage.route,
                 popUpTo = Screen.SearchPage.route
             )
         },
@@ -177,7 +171,7 @@ private fun ResultData(navController: NavController, data: SearchResponse){
             onClick = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.ArtistProfilePage.route,
+                    destination = Screen.ArtistProfilePage.route + '/' + artist.id,
                     popUpTo = Screen.SearchPage.route
                 )
             }
@@ -190,7 +184,7 @@ private fun ResultData(navController: NavController, data: SearchResponse){
             onSongClick = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.SongPage.route,
+                    destination = Screen.SongPage.route + '/' + song.id,
                     popUpTo = Screen.PlaylistPage.route
                 )
             },

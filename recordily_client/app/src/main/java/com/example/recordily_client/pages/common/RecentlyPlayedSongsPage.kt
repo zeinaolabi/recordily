@@ -104,7 +104,7 @@ private fun RecentlyPlayedSongsContent(navController: NavController, songs: List
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id,
                             popUpTo = Screen.SuggestedSongsPage.route
                         )
                     },

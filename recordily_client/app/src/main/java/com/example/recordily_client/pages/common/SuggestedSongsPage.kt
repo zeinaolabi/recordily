@@ -101,7 +101,7 @@ private fun SuggestedSongsContent(navController: NavController, songs: List<Song
                 onSongClick = {
                     navigateTo(
                         navController = navController,
-                        destination = Screen.SongPage.route,
+                        destination = Screen.SongPage.route + '/' + song.id,
                         popUpTo = Screen.SuggestedSongsPage.route
                     )
                 },

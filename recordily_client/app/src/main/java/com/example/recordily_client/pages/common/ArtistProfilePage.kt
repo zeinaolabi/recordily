@@ -145,17 +145,11 @@ private fun ArtistProfileContent(
         SongsCards(
             title = stringResource(id = R.string.songs),
             songs = songs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.ArtistSongsPage.route + '/' + artist_id,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             },

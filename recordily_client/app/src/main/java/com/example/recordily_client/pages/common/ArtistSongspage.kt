@@ -93,7 +93,7 @@ private fun ArtistSongsContent(navController: NavController, songs: List<SongRes
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id,
                             popUpTo = Screen.ArtistSongsPage.route
                         )
                     },

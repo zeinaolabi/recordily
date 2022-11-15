@@ -21,15 +21,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 
 @Composable
 fun SongsCards(
-    title: String, songs: List<SongResponse>?,
+    title: String,
+    songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     onMoreClick: () -> (Unit),
     songID: MutableState<Int>
 ){
@@ -44,15 +48,15 @@ fun SongsCards(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick ,onMoreClick, songID)
+        CardsContent(songs, navController, destination, onMoreClick, songID)
     }
 }
 
 @Composable
 private fun CardsContent(
     songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     onMoreClick: () -> (Unit),
     songID: MutableState<Int>
 ){
@@ -69,7 +73,13 @@ private fun CardsContent(
             for(song in songs){
                 SongCard(
                     song = song,
-                    onSongClick = onSongClick,
+                    onSongClick = {
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
+                            popUpTo = Screen.ArtistProfilePage.route
+                        )
+                    },
                     onMoreClick = {
                         onMoreClick()
                         songID.value = song.id

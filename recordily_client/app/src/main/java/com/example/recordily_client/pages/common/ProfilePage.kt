@@ -127,17 +127,11 @@ private fun ProfileContentColumn(
         SongsCards(
             title = stringResource(id = R.string.top_songs),
             songs = topSongs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.TopSongsPage.route,
-                    popUpTo = Screen.ProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ProfilePage.route
                 )
             },
@@ -150,17 +144,11 @@ private fun ProfileContentColumn(
         SongsCards(
             title = stringResource(id = R.string.recently_played),
             songs = recentlyPlayedSongs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.RecentlyPlayedSongsPage.route,
-                    popUpTo = Screen.ProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ProfilePage.route
                 )
             },

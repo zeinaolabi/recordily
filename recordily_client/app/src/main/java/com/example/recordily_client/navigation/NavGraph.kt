@@ -32,9 +32,6 @@ fun SetupNavGraph(navController: NavHostController){
     ){
         composable(
             route = Screen.LoginPage.route,
-//            exitTransition = {_,_ ->
-//                fadeOut(animationSpec = tween(300))
-//            }
         ){
             LoginPage(navController)
         }
@@ -144,9 +141,9 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.SongPage.route
-        ){
-            SongPage(navController)
+            route = Screen.SongPage.route + "/{song_id}"
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("song_id")?.let { SongPage(navController, it) }
         }
 
         composable(

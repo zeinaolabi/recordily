@@ -100,7 +100,7 @@ private fun AlbumPageContent(navController: NavController, songs: List<SongRespo
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
                             popUpTo = Screen.AlbumPage.route
                         )
                     },

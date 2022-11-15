@@ -57,7 +57,7 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
             else{
                 for (song in songs) {
                     SongSquareCard(
-                        onClick = { navController.navigate(Screen.SongPage.route) },
+                        onClick = { navController.navigate(Screen.SongPage.route + '/' + song.id) },
                         song = song
                     )
                 }

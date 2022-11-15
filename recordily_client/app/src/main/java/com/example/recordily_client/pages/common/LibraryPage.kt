@@ -37,7 +37,6 @@ private val popUpVisibility = mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
-@ExperimentalAnimationApi
 @Composable
 fun LibraryPage(navController: NavController){
     val loginViewModel: LoginViewModel = viewModel()
@@ -140,7 +139,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
                             popUpTo = Screen.LibraryPage.route
                         )
                     },
@@ -175,7 +174,7 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
                             popUpTo = Screen.LibraryPage.route
                         )
                     },

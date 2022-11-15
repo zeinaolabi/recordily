@@ -40,13 +40,13 @@ private val popUpVisibility = mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SongPage(navController: NavController) {
+fun SongPage(navController: NavController, songID: String) {
     val songViewModel: SongViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
-    songViewModel.isLiked(token, 6)
-    songViewModel.getSong(token, "6")
+    songViewModel.isLiked(token, songID.toInt())
+    songViewModel.getSong(token, songID)
 
     val song = songViewModel.songResultLiveData.observeAsState().value
 
@@ -79,7 +79,7 @@ fun SongPage(navController: NavController) {
                 )
 
                 if (song != null) {
-                    SongDetailsBox(song, songViewModel, token)
+                    SongDetailsBox(song, songViewModel, token, songID)
                 }
             }
 
@@ -98,7 +98,7 @@ fun SongPage(navController: NavController) {
 }
 
 @Composable
-private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, token: String){
+private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     Surface(
         color = Color.Black.copy(alpha = 0.65f),
         modifier = Modifier
@@ -114,14 +114,14 @@ private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, tok
                 vertical = dimensionResource(id = R.dimen.padding_medium)
             )
         ){
-            SongDetails(song, songViewModel, token)
+            SongDetails(song, songViewModel, token, songID)
         }
     }
 }
 
 //Icons by: icons by https://icons8.com
 @Composable
-private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token: String){
+private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     val durationString = songViewModel.getDurationAsString(song.path)
     val duration = songViewModel.getDuration(song.path)
     val progress = remember { mutableStateOf(0f) }
@@ -174,12 +174,12 @@ private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token:
         )
     }
 
-    PlayButtonRow(song, songViewModel, token)
+    PlayButtonRow(song, songViewModel, token, songID)
 
 }
 
 @Composable
-private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, token: String){
+private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     val coroutinesScope = rememberCoroutineScope()
 
     val isLiked by songViewModel.isLikedResultLiveData.observeAsState()
@@ -205,11 +205,11 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                 ) {
                     coroutinesScope.launch {
                         if (isLiked == true) {
-                            songViewModel.unlikeSong(token, 6)
+                            songViewModel.unlikeSong(token, songID.toInt())
                         } else {
-                            songViewModel.likeSong(token, 6)
+                            songViewModel.likeSong(token, songID.toInt())
                         }
-                        songViewModel.isLiked(token, 6)
+                        songViewModel.isLiked(token, songID.toInt())
                     }
                 },
             tint = Color.Unspecified
@@ -268,8 +268,7 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                             } else {
                                 songViewModel.playSong(song.path)
                             }
-                        }
-                    ,
+                        },
                     tint = Color.Unspecified
                 )
             }
