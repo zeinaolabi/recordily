@@ -2,6 +2,9 @@ package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -30,9 +33,10 @@ import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-val isPlaying = mutableStateOf(false)
-val isPaused = mutableStateOf(false)
-val currentTime = mutableStateOf(0L)
+private val isPlaying = mutableStateOf(false)
+private val isPaused = mutableStateOf(false)
+private val currentTime = mutableStateOf(0L)
+private val popUpVisibility = mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -77,6 +81,17 @@ fun SongPage(navController: NavController) {
                 if (song != null) {
                     SongDetailsBox(song, songViewModel, token)
                 }
+            }
+
+            AnimatedVisibility(
+                visible = popUpVisibility.value,
+                enter = expandVertically(expandFrom = Alignment.CenterVertically),
+                exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+            ) {
+                PlaylistPopup(
+                    songID = 6,
+                    popUpVisibility = popUpVisibility
+                )
             }
         }
     )
@@ -281,9 +296,11 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ){},
+                ){
+                    popUpVisibility.value = true
+                },
             tint = Color.Unspecified,
-            )
+        )
     }
 }
 
