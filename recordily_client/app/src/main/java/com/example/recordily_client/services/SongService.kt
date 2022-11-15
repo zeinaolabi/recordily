@@ -83,4 +83,8 @@ class SongService {
     suspend fun getSong(token: String, song_id: String): SongResponse {
         return RetrofitInstance.songAPI.getSong(token, song_id)
     }
+
+    suspend fun playSong(token: String, song_id: Int) {
+        return RetrofitInstance.songAPI.playSong(token, song_id)
+    }
 }
