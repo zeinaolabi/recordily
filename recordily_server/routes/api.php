@@ -11,13 +11,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
-    Route::controller(ForgotPasswordController::class)->group(
-        function () {
-        Route::post('forgot_password', "forgotPassword");
-        Route::get('/reset-password/{token}', "resetPassword")->name('password.reset');
-        }
-    );
-
     Route::controller(SongController::class)->group(
         function () {
             Route::post('upload_song', "uploadSong");
@@ -35,6 +28,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('publish_song/{song_id}',"publishSong");
             Route::get('delete_song_from_album/{song_id}',"deleteSongFromAlbum");
             Route::get('get_song/{song_id}',"getSong");
+            Route::get('play_song/{song_id}',"playSong");
         }
     );
 
@@ -109,4 +103,9 @@ Route::controller(AuthController::class)->group(
     }
 );
 
-//Route::get('create_album',[AlbumController::class, "createAlbum"]);
+Route::controller(ForgotPasswordController::class)->group(
+    function () {
+        Route::post('forgot_password', "forgotPassword");
+        Route::get('/reset-password/{token}', "resetPassword")->name('password.reset');
+    }
+);
