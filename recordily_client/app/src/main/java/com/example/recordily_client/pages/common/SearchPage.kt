@@ -113,7 +113,6 @@ private fun SearchPageContent(
     val searchResult by searchPageViewModel.searchResultLiveData.observeAsState()
     val suggestedResult by searchPageViewModel.suggestedResultLiveData.observeAsState()
 
-
     Text(
         text = stringResource(id = R.string.discover_songs),
         fontSize = dimensionResource(id = R.dimen.font_large).value.sp,

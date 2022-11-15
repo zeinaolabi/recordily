@@ -1,7 +1,12 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import android.text.format.DateFormat
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,22 +29,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.example.recordily_client.components.PlaylistPopup
 import com.example.recordily_client.components.RoundSendButton
+import com.example.recordily_client.components.SongsPopUp
 import com.example.recordily_client.requests.MessageRequest
 import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.view_models.LiveEventViewModel
 import com.example.recordily_client.view_models.LoginViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private val message = mutableStateOf("")
+private val input = mutableStateOf("")
+private val popUpVisibility = mutableStateOf(false)
 private val chatMessages: LinkedHashMap<String, ChatMessage> =
     mutableMapOf<String, ChatMessage>() as LinkedHashMap<String, ChatMessage>
 private val senderInfo: HashMap<Int, UserResponse> =
     mutableMapOf<Int, UserResponse>() as HashMap<Int, UserResponse>
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
+    val coroutinesScope = rememberCoroutineScope()
+
     val loginViewModel: LoginViewModel = viewModel()
     val liveEventViewModel: LiveEventViewModel = viewModel()
     val id = loginViewModel.sharedPreferences.getInt("id", -1)
@@ -52,14 +67,25 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
     val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
 
     if(chatMessage.value !== null){
-        if(!chatMessages.containsKey(chatMessage.value!!.id)){
-            chatMessages[chatMessage.value!!.id] = chatMessage.value!!
+        if(!senderInfo.containsKey(chatMessage.value!!.fromID)){
+            coroutinesScope.launch {
+                withContext(Dispatchers.Default) {
+                    liveEventViewModel.getArtist(token, chatMessage.value!!.fromID.toString())
+                    if(liveEventViewModel.userInfoResultLiveData.value != null){
+                        senderInfo[chatMessage.value!!.fromID] = liveEventViewModel.userInfoResultLiveData.value!!
+                    }
+                }
+
+                withContext(Dispatchers.Default) {
+                    liveEventViewModel.userInfoResultLiveData.value?.let {
+                        senderInfo[chatMessage.value!!.fromID] = it
+                    }
+                }
+            }
         }
 
-        if(!senderInfo.containsKey(chatMessage.value!!.fromID)){
-            liveEventViewModel.getArtist(token, chatMessage.value!!.fromID.toString())
-            val userInfo = liveEventViewModel.userInfoResultLiveData.observeAsState().value
-            userInfo?.let { senderInfo[chatMessage.value!!.fromID] = it }
+        if(!chatMessages.containsKey(chatMessage.value!!.id)){
+            chatMessages[chatMessage.value!!.id] = chatMessage.value!!
         }
     }
 
@@ -79,6 +105,17 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
         }
 
         SendMessageRow(token, id, live_event_id, liveEventViewModel)
+
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            SongsPopUp(
+                input = input,
+                popUpVisibility = popUpVisibility
+            )
+        }
     }
 }
 
@@ -377,7 +414,11 @@ private fun SongPlaying(){
             .height(70.dp)
             .shadow(5.dp)
             .background(MaterialTheme.colors.secondary)
-            .padding(dimensionResource(id = R.dimen.padding_small)),
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .clickable {
+                 popUpVisibility.value = true
+            }
+        ,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){

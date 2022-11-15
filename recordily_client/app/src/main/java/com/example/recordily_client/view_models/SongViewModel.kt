@@ -18,7 +18,7 @@ class SongViewModel: ViewModel() {
     private val songService = SongService()
     private val mediaPlayer = MediaPlayer()
 
-    val queue = mutableStateListOf<Int>()
+    val queue: MutableList<Int> = mutableStateListOf()
 
     private val songResult = MutableLiveData<SongResponse>()
     val songResultLiveData : LiveData<SongResponse>

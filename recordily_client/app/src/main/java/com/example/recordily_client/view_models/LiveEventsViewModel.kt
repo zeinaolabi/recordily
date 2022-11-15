@@ -52,7 +52,8 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
                             liveEvent.name,
                             liveEvent.hostID,
                             liveEvent.createdAt,
-                            hashMapOf()
+                            hashMapOf(),
+                            ""
                         )
                     )
 
@@ -86,7 +87,9 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
                     liveEventName,
                     id,
                     System.currentTimeMillis(),
-                    hashMapOf())
+                    hashMapOf(),
+                    ""
+                )
             }
 
             room.setValue(sentMessage)

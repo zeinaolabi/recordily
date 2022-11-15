@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
 import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.services.PlaylistService
 import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
@@ -23,6 +24,16 @@ class PopUpViewModel(application: Application): AndroidViewModel(application) {
     private val playlistsResult = MutableLiveData<List<PlaylistResponse>>()
     val playlistsResultLiveData : LiveData<List<PlaylistResponse>>
         get() = playlistsResult
+
+    private val searchResult = MutableLiveData<List<SongResponse>>()
+    val searchResultLiveData : LiveData<List<SongResponse>>
+        get() = searchResult
+
+    fun getSearchResult(token: String, input: String){
+        viewModelScope.launch {
+            searchResult.postValue(songService.search(token, input))
+        }
+    }
 
     fun getPlaylists(token: String){
         viewModelScope.launch {

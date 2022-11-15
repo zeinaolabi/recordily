@@ -187,8 +187,9 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
     val isLiked by songViewModel.isLikedResultLiveData.observeAsState()
     val queue = songViewModel.queue
 
-    Log.i("queue", songViewModel.queue[1].toString())
-    Log.i("queue2", queue[2].toString())
+    for(queues in queue){
+        Log.i("queue", queues.toString())
+    }
 
 //    val before =
 //        if(queue.indexOf(songID.toInt()) == 0) {

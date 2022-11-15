@@ -1,5 +1,6 @@
 package com.example.recordily_client.components
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,15 +58,14 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
                 EmptyState(stringResource(id = R.string.no_songs_found))
             }
             else{
-                for(song in songs){
-                    queue.add(song.id)
-                }
-
                 for (song in songs) {
                     SongSquareCard(
                         onClick = {
-//                            songViewModel.queue = queue
+                            for(songID in songs){
+                                songViewModel.queue.add(songID.id)
+                            }
 
+//                            Log.i("songbox", songViewModel.queue[1].toString())
                             navController.navigate(Screen.SongPage.route + '/' + song.id)
                         },
                         song = song
