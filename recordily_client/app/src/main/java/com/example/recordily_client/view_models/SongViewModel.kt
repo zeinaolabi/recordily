@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.services.SongService
-import com.example.recordily_client.services.UserService
 import kotlinx.coroutines.launch
 import java.io.IOException
 import android.media.MediaMetadataRetriever
@@ -62,7 +61,7 @@ class SongViewModel: ViewModel() {
         }
     }
 
-    fun getDuration(audioUrl: String): String? {
+    fun getDurationAsString(audioUrl: String): String? {
         val mmr = MediaMetadataRetriever()
         mmr.setDataSource(audioUrl)
         val durationStr: String? = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
@@ -73,5 +72,13 @@ class SongViewModel: ViewModel() {
         }
 
         return durationString
+    }
+
+    fun getDuration(audioUrl: String): Long? {
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(audioUrl)
+        val durationStr: String? = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+
+        return durationStr?.toLong()
     }
 }

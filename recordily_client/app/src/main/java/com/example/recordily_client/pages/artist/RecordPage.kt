@@ -34,9 +34,9 @@ import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
 
-val recordState = mutableStateOf(false)
-val buttonsVisibility = mutableStateOf(false)
-val currentTime = mutableStateOf(0L)
+private val recordState = mutableStateOf(false)
+private val buttonsVisibility = mutableStateOf(false)
+private val currentTime = mutableStateOf(0L)
 
 @ExperimentalAnimationApi
 @RequiresApi(Build.VERSION_CODES.S)

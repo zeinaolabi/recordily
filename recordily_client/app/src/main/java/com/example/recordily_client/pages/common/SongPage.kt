@@ -1,6 +1,7 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,12 +25,13 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LikesPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
+import kotlinx.coroutines.delay
 
 val isPlaying = mutableStateOf(false)
 val isPaused = mutableStateOf(false)
+val currentTime = mutableStateOf(0L)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -103,7 +105,21 @@ private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel){
 //Icons by: icons by https://icons8.com
 @Composable
 private fun SongDetails(song: SongResponse, songViewModel: SongViewModel){
+    val durationString = songViewModel.getDurationAsString(song.path)
     val duration = songViewModel.getDuration(song.path)
+    val progress = remember { mutableStateOf(0f) }
+
+    LaunchedEffect(key1 = currentTime.value, key2 = isPlaying.value, key3 = isPaused.value) {
+        if (isPlaying.value && !isPaused.value) {
+            delay(100L)
+            currentTime.value += 100L
+            progress.value = currentTime.value.toFloat()/ duration!!
+
+            if(progress.value > 1){
+                currentTime.value = 0L
+            }
+        }
+    }
 
     Text(
         text = song.name,
@@ -121,7 +137,7 @@ private fun SongDetails(song: SongResponse, songViewModel: SongViewModel){
 
     LinearProgressIndicator(
         color = Color.White,
-        progress = 0.7f,
+        progress = progress.value,
         modifier = Modifier
             .fillMaxWidth()
 
@@ -134,7 +150,7 @@ private fun SongDetails(song: SongResponse, songViewModel: SongViewModel){
         horizontalArrangement = Arrangement.End
     ){
         Text(
-            text = duration ?: "00:00",
+            text = durationString ?: "00:00",
             fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             fontWeight = FontWeight.Medium,
             color = Color.White
@@ -157,7 +173,11 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
             contentDescription = "like",
             modifier = Modifier
                 .size(25.dp)
-                .bounceClick(),
+                .bounceClick()
+                .clickable(
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    indication = null
+                ){},
             tint = Color.Unspecified
         )
 
@@ -168,7 +188,13 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
             Icon(
                 painter = painterResource(id = R.drawable.arrow_left),
                 contentDescription = "before",
-                modifier = Modifier.size(25.dp),
+                modifier = Modifier
+                    .size(25.dp)
+                    .clickable(
+                        interactionSource = remember { NoRippleInteractionSource() },
+                        indication = null
+                    ){}
+                ,
                 tint = Color.Unspecified
             )
 
@@ -179,7 +205,10 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
                     modifier = Modifier
                         .size(90.dp)
                         .bounceClick()
-                        .clickable{
+                        .clickable(
+                            interactionSource = remember { NoRippleInteractionSource() },
+                            indication = null
+                        ){
                             isPaused.value = true
                             songViewModel.pauseSong()
                         }
@@ -194,7 +223,10 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
                     modifier = Modifier
                         .size(90.dp)
                         .bounceClick()
-                        .clickable{
+                        .clickable(
+                            interactionSource = remember { NoRippleInteractionSource() },
+                            indication = null
+                        ){
                             isPlaying.value = true
                             if(isPaused.value){
                                 songViewModel.resumeSong()
@@ -211,7 +243,12 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
             Icon(
                 painter = painterResource(id = R.drawable.arrow_right),
                 contentDescription = "after",
-                modifier = Modifier.size(25.dp),
+                modifier = Modifier
+                    .size(25.dp)
+                    .clickable(
+                        interactionSource = remember { NoRippleInteractionSource() },
+                        indication = null
+                    ){},
                 tint = Color.Unspecified
             )
         }
@@ -221,9 +258,13 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
             contentDescription = "add to playlist",
             modifier = Modifier
                 .size(25.dp)
-                .bounceClick(),
-            tint = Color.Unspecified
-        )
+                .bounceClick()
+                .clickable(
+                    interactionSource = remember { NoRippleInteractionSource() },
+                    indication = null
+                ){},
+            tint = Color.Unspecified,
+            )
     }
 }
 

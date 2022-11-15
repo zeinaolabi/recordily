@@ -12,7 +12,7 @@ object RetrofitInstance {
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
     val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.1.102/api/")
+        .baseUrl("http://192.168.44.152/api/")
         .client(getLoggingHttpClient())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
