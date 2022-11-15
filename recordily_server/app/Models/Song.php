@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 
 class Song extends Model
 {
@@ -88,14 +87,7 @@ class Song extends Model
     public static function fetchSongs(Collection $song_ids)
     {
         return self::whereIn('id', $song_ids)
-            ->get()
-            ->each(
-                function (self $song) {
-                    $song->artist_name = $song->user->name;
-                    $song->picture = URL::to($song->picture);
-                    unset($song->user);
-                }
-            )->toArray();
+            ->get();
     }
 
     public static function publishSong(int $song_id): JsonResponse
@@ -125,7 +117,25 @@ class Song extends Model
         $is_published = 1;
 
         return self::where('user_id', $user_id)->
-        where('is_published', $is_published)->
-        where('name', 'like', '%' . $input . '%')->get();
+        where('is_published', $is_published)
+            ->where('name', 'like', '%' . $input . '%')->get();
+    }
+
+    public static function createSong(
+        string $name,
+        string $picturePath,
+        string $songPath,
+        int $userID,
+        int $albumID
+    ): bool {
+        return self::create(
+            [
+                'name' => $name,
+                'picture' => $picturePath,
+                'path' => $songPath,
+                'user_id' => $userID,
+                'album_id' => $albumID
+            ]
+        );
     }
 }

@@ -7,6 +7,8 @@ use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
 use Exception;
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -19,71 +21,67 @@ use wapmorgan\Mp3Info\Mp3Info;
 
 class SongController extends Controller
 {
+    public function __construct(
+        private readonly Factory $authManager,
+        private readonly UrlGenerator $urlGenerator
+    ) {
+    }
+
     /**
      * @throws Exception
      */
     public function uploadSong(Request $request): JsonResponse
     {
+        $id = $this->authManager->guard()->id();
         $metadata = json_decode($request->get('metadata'), true);
 
-        $path = public_path() . '/uploads/' . $metadata['user_id'] . '/';
-        $song_path = $path . $metadata['song_id'] . '/';
+        $path = public_path() . '/uploads/' . $id . '/';
+        $songPath = $path . $metadata['song_id'] . '/';
 
         if (!File::exists($path)) {
             File::makeDirectory($path);
         }
 
-        if (!File::exists($song_path)) {
-            File::makeDirectory($song_path);
+        if (!File::exists($songPath)) {
+            File::makeDirectory($songPath);
         }
 
         try {
             $song = $request->file('file')->getContent();
-            file_put_contents($song_path . $metadata['chunk_num'], $song);
+            file_put_contents($songPath . $metadata['chunk_num'], $song);
         } catch (Exception $e) {
             return response()->json($e, 400);
         }
 
-        $chunks = Storage::disk('uploads')->files($metadata['user_id'] . '/' . $metadata['song_id'] . '/');
+        $chunks = Storage::disk('uploads')->files($id . '/' . $metadata['song_id'] . '/');
 
         if (count($chunks) == $metadata['chunks_size']) {
             for ($i = 0; $i < count($chunks); $i++) {
-                $contents = file_get_contents($song_path . $i);
-                file_put_contents($song_path . $metadata['song_id'] . '.mp3', $contents, FILE_APPEND);
-                File::delete($song_path . $i);
+                $contents = file_get_contents($songPath . $i);
+                file_put_contents($songPath . $metadata['song_id'] . '.mp3', $contents, FILE_APPEND);
+                File::delete($songPath . $i);
             }
 
             try {
                 $picture = $request->file('picture');
 
-                $picture_path = '/images/' . $metadata['user_id'] . '/' . uniqid() . '.' . $picture->extension();
-                file_put_contents(public_path() . $picture_path, $picture->getContent());
+                $picturePath = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
+                file_put_contents(public_path() . $picturePath, $picture->getContent());
             } catch (Exception $e) {
                 return response()->json(['error' => $e], 400);
             }
 
-            $size = File::size($song_path . $metadata['song_id'] . '.mp3');
+            $size = File::size($songPath . $metadata['song_id'] . '.mp3');
 
             if (!array_key_exists("album_id", $metadata)) {
-                $album_id = null;
+                $albumID = null;
             } else {
-                $album_id = $metadata['album_id'];
+                $albumID = $metadata['album_id'];
             }
 
-            $song_saved_path = '/uploads/' . $metadata['user_id'] . '/' . $metadata['song_id'] . '/' . $metadata['song_id'] . '.mp3';
+            $songSavedPath = '/uploads/' . $id . '/' . $metadata['song_id'] . '/' . $metadata['song_id'] . '.mp3';
 
-            Song::create(
-                [
-                'name' => $metadata['name'],
-                'picture' => $picture_path,
-                'path' => $song_saved_path,
-                'type' => 'test',
-                'size' => $size,
-                'time_length' => 123,
-                'user_id' => Auth::id(),
-                'album_id' => $album_id
-                ]
-            );
+            Song::createSong($metadata['name'], $picturePath, $songSavedPath, $size, $id, $albumID);
 
             return response()->json("Successfully Uploaded", 201);
         }
@@ -95,7 +93,14 @@ class SongController extends Controller
     {
         $topSongs = Play::getTopSongs("plays", $limit, "plays");
 
-        $result = Song::fetchSongs($topSongs);
+        $result = Song::fetchSongs($topSongs)
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    $song->picture = $this->urlGenerator->to($song->picture);
+                    unset($song->user);
+                }
+            )->toArray();
 
         return response()->json($result);
     }
@@ -104,7 +109,14 @@ class SongController extends Controller
     {
         $topSongs = Like::getTopSongs("likes", $limit, "likes");
 
-        $result = Song::fetchSongs($topSongs);
+        $result = Song::fetchSongs($topSongs)
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    $song->picture = $this->urlGenerator->to($song->picture);
+                    unset($song->user);
+                }
+            )->toArray();
 
         return response()->json($result);
     }
@@ -123,55 +135,81 @@ class SongController extends Controller
             $limit = $songsCount;
         }
 
-        $suggestedSongs = Song::where('is_published', $published)->inRandomOrder()->limit($limit)->get();
-        $this->getArtistName($suggestedSongs);
+        $suggestedSongs = Song::where('is_published', $published)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get()
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    unset($song->user);
+                }
+            );
 
         return response()->json($suggestedSongs);
     }
 
     public function searchForSong(string $input): JsonResponse
     {
-        $is_published = 1;
-
         $result = (object) [
             'artists' => User::where('name', 'like', '%' . $input . '%')->get(),
             'songs' => Song::searchForSong($input)
         ];
 
-        $this->getArtistName($result->songs);
+        foreach ($result->songs as $song) {
+            $song->artist_name = $song->user->name;
+            $song->picture = URL::to($song->picture);
+            unset($song->user);
+        }
 
         return response()->json($result);
     }
 
     public function getLikedSongs(): JsonResponse
     {
-        $id = Auth::id();
-        $liked_songs = Like::where('user_id', $id)->pluck('song_id');
+        $id = $this->authManager->guard()->id();
+        $likedSongs = Like::where('user_id', $id)->pluck('song_id');
 
-        $result = Song::fetchSongs($liked_songs);
+        $result = Song::fetchSongs($likedSongs)
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    $song->picture = $this->urlGenerator->to($song->picture);
+                    unset($song->user);
+                }
+            )->toArray();
 
         return response()->json($result);
     }
 
     public function getUnreleasedSongs(int $limit): JsonResponse
     {
-        $id = Auth::id();
-        $songs = Song::getArtistUnreleasedSongs($id, $limit);
-
-        $this->getPicture($songs);
-        $this->getArtistName($songs);
+        $id = $this->authManager->guard()->id();
+        $songs = Song::getArtistUnreleasedSongs($id, $limit)
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    $song->picture = $this->urlGenerator->to($song->picture);
+                    unset($song->user);
+                }
+            );
 
         return response()->json($songs);
     }
 
     public function searchLikedSongs(string $input): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
-        $search_liked = Like::searchLikedSongs($id, $input);
-        $this->getArtistName($search_liked);
+        $searchLiked = Like::searchLikedSongs($id, $input)
+            ->each(
+                function (Song $song) {
+                    $song->artist_name = $song->user->name;
+                    unset($song->user);
+                }
+            );
 
-        return response()->json($search_liked);
+        return response()->json($searchLiked);
     }
 
     public function deleteSongFromAlbum(int $song_id): JsonResponse
@@ -186,7 +224,7 @@ class SongController extends Controller
 
     public function isLiked(int $song_id): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         if (!Song::exists($song_id)) {
             return response()->json("Song Not Found", 400);
@@ -197,7 +235,7 @@ class SongController extends Controller
 
     public function likeSong(int $song_id): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         if (!Song::exists($song_id)) {
             return response()->json("Song Not Found", 400);
@@ -214,7 +252,7 @@ class SongController extends Controller
 
     public function unlikeSong(int $song_id): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         if (!Song::exists($song_id)) {
             return response()->json("Song Not Found", 400);
@@ -238,8 +276,8 @@ class SongController extends Controller
         }
 
         $song->artist_name = $song->user->name;
-        $song->picture = URL::to($song->picture);
-        $song->path = URL::to($song->path);
+        $song->picture = $this->urlGenerator->to($song->picture);
+        $song->path = $this->urlGenerator->to($song->path);
         unset($song->user);
 
         return response()->json($song);
@@ -247,32 +285,19 @@ class SongController extends Controller
 
     public function playSong(int $song_id): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
-        $isCreated = Play::create([
+        $isCreated = Play::create(
+            [
             'user_id' => $id,
             'song_id' => $song_id
-        ]);
+            ]
+        );
 
-        if(!$isCreated) {
+        if (!$isCreated) {
             return response()->json("Failed to increment plays", 400);
         }
 
         return response()->json("Play incremented successfully");
-    }
-
-    private function getPicture(Collection $array)
-    {
-        foreach ($array as $data) {
-            $data->picture = URL::to($data->picture);
-        }
-    }
-    private function getArtistName($songs)
-    {
-        foreach ($songs as $song) {
-            $song->artist_name = $song->user->name;
-            $song->picture = URL::to($song->picture);
-            unset($song->user);
-        }
     }
 }

@@ -11,9 +11,7 @@ use Exception;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\URL;
 
 class PlaylistController extends Controller
 {
@@ -43,31 +41,31 @@ class PlaylistController extends Controller
         return response()->json($playlists);
     }
 
-    public function getPlaylistSongs(int $playlist_id): JsonResponse
+    public function getPlaylistSongs(int $playlistID): JsonResponse
     {
-        $songs = PlaylistHasSong::where('playlist_id', $playlist_id)->pluck('song_id');
+        $songs = PlaylistHasSong::where('playlist_id', $playlistID)->pluck('song_id');
 
         $result = Song::FetchSongs($songs);
 
         return response()->json($result);
     }
 
-    public function getPlaylistInfo(int $playlist_id): JsonResponse
+    public function getPlaylistInfo(int $playlistID): JsonResponse
     {
-        $playlist = Playlist::find($playlist_id);
+        $playlist = Playlist::find($playlistID);
 
         if (!$playlist) {
             return response()->json("Playlist not found", 204);
         }
 
-        $playlist->picture = URL::to($playlist->picture);
+        $playlist->picture = $this->urlGenerator->to($playlist->picture);
 
         return response()->json($playlist);
     }
 
     public function addPlaylist(PlaylistRequest $request): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         $path = public_path() . '/images/' . $id;
 
@@ -78,15 +76,15 @@ class PlaylistController extends Controller
         try {
             $picture = $request->file('picture');
 
-            $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
-            file_put_contents(public_path() . $picture_path, $picture->getContent());
+            $picturePath = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
+            file_put_contents(public_path() . $picturePath, $picture->getContent());
         } catch (Exception $e) {
             return response()->json(['error' => $e], 400);
         }
 
-        $playlist_name = str_replace('"', '', $request->get('name'));
+        $playlistName = str_replace('"', '', $request->get('name'));
 
-        if (!Playlist::createPlaylist($id, $playlist_name, $picture_path)) {
+        if (!Playlist::createPlaylist($id, $playlistName, $picturePath)) {
             return response()->json('unsuccessfully attempt', 400);
         }
 
@@ -95,7 +93,7 @@ class PlaylistController extends Controller
 
     public function editPlaylist(EditPlaylistRequest $request): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         $playlist = Playlist::find(str_replace('"', '', $request->get('playlist_id')));
 
@@ -103,10 +101,10 @@ class PlaylistController extends Controller
             try {
                 $picture = $request->file('picture');
 
-                $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
-                file_put_contents(public_path() . $picture_path, $picture->getContent());
+                $picturePath = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
+                file_put_contents(public_path() . $picturePath, $picture->getContent());
 
-                $playlist->picture = $picture_path;
+                $playlist->picture = $picturePath;
             } catch (Exception $e) {
                 return response()->json(['error' => $e], 400);
             }
@@ -121,9 +119,9 @@ class PlaylistController extends Controller
         return response()->json('successfully edited', 201);
     }
 
-    public function deletePlaylist(int $playlistId): JsonResponse
+    public function deletePlaylist(int $playlistID): JsonResponse
     {
-        $playlist = Playlist::find($playlistId);
+        $playlist = Playlist::find($playlistID);
 
         if (! $playlist instanceof Playlist) {
             return response()->json('Playlist not found', 404);
@@ -138,39 +136,39 @@ class PlaylistController extends Controller
 
     public function searchPlaylists(string $input): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
         $search_playlist = Playlist::searchPlaylist($id, $input);
 
         return response()->json($search_playlist);
     }
 
-    public function addToPlaylist(int $playlist_id, int $song_id): JsonResponse
+    public function addToPlaylist(int $playlistID, int $songID): JsonResponse
     {
-        if (!Playlist::exists($playlist_id)) {
+        if (!Playlist::exists($playlistID)) {
             return response()->json('Playlist Not Found', 400);
         }
 
-        if (PlaylistHasSong::songInPlaylist($playlist_id, $song_id)) {
+        if (PlaylistHasSong::songInPlaylist($playlistID, $songID)) {
             return response()->json('Song in playlist', 400);
         }
 
-        PlaylistHasSong::addToPlaylist($playlist_id, $song_id);
+        PlaylistHasSong::addToPlaylist($playlistID, $songID);
 
         return response()->json('Successfully Added', 201);
     }
 
-    public function removeFromPlaylist(int $playlist_id, int $song_id): JsonResponse
+    public function removeFromPlaylist(int $playlistID, int $songID): JsonResponse
     {
-        if (!Playlist::exists($playlist_id)) {
+        if (!Playlist::exists($playlistID)) {
             return response()->json('Playlist Not Found', 400);
         }
 
-        if (!PlaylistHasSong::songInPlaylist($playlist_id, $song_id)) {
+        if (!PlaylistHasSong::songInPlaylist($playlistID, $songID)) {
             return response()->json('Song in playlist', 400);
         }
 
-        PlaylistHasSong::removeFromPlaylist($playlist_id, $song_id);
+        PlaylistHasSong::removeFromPlaylist($playlistID, $songID);
 
         return response()->json('Successfully Removed', 201);
     }

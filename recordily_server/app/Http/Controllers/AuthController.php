@@ -16,15 +16,12 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        //Check if the user is authenticated
         $isAuthorized = $this->auth->attempt($request->all(['email', 'password']));
 
-        //If authorization failed, display an error
         if (!$isAuthorized) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        //Send back a token
         return $this->createNewToken($isAuthorized);
     }
 
