@@ -32,7 +32,6 @@ import coil.compose.rememberImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.view_models.CreateAlbumViewModel
-import com.example.recordily_client.view_models.CreatePlaylistViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -45,6 +44,7 @@ private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
 private var image: File = File("")
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -83,6 +83,16 @@ fun UploadAlbumPage(navController: NavController) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            albumName.value = ""
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @Composable
@@ -123,7 +133,7 @@ private fun UploadAlbumContent(){
                 intent.type = "image/*"
                 startForResult.launch(intent)
             },
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
 
     TextField(
@@ -132,36 +142,48 @@ private fun UploadAlbumContent(){
         visibility = true
     )
 
-    MediumRoundButton(
-        text = stringResource(id = R.string.save),
-        onClick = {
-            if(albumName.value == "" || image == File("")){
-                errorMessage.value = "Empty Field"
-                visible.value = true
-                return@MediumRoundButton
-            }
+    if(!progressVisibility.value) {
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                progressVisibility.value = true
+                visible.value = false
 
-            coroutineScope.launch{
-                val isCreated = createAlbumViewModel.addAlbum(
-                    token,
-                    albumName.value,
-                    MultipartBody.Part.createFormData("picture", "picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image
-                        )
-                    )
-                )
-                if(!isCreated){
-                    errorMessage.value = "Network Error"
+                if (albumName.value == "" || image == File("")) {
+                    errorMessage.value = "Empty Field"
                     visible.value = true
-                    return@launch
+                    progressVisibility.value = false
+                    return@MediumRoundButton
                 }
 
-                errorMessage.value = "Successfully Created!"
-                visible.value = true
+                coroutineScope.launch {
+                    val isCreated = createAlbumViewModel.addAlbum(
+                        token,
+                        albumName.value,
+                        MultipartBody.Part.createFormData(
+                            "picture", "picture",
+                            RequestBody.create(
+                                "image/*".toMediaTypeOrNull(),
+                                image
+                            )
+                        )
+                    )
+                    if (!isCreated) {
+                        errorMessage.value = "Network Error"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
+
+                    errorMessage.value = "Successfully Created!"
+                    visible.value = true
+                    progressVisibility.value = false
+                }
             }
-        }
-    )
+        )
+    } else {
+        CircularProgressBar()
+    }
 }
 
 

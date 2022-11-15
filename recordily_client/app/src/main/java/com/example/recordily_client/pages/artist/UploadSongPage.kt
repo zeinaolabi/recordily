@@ -63,6 +63,7 @@ private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
 private var chunks: File = File("")
 private var selectedAlbum: MutableState<Int?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -87,6 +88,18 @@ fun UploadSongPage(navController: NavController) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            songName.value = ""
+            fileName.value = ""
+            selectedAlbum.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @SuppressLint("UsableSpace")
@@ -132,7 +145,7 @@ private fun UploadSongContent(){
                 intent.type = "image/*"
                 startForResult.launch(intent)
             },
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
     
     TextField(
@@ -145,58 +158,67 @@ private fun UploadSongContent(){
 
     PickAudioRow()
 
-    MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
-        if(songName.value == "" || image == File("")){
-            errorMessage.value = "Empty Field"
-            visible.value = true
-            return@MediumRoundButton
-        }
+    if(!progressVisibility.value) {
+        MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
+            progressVisibility.value = true
+            visible.value = false
 
-        val files = splitFile(chunks)
-        val songID = System.currentTimeMillis().toString() + id
+            if(songName.value == "" || image == File("")){
+                errorMessage.value = "Empty Field"
+                visible.value = true
+                progressVisibility.value = false
+                return@MediumRoundButton
+            }
 
-        files.forEachIndexed { index, file ->
-            val uploadSongRequest = UploadSongRequest(
-                user_id =  id,
-                name = songName.value,
-                image ="test",
-                chunks_size = files.size,
-                chunk_num = index,
-                song_id = songID,
-                album_id = selectedAlbum.value
-            )
+            val files = splitFile(chunks)
+            val songID = System.currentTimeMillis().toString() + id
 
-            coroutinesScope.launch {
-                val isCreated = uploadSongViewModel.uploadSong(
-                    token = token,
-                    uploadSongRequest = uploadSongRequest,
-                    song = MultipartBody.Part.createFormData(
-                        "file",
-                        songName.value,
-                        RequestBody.create("audio/*".toMediaTypeOrNull(),
-                            file)
-                    ),
-                    image = MultipartBody.Part.createFormData(
-                        "picture",
-                        "picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image
-                        )
-                    )
+            files.forEachIndexed { index, file ->
+                val uploadSongRequest = UploadSongRequest(
+                    user_id =  id,
+                    name = songName.value,
+                    image ="test",
+                    chunks_size = files.size,
+                    chunk_num = index,
+                    song_id = songID,
+                    album_id = selectedAlbum.value
                 )
 
-                if(!isCreated){
-                    errorMessage.value = "Network error"
-                    visible.value = true
-                    return@launch
+                coroutinesScope.launch {
+                    val isCreated = uploadSongViewModel.uploadSong(
+                        token = token,
+                        uploadSongRequest = uploadSongRequest,
+                        song = MultipartBody.Part.createFormData(
+                            "file",
+                            songName.value,
+                            RequestBody.create("audio/*".toMediaTypeOrNull(),
+                                file)
+                        ),
+                        image = MultipartBody.Part.createFormData(
+                            "picture",
+                            "picture",
+                            RequestBody.create("image/*".toMediaTypeOrNull(),
+                                image
+                            )
+                        )
+                    )
+
+                    if(!isCreated){
+                        errorMessage.value = "Network error"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
                 }
             }
 
-        }
-
-        errorMessage.value = "Successfully Created!"
-        visible.value = true
-    })
+            errorMessage.value = "Successfully Created!"
+            visible.value = true
+            progressVisibility.value = false
+        })
+    } else {
+        CircularProgressBar()
+    }
 
     AnimatedVisibility(
         visible = visible.value,

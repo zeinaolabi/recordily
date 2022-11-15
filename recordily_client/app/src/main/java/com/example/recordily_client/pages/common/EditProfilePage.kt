@@ -1,11 +1,11 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -46,7 +46,9 @@ private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
 private var image: File? = null
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EditProfilePage(navController: NavController) {
     val editProfileViewModel: EditProfileViewModel = viewModel()
@@ -76,6 +78,14 @@ fun EditProfilePage(navController: NavController) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+        }
+    }
 }
 
 @Composable
@@ -100,14 +110,16 @@ private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: Edi
 
     Image(
         painter =
-        if(imgBitmap.value != null) {
-            rememberImagePainter(data = imgBitmap.value)
-        }
-        else if(userInfo.profile_picture != null){
-            rememberAsyncImagePainter(userInfo.profile_picture)
-        }
-        else{
-            painterResource(id = R.drawable.profile_picture)
+        when {
+            imgBitmap.value != null -> {
+                rememberImagePainter(data = imgBitmap.value)
+            }
+            userInfo.profile_picture != null -> {
+                rememberAsyncImagePainter(userInfo.profile_picture)
+            }
+            else -> {
+                painterResource(id = R.drawable.profile_picture)
+            }
         },
         contentDescription = "logo",
         modifier = Modifier
@@ -119,7 +131,7 @@ private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: Edi
                 intent.type = "image/*"
                 startForResult.launch(intent)
             },
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
 
     TextField(
@@ -134,44 +146,57 @@ private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: Edi
         visibility = true
     )
 
-    MediumRoundButton(
-        text = stringResource(id = R.string.save),
-        onClick = {
-            if(name.value == "" || bio.value == ""){
-                errorMessage.value = "Empty Field"
-                visible.value = true
-                return@MediumRoundButton
-            }
+    if(!progressVisibility.value) {
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                progressVisibility.value = true
+                visible.value = false
 
-            coroutineScope.launch{
-                val multipart =
-                    if(image != null){
-                        MultipartBody.Part.createFormData("profile_picture", "profile_picture",
-                            RequestBody.create("image/*".toMediaTypeOrNull(),
-                                image!!
-                            )
-                        )
-                    } else{ null }
-
-                val isEdited = editProfileViewModel.editProfile(
-                    token,
-                    name.value,
-                    bio.value,
-                    multipart
-                )
-
-                if(!isEdited){
-                    errorMessage.value = "Network Error"
+                if (name.value == "" || bio.value == "") {
+                    errorMessage.value = "Empty Field"
                     visible.value = true
-                    return@launch
+                    progressVisibility.value = false
+                    return@MediumRoundButton
                 }
 
-                errorMessage.value = "Successfully Edited!"
-                visible.value = false
-            }
-        }
-    )
+                coroutineScope.launch {
+                    val multipart =
+                        if (image != null) {
+                            MultipartBody.Part.createFormData(
+                                "profile_picture", "profile_picture",
+                                RequestBody.create(
+                                    "image/*".toMediaTypeOrNull(),
+                                    image!!
+                                )
+                            )
+                        } else {
+                            null
+                        }
 
+                    val isEdited = editProfileViewModel.editProfile(
+                        token,
+                        name.value,
+                        bio.value,
+                        multipart
+                    )
+
+                    if (!isEdited) {
+                        errorMessage.value = "Network Error"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
+
+                    errorMessage.value = "Successfully Edited!"
+                    visible.value = true
+                    progressVisibility.value = false
+                }
+            }
+        )
+    } else {
+        CircularProgressBar()
+    }
 
     AnimatedVisibility(
         visible = visible.value,
