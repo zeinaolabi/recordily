@@ -49,7 +49,7 @@ class SongController extends Controller
         if (count($chunks) == $metadata['chunks_size']) {
             for ($i = 0; $i < count($chunks); $i++) {
                 $contents = file_get_contents($song_path . $i);
-                file_put_contents($song_path . $metadata['song_id'], $contents, FILE_APPEND);
+                file_put_contents($song_path . $metadata['song_id'] . '.mp3', $contents, FILE_APPEND);
                 File::delete($song_path . $i);
             }
 
@@ -62,7 +62,7 @@ class SongController extends Controller
                 return response()->json(['error' => $e], 400);
             }
 
-            $size = File::size($song_path . $metadata['song_id']);
+            $size = File::size($song_path . $metadata['song_id'] . '.mp3');
 
             if (!array_key_exists("album_id", $metadata)) {
                 $album_id = null;
@@ -70,11 +70,13 @@ class SongController extends Controller
                 $album_id = $metadata['album_id'];
             }
 
+            $song_saved_path = '/uploads/' . $metadata['user_id'] . '/' . $metadata['song_id'] . '/' . $metadata['song_id'] . '.mp3';
+
             Song::create(
                 [
                 'name' => $metadata['name'],
                 'picture' => $picture_path,
-                'path' => $song_path,
+                'path' => $song_saved_path,
                 'type' => 'test',
                 'size' => $size,
                 'time_length' => 123,
@@ -237,8 +239,26 @@ class SongController extends Controller
 
         $song->artist_name = $song->user->name;
         $song->picture = URL::to($song->picture);
+        $song->path = URL::to($song->path);
+        unset($song->user);
 
         return response()->json($song);
+    }
+
+    public function playSong(int $song_id): JsonResponse
+    {
+        $id = Auth::id();
+
+        $isCreated = Play::create([
+            'user_id' => $id,
+            'song_id' => $song_id
+        ]);
+
+        if(!$isCreated) {
+            return response()->json("Failed to increment plays", 400);
+        }
+
+        return response()->json("Play incremented successfully");
     }
 
     private function getPicture(Collection $array)
