@@ -261,7 +261,7 @@ private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: S
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .height(250.dp)
+                .height(200.dp)
                 .background(colorResource(id = R.color.darker_gray))
         ) {
             albumList.keys.forEach { albumID ->

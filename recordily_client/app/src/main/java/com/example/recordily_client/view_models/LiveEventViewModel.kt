@@ -23,8 +23,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     private val artistService = ArtistService()
     private val liveEventService = LiveEventService()
 
-    private val messagesResult = MutableLiveData<List<ChatMessage>>()
-    val messagesResultLiveData: LiveData<List<ChatMessage>>
+    private val messagesResult = MutableLiveData<ChatMessage>()
+    val messagesResultLiveData: LiveData<ChatMessage>
         get() = messagesResult
 
     private val userInfoResult = MutableLiveData<UserResponse>()
@@ -48,7 +48,6 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     }
 
     fun getMessages(live_event_id: String){
-        val messages: ArrayList<ChatMessage> = ArrayList()
         val reference = database.getReference("rooms/$live_event_id/messages/")
 
         reference.addChildEventListener(object: ChildEventListener {
@@ -56,17 +55,7 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
                 val chatMessage = snapshot.getValue(ChatMessage::class.java)
 
                 if (chatMessage != null) {
-                    messages.add(
-                        ChatMessage(
-                            chatMessage.id,
-                            chatMessage.message,
-                            chatMessage.fromID,
-                            chatMessage.roomID,
-                            chatMessage.createdAt
-                        )
-                    )
-
-                    messagesResult.postValue(messages)
+                    messagesResult.postValue(chatMessage)
                 }
             }
 
