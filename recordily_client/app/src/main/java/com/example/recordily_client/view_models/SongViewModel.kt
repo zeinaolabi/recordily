@@ -24,9 +24,37 @@ class SongViewModel: ViewModel() {
     val songResultLiveData : LiveData<SongResponse>
         get() = songResult
 
+    private val isLikedResult = MutableLiveData<Boolean>()
+    val isLikedResultLiveData : LiveData<Boolean>
+        get() = isLikedResult
+
     fun getSong(token: String, song_id: String){
         viewModelScope.launch {
             songResult.postValue(songService.getSong(token, song_id))
+        }
+    }
+
+    fun isLiked(token: String, song_id: Int){
+        viewModelScope.launch {
+            isLikedResult.postValue(songService.isLiked(token, song_id))
+        }
+    }
+
+    suspend fun likeSong(token: String, song_id: Int): Boolean {
+        return try {
+            songService.likeSong(token, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
+        }
+    }
+
+    suspend fun unlikeSong(token: String, song_id: Int): Boolean {
+        return try {
+            songService.unlikeSong(token, song_id)
+            true
+        } catch (exception: Throwable) {
+            false
         }
     }
 

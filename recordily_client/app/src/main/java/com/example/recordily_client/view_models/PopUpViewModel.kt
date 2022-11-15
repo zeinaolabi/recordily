@@ -2,6 +2,7 @@ package com.example.recordily_client.view_models
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.*
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.services.PlaylistService
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("StaticFieldLeak")
 class PopUpViewModel(application: Application): AndroidViewModel(application) {
 
-    val context = getApplication<Application>().applicationContext
+    val context: Context = getApplication<Application>().applicationContext
     private val songService = SongService()
     private val playlistService = PlaylistService()
 
@@ -23,15 +24,15 @@ class PopUpViewModel(application: Application): AndroidViewModel(application) {
     val playlistsResultLiveData : LiveData<List<PlaylistResponse>>
         get() = playlistsResult
 
-    fun isLiked(token: String, song_id: Int){
-        viewModelScope.launch {
-            isLikedResult.postValue(songService.isLiked(token, song_id))
-        }
-    }
-
     fun getPlaylists(token: String){
         viewModelScope.launch {
             playlistsResult.postValue(playlistService.getPlaylists(token))
+        }
+    }
+
+    fun isLiked(token: String, song_id: Int){
+        viewModelScope.launch {
+            isLikedResult.postValue(songService.isLiked(token, song_id))
         }
     }
 

@@ -28,6 +28,7 @@ import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 val isPlaying = mutableStateOf(false)
 val isPaused = mutableStateOf(false)
@@ -40,6 +41,7 @@ fun SongPage(navController: NavController) {
     val loginViewModel: LoginViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
 
+    songViewModel.isLiked(token, 6)
     songViewModel.getSong(token, "6")
 
     val song = songViewModel.songResultLiveData.observeAsState().value
@@ -73,7 +75,7 @@ fun SongPage(navController: NavController) {
                 )
 
                 if (song != null) {
-                    SongDetailsBox(song, songViewModel)
+                    SongDetailsBox(song, songViewModel, token)
                 }
             }
         }
@@ -81,7 +83,7 @@ fun SongPage(navController: NavController) {
 }
 
 @Composable
-private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel){
+private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, token: String){
     Surface(
         color = Color.Black.copy(alpha = 0.65f),
         modifier = Modifier
@@ -97,14 +99,14 @@ private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel){
                 vertical = dimensionResource(id = R.dimen.padding_medium)
             )
         ){
-            SongDetails(song, songViewModel)
+            SongDetails(song, songViewModel, token)
         }
     }
 }
 
 //Icons by: icons by https://icons8.com
 @Composable
-private fun SongDetails(song: SongResponse, songViewModel: SongViewModel){
+private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token: String){
     val durationString = songViewModel.getDurationAsString(song.path)
     val duration = songViewModel.getDuration(song.path)
     val progress = remember { mutableStateOf(0f) }
@@ -157,19 +159,27 @@ private fun SongDetails(song: SongResponse, songViewModel: SongViewModel){
         )
     }
 
-    PlayButtonRow(song, songViewModel)
+    PlayButtonRow(song, songViewModel, token)
 
 }
 
 @Composable
-private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
+private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, token: String){
+    val coroutinesScope = rememberCoroutineScope()
+
+    val isLiked by songViewModel.isLikedResultLiveData.observeAsState()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
         Icon(
-            painter = painterResource(id = R.drawable.colored_heart),
+            painter =
+            if( isLiked == true )
+                painterResource(id = R.drawable.red_heart)
+            else
+                painterResource(id = R.drawable.colored_heart),
             contentDescription = "like",
             modifier = Modifier
                 .size(25.dp)
@@ -177,7 +187,16 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel){
                 .clickable(
                     interactionSource = remember { NoRippleInteractionSource() },
                     indication = null
-                ){},
+                ) {
+                    coroutinesScope.launch {
+                        if (isLiked == true) {
+                            songViewModel.unlikeSong(token, 6)
+                        } else {
+                            songViewModel.likeSong(token, 6)
+                        }
+                        songViewModel.isLiked(token, 6)
+                    }
+                },
             tint = Color.Unspecified
         )
 
