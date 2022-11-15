@@ -81,7 +81,7 @@ fun Header(navController: NavController){
 
         Image(
             painter =
-            if(picture != null && picture != ""){
+            if(picture !== null && picture != ""){
                 rememberAsyncImagePainter(picture)
             }
             else {

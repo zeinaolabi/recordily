@@ -47,7 +47,7 @@ private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination:
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if(playlists === null){
+        if(playlists === null || playlists.isEmpty()){
             EmptyState(stringResource(id = R.string.no_playlists_found))
         } else {
             for(playlist in playlists){

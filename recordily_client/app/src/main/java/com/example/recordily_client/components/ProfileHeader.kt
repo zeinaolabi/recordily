@@ -111,6 +111,7 @@ private fun ProfileInfo(navController: NavController, profile: UserResponse){
                     .size(20.dp)
                     .clickable {
                         loginViewModel.logout()
+                        navController.popBackStack(0, true)
                         navigateTo(
                             navController = navController,
                             destination = Screen.LoginPage.route,

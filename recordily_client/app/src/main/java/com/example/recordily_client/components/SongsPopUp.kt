@@ -28,10 +28,11 @@ import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
+import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SongsPopUp(input: MutableState<String>, popUpVisibility: MutableState<Boolean>){
+fun SongsPopUp(input: MutableState<String>, popUpVisibility: MutableState<Boolean>, live_event_id: String){
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -68,15 +69,25 @@ fun SongsPopUp(input: MutableState<String>, popUpVisibility: MutableState<Boolea
                     popUpVisibility.value = true
                 },
         ) {
-            SearchTextField(input = input)
+            Column(
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        vertical = dimensionResource(id = R.dimen.padding_large),
+                        horizontal = dimensionResource(id = R.dimen.padding_medium)
+                    )
+            ){
+                SearchTextField(input = input)
 
-            PopupContent(input)
+                PopupContent(input, popUpVisibility, live_event_id)
+            }
         }
     }
 }
 
 @Composable
-private fun PopupContent(input: MutableState<String>){
+private fun PopupContent(input: MutableState<String>, popUpVisibility: MutableState<Boolean>, live_event_id: String){
     val loginViewModel: LoginViewModel = viewModel()
     val popUpViewModel: PopUpViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
@@ -95,14 +106,15 @@ private fun PopupContent(input: MutableState<String>){
     ){
         if(input.value !== "") {
             popUpViewModel.getSearchResult(token, input.value)
-            SongContent(searchResult)
+            SongContent(searchResult, popUpVisibility, live_event_id)
         }
     }
 }
 
 @Composable
-private fun SongContent(songs: List<SongResponse>?){
+private fun SongContent(songs: List<SongResponse>?, popUpVisibility: MutableState<Boolean>, live_event_id: String){
     val coroutineScope = rememberCoroutineScope()
+    val popUpViewModel: PopUpViewModel = viewModel()
 
     if(songs === null || songs.isEmpty()){
         EmptyState(message = stringResource(id = R.string.no_playlists_found))
@@ -116,9 +128,10 @@ private fun SongContent(songs: List<SongResponse>?){
                     .fillMaxWidth()
                     .clickable
                     {
-//                        coroutineScope.launch {
-//
-//                        }
+                        coroutineScope.launch {
+                            popUpViewModel.playSong(song.path, live_event_id)
+                            popUpVisibility.value = false
+                        }
                     }
             ) {
                 Image(

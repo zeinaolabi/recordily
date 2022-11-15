@@ -10,24 +10,37 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.ProfileViewModel
 
 @Composable
 fun LibraryHeader(input: MutableState<String>, navController: NavController) {
-    val grayColor = Color(0xFF828282)
+    val profileViewModel: ProfileViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
+
+    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
+    profileViewModel.getInfo(token)
+
+    val picture = profileViewModel.userInfoResultLiveData.observeAsState().value?.profile_picture
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -58,7 +71,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
                           },
             onValueChange = { input.value = it },
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = grayColor,
+                backgroundColor = colorResource(id = R.color.darker_gray),
                 cursorColor = Color.White,
                 textColor = Color.White,
                 unfocusedIndicatorColor = MaterialTheme.colors.surface,
@@ -67,7 +80,13 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
         )
 
         Image(
-            painter = painterResource(R.drawable.profile_picture),
+            painter =
+            if(picture != null && picture != ""){
+                rememberAsyncImagePainter(picture)
+            }
+            else {
+                painterResource(R.drawable.profile_picture)
+            },
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
