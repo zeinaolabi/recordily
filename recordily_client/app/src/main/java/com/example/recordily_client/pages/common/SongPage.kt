@@ -266,7 +266,11 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                                 songViewModel.resumeSong()
                                 isPaused.value = false
                             } else {
-                                songViewModel.playSong(song.path)
+                                songViewModel.startPlayingSong(song.path)
+
+                                coroutinesScope.launch {
+                                    songViewModel.playSong(token, songID.toInt())
+                                }
                             }
                         },
                     tint = Color.Unspecified
