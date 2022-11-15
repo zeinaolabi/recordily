@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -45,6 +46,7 @@ private val visible = mutableStateOf(false)
 private var image: File = File("")
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UploadAlbumPage(navController: NavController) {
     Scaffold(

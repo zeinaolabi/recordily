@@ -28,7 +28,7 @@ class ProfileViewModel: ViewModel() {
         get() = recentlyPlayedResult
 
     private val playlistsResult = MutableLiveData<List<PlaylistResponse>>()
-    val playlistsResultResultLiveData: LiveData<List<PlaylistResponse>>
+    val playlistsResultLiveData: LiveData<List<PlaylistResponse>>
         get() = playlistsResult
 
     fun getInfo(token: String){

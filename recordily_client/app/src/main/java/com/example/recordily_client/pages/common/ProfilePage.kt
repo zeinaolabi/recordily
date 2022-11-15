@@ -55,7 +55,7 @@ fun CommonProfilePage(navController: NavController){
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
     val topSongs by profileViewModel.topSongsResultLiveData.observeAsState()
     val recentlyPlayedSongs by profileViewModel.recentlyPlayedResultLiveData.observeAsState()
-    val playlists by profileViewModel.playlistsResultResultLiveData.observeAsState()
+    val playlists by profileViewModel.playlistsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier

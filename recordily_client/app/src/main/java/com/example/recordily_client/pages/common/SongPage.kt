@@ -27,6 +27,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
@@ -79,7 +81,7 @@ fun SongPage(navController: NavController, songID: String) {
                 )
 
                 if (song != null) {
-                    SongDetailsBox(song, songViewModel, token, songID)
+                    SongDetailsBox(navController, song, songViewModel, token, songID)
                 }
             }
 
@@ -98,7 +100,7 @@ fun SongPage(navController: NavController, songID: String) {
 }
 
 @Composable
-private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
+private fun SongDetailsBox(navController: NavController, song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     Surface(
         color = Color.Black.copy(alpha = 0.65f),
         modifier = Modifier
@@ -114,14 +116,14 @@ private fun SongDetailsBox(song: SongResponse, songViewModel: SongViewModel, tok
                 vertical = dimensionResource(id = R.dimen.padding_medium)
             )
         ){
-            SongDetails(song, songViewModel, token, songID)
+            SongDetails(navController, song, songViewModel, token, songID)
         }
     }
 }
 
 //Icons by: icons by https://icons8.com
 @Composable
-private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
+private fun SongDetails(navController: NavController, song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     val durationString = songViewModel.getDurationAsString(song.path)
     val duration = songViewModel.getDuration(song.path)
     val progress = remember { mutableStateOf(0f) }
@@ -174,15 +176,33 @@ private fun SongDetails(song: SongResponse, songViewModel: SongViewModel, token:
         )
     }
 
-    PlayButtonRow(song, songViewModel, token, songID)
+    PlayButtonRow(navController, song, songViewModel, token, songID)
 
 }
 
 @Composable
-private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
+private fun PlayButtonRow(navController: NavController, song: SongResponse, songViewModel: SongViewModel, token: String, songID: String){
     val coroutinesScope = rememberCoroutineScope()
 
     val isLiked by songViewModel.isLikedResultLiveData.observeAsState()
+    val queue = songViewModel.queue
+
+    Log.i("queue", songViewModel.queue[1].toString())
+    Log.i("queue2", queue[2].toString())
+
+//    val before =
+//        if(queue.indexOf(songID.toInt()) == 0) {
+//            queue[queue.size]
+//        } else {
+//            queue[queue.indexOf(songID.toInt()) - 1]
+//        }
+//
+//    val after =
+//        if(queue.indexOf(songID.toInt()) == queue.size) {
+//            queue[0]
+//        } else {
+//            queue[queue.indexOf(songID.toInt()) + 1]
+//        }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -227,7 +247,13 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                     .clickable(
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
-                    ){}
+                    ){
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route ,
+                            popUpTo = Screen.LandingPage.route
+                        )
+                    }
                 ,
                 tint = Color.Unspecified
             )
@@ -285,7 +311,13 @@ private fun PlayButtonRow(song: SongResponse, songViewModel: SongViewModel, toke
                     .clickable(
                         interactionSource = remember { NoRippleInteractionSource() },
                         indication = null
-                    ){},
+                    ){
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route ,
+                            popUpTo = Screen.LandingPage.route
+                        )
+                     },
                 tint = Color.Unspecified
             )
         }

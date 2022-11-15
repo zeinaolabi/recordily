@@ -47,7 +47,9 @@ private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination:
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if (playlists != null) {
+        if(playlists === null){
+            EmptyState(stringResource(id = R.string.no_playlists_found))
+        } else {
             for(playlist in playlists){
                 PlaylistCard(
                     playlist = playlist,
@@ -56,15 +58,14 @@ private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination:
                     }
                 )
             }
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
+            )
         }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-
     }
 }
 
@@ -81,7 +82,7 @@ fun PlaylistCard(playlist: PlaylistResponse, onPlaylistClick: () -> (Unit)){
             .clickable(
                 interactionSource = remember { NoRippleInteractionSource() },
                 indication = null
-            ){
+            ) {
                 onPlaylistClick()
             }
         ,
