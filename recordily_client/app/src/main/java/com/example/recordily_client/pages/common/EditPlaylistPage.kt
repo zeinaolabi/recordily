@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -47,7 +48,9 @@ private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
 private var image: File? = null
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EditPlaylistPage(navController: NavController, playlist_id: String) {
     val editPlaylistModel: EditPlaylistViewModel = viewModel()
@@ -77,37 +80,49 @@ fun EditPlaylistPage(navController: NavController, playlist_id: String) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @Composable
-private fun CreatePlaylistContent(navController: NavController, playlist: PlaylistResponse, token: String, editPlaylistModel: EditPlaylistViewModel){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-            val intent = result.data
-            val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+private fun CreatePlaylistContent(navController: NavController, playlist: PlaylistResponse, token: String, editPlaylistModel: EditPlaylistViewModel) {
+    val startForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val intent = result.data
+                val dir = File(Environment.getExternalStorageDirectory().absolutePath)
 
-            val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
-            val file = File(dir, fileName)
+                val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
+                val file = File(dir, fileName)
 
-            image = file
+                image = file
 
-            imgBitmap.value = BitmapFactory.decodeFile(image!!.absolutePath)
+                imgBitmap.value = BitmapFactory.decodeFile(image!!.absolutePath)
+            }
         }
-    }
 
     val coroutineScope = rememberCoroutineScope()
     val playlistName = remember { mutableStateOf(playlist.name) }
 
     Image(
         painter =
-        if(imgBitmap.value != null) {
-            rememberImagePainter(data = imgBitmap.value)
-        }
-        else if(playlist.picture != null){
-            rememberAsyncImagePainter(playlist.picture)
-        }
-        else{
-            painterResource(id = R.drawable.profile_picture)
+        when {
+            imgBitmap.value != null -> {
+                rememberImagePainter(data = imgBitmap.value)
+            }
+            playlist.picture != null -> {
+                rememberAsyncImagePainter(playlist.picture)
+            }
+            else -> {
+                painterResource(id = R.drawable.profile_picture)
+            }
         },
         contentDescription = "logo",
         modifier = Modifier
@@ -128,38 +143,46 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
         visibility = true
     )
 
-    MediumRoundButton(
-        text = stringResource(id = R.string.save),
-        onClick = {
-            val multipart =
-                if(image != null){
-                    MultipartBody.Part.createFormData("profile_picture", "profile_picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image!!
+    if (progressVisibility.value) {
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                val multipart =
+                    if (image != null) {
+                        MultipartBody.Part.createFormData(
+                            "profile_picture", "profile_picture",
+                            RequestBody.create(
+                                "image/*".toMediaTypeOrNull(),
+                                image!!
+                            )
                         )
+                    } else {
+                        null
+                    }
+
+                coroutineScope.launch {
+                    val isEdited = editPlaylistModel.editPlaylist(
+                        token,
+                        playlist.id.toString(),
+                        playlistName.value,
+                        multipart
                     )
-                } else{ null }
 
-            coroutineScope.launch{
-                val isEdited = editPlaylistModel.editPlaylist(
-                    token,
-                    playlist.id.toString(),
-                    playlistName.value,
-                    multipart
-                )
+                    if (!isEdited) {
+                        errorMessage.value = "Network Error"
+                        visible.value = true
+                        return@launch
+                    }
 
-                if(!isEdited){
-                    errorMessage.value = "Network Error"
-                    visible.value = true
-                    return@launch
+                    errorMessage.value = "Successfully Edited!"
+                    visible.value = false
                 }
 
-                errorMessage.value = "Successfully Edited!"
-                visible.value = false
             }
-
-        }
-    )
+        )
+    } else {
+        CircularProgressBar()
+    }
 
     Text(
         text = stringResource(id = R.string.delete_playlist),
@@ -168,10 +191,10 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
         color = MaterialTheme.colors.secondaryVariant,
         modifier = Modifier.clickable
         {
-            coroutineScope.launch{
+            coroutineScope.launch {
                 val isDeleted = editPlaylistModel.deletePlaylist(token, playlist.id.toString())
 
-                if(!isDeleted){
+                if (!isDeleted) {
                     errorMessage.value = "Delete Failed"
                     visible.value = true
                     return@launch

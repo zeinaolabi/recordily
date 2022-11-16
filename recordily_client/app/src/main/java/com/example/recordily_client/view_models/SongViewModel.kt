@@ -10,15 +10,16 @@ import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 import java.io.IOException
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlin.time.Duration.Companion.milliseconds
 
+val queue: MutableList<Int> = mutableStateListOf()
+
 class SongViewModel: ViewModel() {
     private val songService = SongService()
     private val mediaPlayer = MediaPlayer()
-
-    val queue: MutableList<Int> = mutableStateListOf()
 
     private val songResult = MutableLiveData<SongResponse>()
     val songResultLiveData : LiveData<SongResponse>
@@ -98,6 +99,14 @@ class SongViewModel: ViewModel() {
         }
     }
 
+    fun stopSong() {
+        try {
+            mediaPlayer.stop()
+        } catch (we: Exception) {
+            we.printStackTrace()
+        }
+    }
+
     fun getDurationAsString(audioUrl: String): String? {
         val mmr = MediaMetadataRetriever()
         mmr.setDataSource(audioUrl)
@@ -117,5 +126,15 @@ class SongViewModel: ViewModel() {
         val durationStr: String? = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
 
         return durationStr?.toLong()
+    }
+
+    fun updateQueue(list: List<Int>) {
+        list.forEach { song ->
+            queue.add(song)
+        }
+    }
+
+    fun getQueue(): MutableList<Int> {
+        return queue
     }
 }

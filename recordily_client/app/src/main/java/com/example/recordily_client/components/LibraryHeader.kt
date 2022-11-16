@@ -90,7 +90,7 @@ fun LibraryHeader(input: MutableState<String>, navController: NavController) {
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(50.dp)
+                .size(45.dp)
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {

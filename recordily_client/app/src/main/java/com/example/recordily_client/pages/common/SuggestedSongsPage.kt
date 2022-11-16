@@ -36,9 +36,10 @@ fun SuggestedSongsPage(navController: NavController){
     val loginViewModel: LoginViewModel = viewModel()
     val suggestedSongsViewModel: SuggestedSongsViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+
     suggestedSongsViewModel.getSuggestedSongs(token, limit)
 
-    val songs by suggestedSongsViewModel.suggestedSongsResultLiveData.observeAsState()
+    val songs = suggestedSongsViewModel.suggestedSongsResultLiveData.observeAsState().value
 
     Box(
         modifier = Modifier

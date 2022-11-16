@@ -114,7 +114,7 @@ interface SongsAPI {
         @Path("song_id") song_id: Int
     )
 
-    @GET("auth/search/{input}")
+    @GET("auth/search_for_song/{input}")
     suspend fun search(
         @Header("Authorization") token: String,
         @Path("input") input: String

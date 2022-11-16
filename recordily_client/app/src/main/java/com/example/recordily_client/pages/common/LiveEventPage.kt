@@ -62,9 +62,11 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
 
     liveEventViewModel.getHostImage(token, host_id)
     liveEventViewModel.getMessages(live_event_id)
+    liveEventViewModel.getSong(live_event_id)
 
     val hostPicture = liveEventViewModel.hostPictureResultLiveData.observeAsState()
     val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+    val song = liveEventViewModel.songResultLiveData.observeAsState()
 
     if(chatMessage.value !== null){
         if(!senderInfo.containsKey(chatMessage.value!!.fromID)){
@@ -86,6 +88,19 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
 
         if(!chatMessages.containsKey(chatMessage.value!!.id)){
             chatMessages[chatMessage.value!!.id] = chatMessage.value!!
+        }
+    }
+
+    if(song.value != null) {
+        liveEventViewModel.startPlayingSong(song.value!!)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            popUpVisibility.value = false
+            message.value = ""
+            input.value = ""
+            liveEventViewModel.stopPlayingSong()
         }
     }
 
@@ -113,7 +128,8 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
         ) {
             SongsPopUp(
                 input = input,
-                popUpVisibility = popUpVisibility
+                popUpVisibility = popUpVisibility,
+                live_event_id = live_event_id
             )
         }
     }

@@ -61,10 +61,11 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
                 for (song in songs) {
                     SongSquareCard(
                         onClick = {
+                            val songIds: ArrayList<Int> = arrayListOf()
                             for(songID in songs){
-                                songViewModel.queue.add(songID.id)
+                                songIds.add(songID.id)
                             }
-
+                            songViewModel.updateQueue(songIds)
 //                            Log.i("songbox", songViewModel.queue[1].toString())
                             navController.navigate(Screen.SongPage.route + '/' + song.id)
                         },

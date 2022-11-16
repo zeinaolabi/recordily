@@ -101,6 +101,16 @@ fun SongPage(navController: NavController, songID: String) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            isPlaying.value = false
+            isPaused.value = false
+            currentTime.value = 0L
+            popUpVisibility.value = false
+            songViewModel.stopSong()
+        }
+    }
 }
 
 @Composable
@@ -201,25 +211,21 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
     val coroutinesScope = rememberCoroutineScope()
 
     val isLiked by songViewModel.isLikedResultLiveData.observeAsState()
-    val queue = songViewModel.queue
+    val queue = songViewModel.getQueue()
 
-    for(queues in queue){
-        Log.i("queue", queues.toString())
-    }
+    val before =
+        if(queue.indexOf(songID.toInt()) == 0) {
+            queue[queue.size - 1]
+        } else {
+            queue[queue.indexOf(songID.toInt()) - 1]
+        }
 
-//    val before =
-//        if(queue.indexOf(songID.toInt()) == 0) {
-//            queue[queue.size]
-//        } else {
-//            queue[queue.indexOf(songID.toInt()) - 1]
-//        }
-//
-//    val after =
-//        if(queue.indexOf(songID.toInt()) == queue.size) {
-//            queue[0]
-//        } else {
-//            queue[queue.indexOf(songID.toInt()) + 1]
-//        }
+    val after =
+        if(queue.indexOf(songID.toInt()) == queue.size - 1) {
+            queue[0]
+        } else {
+            queue[queue.indexOf(songID.toInt()) + 1]
+        }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -267,7 +273,7 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                     ) {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + before,
                             popUpTo = Screen.LandingPage.route
                         )
                     }
@@ -331,7 +337,7 @@ private fun PlayButtonRow(navController: NavController, song: SongResponse, song
                     ) {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + after,
                             popUpTo = Screen.LandingPage.route
                         )
                     },

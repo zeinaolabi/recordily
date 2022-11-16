@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -43,7 +44,9 @@ private val visible = mutableStateOf(false)
 private val playlistName = mutableStateOf("")
 private var image: File = File("")
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CreatePlaylistPage(navController: NavController) {
     Scaffold(
@@ -66,6 +69,16 @@ fun CreatePlaylistPage(navController: NavController) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            playlistName.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @Composable
@@ -115,36 +128,40 @@ private fun CreatePlaylistContent(){
         visibility = true
     )
 
-    MediumRoundButton(
-        text = stringResource(id = R.string.save),
-        onClick = {
-            if(playlistName.value == "" || image == File("")){
-                errorMessage.value = "Empty Field"
-                visible.value = true
-                return@MediumRoundButton
-            }
-
-            coroutineScope.launch{
-                val isCreated = createPlaylistModel.addPlaylist(
-                    token,
-                    playlistName.value,
-                    MultipartBody.Part.createFormData("picture", "picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image
-                        )
-                    )
-                )
-                if(!isCreated){
-                    errorMessage.value = "Network Error"
+    if(progressVisibility.value) {
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                if(playlistName.value == "" || image == File("")){
+                    errorMessage.value = "Empty Field"
                     visible.value = true
-                    return@launch
+                    return@MediumRoundButton
                 }
 
-                errorMessage.value = "Successfully Created!"
-                visible.value = true
+                coroutineScope.launch{
+                    val isCreated = createPlaylistModel.addPlaylist(
+                        token,
+                        playlistName.value,
+                        MultipartBody.Part.createFormData("picture", "picture",
+                            RequestBody.create("image/*".toMediaTypeOrNull(),
+                                image
+                            )
+                        )
+                    )
+                    if(!isCreated){
+                        errorMessage.value = "Network Error"
+                        visible.value = true
+                        return@launch
+                    }
+
+                    errorMessage.value = "Successfully Created!"
+                    visible.value = true
+                }
             }
-        }
-    )
+        )
+    } else {
+        CircularProgressBar()
+    }
 
     AnimatedVisibility(
         visible = visible.value,

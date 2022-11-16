@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -29,6 +30,7 @@ import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SongStatsPage(navController: NavController, song_id: String){
     val loginViewModel: LoginViewModel = viewModel()

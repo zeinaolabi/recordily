@@ -45,7 +45,10 @@ fun Header(navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_medium)),
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_medium),
+                vertical = dimensionResource(R.dimen.padding_large)
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -90,7 +93,7 @@ fun Header(navController: NavController){
             contentDescription = "profile picture",
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(40.dp)
+                .size(45.dp)
                 .clip(CircleShape)
                 .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
                 .clickable {
