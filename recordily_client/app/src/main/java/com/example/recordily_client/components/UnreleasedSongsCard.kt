@@ -23,9 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
 import kotlinx.coroutines.launch
 
@@ -33,8 +37,8 @@ import kotlinx.coroutines.launch
 fun UnreleasedSongsCard(
     title: String,
     songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     viewModel: UnreleasedViewModel,
     token: String,
     onUploadClick: () -> Unit,
@@ -50,20 +54,21 @@ fun UnreleasedSongsCard(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick, viewModel, token, onUploadClick)
+        CardsContent(songs, navController, destination, viewModel, token, onUploadClick)
     }
 }
 
 @Composable
 private fun CardsContent(
     songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     viewModel: UnreleasedViewModel,
     token: String,
     onUploadClick: () -> Unit,
 ){
     val coroutinesScope = rememberCoroutineScope()
+    val songViewModel: SongViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 
     Column(
         modifier = Modifier
@@ -78,7 +83,18 @@ private fun CardsContent(
             for (song in songs) {
                 UnreleasedSongCard(
                     song = song,
-                    onSongClick = onSongClick,
+                    onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route + '/' + song.id,
+                            popUpTo = Screen.UnreleasedSongsPage.route
+                        )
+                    },
                     onUploadClick = {
                         coroutinesScope.launch {
                             viewModel.publishSong(token, song.id)

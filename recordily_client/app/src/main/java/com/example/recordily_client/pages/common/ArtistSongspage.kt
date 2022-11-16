@@ -20,6 +20,7 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.ArtistSongsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
@@ -81,6 +82,8 @@ fun ArtistSongsPage(navController: NavController, artist_id: String){
 
 @Composable
 private fun ArtistSongsContent(navController: NavController, songs: List<SongResponse>?){
+    val songViewModel: SongViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -91,6 +94,11 @@ private fun ArtistSongsContent(navController: NavController, songs: List<SongRes
                 SongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route + '/' + song.id,

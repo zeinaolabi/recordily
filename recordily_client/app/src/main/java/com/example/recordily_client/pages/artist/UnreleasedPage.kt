@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -26,6 +27,7 @@ import com.example.recordily_client.view_models.UnreleasedViewModel
 
 private const val limit = 3
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UnreleasedPage(navController: NavController) {
     val pageOptions = listOf(
@@ -136,24 +138,17 @@ private fun UnreleasedContentColumn(
         UnreleasedSongsCard(
             title = stringResource(id = R.string.unreleased_songs),
             songs = unreleasedSongs,
+            navController = navController,
             destination = {
-                       navigateTo(
-                           navController = navController,
-                           destination = Screen.UnreleasedSongsPage.route,
-                           popUpTo = Screen.UnreleasedPage.route
-                       )
-            },
-            onSongClick = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.SongPage.route,
+                    destination = Screen.UnreleasedSongsPage.route,
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
             viewModel = unreleasedViewModel,
             token = token,
             onUploadClick = { unreleasedViewModel.getUnreleasedSongs(token, limit) }
-
         )
 
         UnreleasedAlbumsCard(

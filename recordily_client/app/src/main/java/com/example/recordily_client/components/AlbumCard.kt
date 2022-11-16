@@ -25,7 +25,7 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
-fun AlbumsCards(title: String, albums: List<AlbumResponse>, navController: NavController, buttonDestination: ()->(Unit)){
+fun AlbumsCards(title: String, albums: List<AlbumResponse>?, navController: NavController, buttonDestination: ()->(Unit)){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -42,23 +42,27 @@ fun AlbumsCards(title: String, albums: List<AlbumResponse>, navController: NavCo
 }
 
 @Composable
-private fun AlbumsCardContent(albums: List<AlbumResponse>, navController: NavController, destination: ()->(Unit)){
+private fun AlbumsCardContent(albums: List<AlbumResponse>?, navController: NavController, destination: ()->(Unit)){
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        for(album in albums){
-            AlbumCard(album, navController)
-        }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
+        if(albums === null || albums.isEmpty()){
+            EmptyState(message = stringResource(id = R.string.no_albums_found))
+        } else {
+            for (album in albums) {
+                AlbumCard(album, navController)
             }
-        )
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
+            )
+        }
 
     }
 }

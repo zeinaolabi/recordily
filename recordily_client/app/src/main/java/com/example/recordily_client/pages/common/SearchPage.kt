@@ -31,6 +31,7 @@ import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SearchPageViewModel
+import com.example.recordily_client.view_models.SongViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -164,6 +165,8 @@ private fun SearchResultContent(navController: NavController, data: SearchRespon
 
 @Composable
 private fun ResultData(navController: NavController, data: SearchResponse){
+    val songViewModel: SongViewModel = viewModel()
+
     for(artist in data.artists){
         ArtistCard(
             artist = artist,
@@ -181,6 +184,11 @@ private fun ResultData(navController: NavController, data: SearchResponse){
         SongCard(
             song = song,
             onSongClick = {
+                songViewModel.clearQueue()
+                for(queueSong in data.songs){
+                    songViewModel.updateQueue(queueSong.id)
+                }
+
                 navigateTo(
                     navController = navController,
                     destination = Screen.SongPage.route + '/' + song.id,

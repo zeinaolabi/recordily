@@ -128,13 +128,15 @@ class SongViewModel: ViewModel() {
         return durationStr?.toLong()
     }
 
-    fun updateQueue(list: List<Int>) {
-        list.forEach { song ->
-            queue.add(song)
-        }
+    fun updateQueue(songID: Int) {
+        queue.add(songID)
     }
 
     fun getQueue(): MutableList<Int> {
         return queue
+    }
+
+    fun clearQueue() {
+        queue.clear()
     }
 }

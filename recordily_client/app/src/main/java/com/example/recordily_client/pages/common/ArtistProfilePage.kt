@@ -121,20 +121,20 @@ private fun ArtistProfileContent(
             }
         )
 
-        if (albums != null) {
-            AlbumsCards(
-                title = stringResource(id = R.string.albums),
-                albums = albums,
-                navController = navController,
-                buttonDestination = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.AlbumsPage.route + '/' + artist_id,
-                        popUpTo = Screen.ArtistProfilePage.route
-                    )
-                }
-            )
-        }
+
+        AlbumsCards(
+            title = stringResource(id = R.string.albums),
+            albums = albums,
+            navController = navController,
+            buttonDestination = {
+                navigateTo(
+                    navController = navController,
+                    destination = Screen.AlbumsPage.route + '/' + artist_id,
+                    popUpTo = Screen.ArtistProfilePage.route
+                )
+            }
+        )
+
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),

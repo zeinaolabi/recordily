@@ -21,12 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.SongViewModel
 
 @Composable
 fun SongsCards(
@@ -60,6 +62,8 @@ private fun CardsContent(
     onMoreClick: () -> (Unit),
     songID: MutableState<Int>
 ){
+    val songViewModel: SongViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,6 +78,11 @@ private fun CardsContent(
                 SongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route + '/' + song.id.toString(),

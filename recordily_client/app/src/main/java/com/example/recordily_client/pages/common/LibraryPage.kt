@@ -31,6 +31,7 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LikesPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
@@ -113,6 +114,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
+    val songViewModel: SongViewModel = viewModel()
 
     TopNavBar(
         pageOptions = pageOptions,
@@ -133,10 +135,14 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
         }
         else{
             for(song in songsLiked){
-                Log.i("song", song.toString())
                 SongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songsLiked){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route + '/' + song.id.toString(),

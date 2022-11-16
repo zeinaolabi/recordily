@@ -48,7 +48,6 @@ fun RegistrationPage(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-
         Image(
             painter = painterResource(R.drawable.background),
             contentDescription = "",
@@ -86,7 +85,6 @@ private fun RegistrationContent(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Image(
             painter = logo,
             contentDescription = "",

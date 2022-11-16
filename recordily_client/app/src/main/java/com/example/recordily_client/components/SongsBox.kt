@@ -30,7 +30,6 @@ import com.example.recordily_client.view_models.SongViewModel
 @Composable
 fun SongsBox(title: String, navController: NavController, songs: List<SongResponse>?){
     val songViewModel: SongViewModel = viewModel()
-    val queue = remember { mutableListOf<Int>() }
 
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
@@ -61,12 +60,11 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
                 for (song in songs) {
                     SongSquareCard(
                         onClick = {
-                            val songIds: ArrayList<Int> = arrayListOf()
-                            for(songID in songs){
-                                songIds.add(songID.id)
+                            songViewModel.clearQueue()
+                            for(queueSong in songs){
+                                songViewModel.updateQueue(queueSong.id)
                             }
-                            songViewModel.updateQueue(songIds)
-//                            Log.i("songbox", songViewModel.queue[1].toString())
+
                             navController.navigate(Screen.SongPage.route + '/' + song.id)
                         },
                         song = song

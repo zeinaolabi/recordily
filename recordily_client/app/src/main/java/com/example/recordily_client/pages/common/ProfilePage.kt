@@ -40,6 +40,7 @@ private val songID = mutableStateOf(-1)
 @Composable
 fun CommonProfilePage(navController: NavController){
     val limit = 3
+    val artistType = 0
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
@@ -70,7 +71,7 @@ fun CommonProfilePage(navController: NavController){
             profile?.let {
                 ProfileHeader(navController, it)
 
-                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0) {
+                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == artistType) {
                     TopNavBar(
                         pageOptions = pageOptions,
                         currentPage = R.string.profile,

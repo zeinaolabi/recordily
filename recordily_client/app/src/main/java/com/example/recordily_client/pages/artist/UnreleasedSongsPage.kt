@@ -19,6 +19,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedSongsViewModel
 import kotlinx.coroutines.launch
 
@@ -72,13 +73,14 @@ private fun UnreleasedSongsContent(
     token: String
 ){
     val coroutinesScope = rememberCoroutineScope()
+    val songViewModel: SongViewModel = viewModel()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if(unreleasedSongs == null || unreleasedSongs.isEmpty()){
+        if(unreleasedSongs === null || unreleasedSongs.isEmpty()){
             EmptyState(message = stringResource(id = R.string.no_songs_found))
         }
         else {
@@ -86,6 +88,11 @@ private fun UnreleasedSongsContent(
                 UnreleasedSongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in unreleasedSongs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route,

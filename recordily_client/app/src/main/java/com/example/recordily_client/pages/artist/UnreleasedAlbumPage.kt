@@ -20,6 +20,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
 import kotlinx.coroutines.launch
 
@@ -67,6 +68,7 @@ private fun UnreleasedAlbumContent(
     token: String
 ){
     val coroutinesScope = rememberCoroutineScope()
+    val songViewModel: SongViewModel = viewModel()
 
     Column(
         modifier = Modifier
@@ -81,6 +83,11 @@ private fun UnreleasedAlbumContent(
                 UnreleasedAlbumSongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route,
