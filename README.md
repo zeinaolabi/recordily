@@ -4,7 +4,7 @@
 
 > Hello, world! This is the project’s summary that describes the project plain and simple, limited to the space available.   
 
-**[PROJECT PHILOSOPHY](https://github.com/zeinaolabi/recordily_client#-project-philosophy) • [WIREFRAMES](https://github.com/zeinaolabi/recordily_client#-wireframes) • [TECH STACK](https://github.com/zeinaolabi/recordily_client#-tech-stack) • [IMPLEMENTATION](hhttps://github.com/zeinaolabi/recordily_client#-impplementation) • [HOW TO RUN?](https://github.com/zeinaolabi/recordily_client#-how-to-run)**
+**[PROJECT PHILOSOPHY](https://github.com/zeinaolabi/recordily_client#-project-philosophy) • [WIREFRAMES](https://github.com/zeinaolabi/recordily_client#-wireframes) • [TECH STACK](https://github.com/zeinaolabi/recordily_client#-tech-stack) • [IMPLEMENTATION](https://github.com/zeinaolabi/recordily_client#-implementation) • [HOW TO RUN?](https://github.com/zeinaolabi/recordily_client#-how-to-run)**
 
 </div>
 
@@ -56,6 +56,7 @@ Here's a brief high-level overview of the tech stack the Well app uses:
   - Jetpack Compose
   - Jetpack Navigation
   - Coroutines
+  
 **Backend**
 - Uses Laravel, which is a PHP framework that follow MVC
 - The database is built on MySQL
@@ -102,8 +103,8 @@ This is an example of how to list things you need to use the software and how to
    update .env according to your variables
    ```
 4. Install APK
-  ```sh
-  install the application's apk from Github Actions
+   ```sh
+   install the application apk from Github Actions
    ```
 
 
