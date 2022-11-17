@@ -50,8 +50,17 @@ A Jetpack Library was used for implementing the graphs
 
 Here's a brief high-level overview of the tech stack the Well app uses:
 
-- This is an Android Native application that uses Kotlin as the programming language.
-
+**Frontend**
+- Android Native application that uses Kotlin as a programming languague, following the MVVM architecture.
+- The application follows the latest components:
+  - Jetpack Compose
+  - Jetpack Navigation
+  - Coroutines
+**Backend**
+- Uses Laravel, which is a PHP framework that follow MVC
+- The database is built on MySQL
+- Docker image provided
+- CI using Github Actions
 
 <br><br>
 <img src="./readme/title5.svg"/>
@@ -73,27 +82,28 @@ To get a local copy up and running follow these simple example steps.
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+* Docker
   ```sh
-  npm install npm@latest -g
+  install Docker from (https://www.docker.com/)
   ```
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/zeinaolabi/recordily_client.git
    ```
-3. Install NPM packages
+2. Run Docker
    ```sh
-   npm install
+   docker-compose up
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+3. Change .env
+   ```sh
+   update .env according to your variables
+   ```
+4. Install APK
+  ```sh
+  install the application's apk from Github Actions
    ```
 
 
