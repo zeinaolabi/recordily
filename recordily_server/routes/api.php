@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('get_artist_albums/{artist_id}/{limit}', "getArtistAlbums");
             Route::get('get_artist_top_songs/{artist_id}/{limit}', "getArtistTopSongs");
             Route::get('get_artist_top_albums/{artist_id}/{limit}', "getArtistTopAlbum");
-            Route::get('get_top_artists/{artist_id}/{limit}', "getTopArtists");
+            Route::get('get_top_artists/{limit}', "getTopArtists");
             Route::get('get_artist_songs/{artist_id}/{limit}',"getArtistSongs");
             Route::get('search_followed_artist/{input}',"searchFollowedArtist");
         }

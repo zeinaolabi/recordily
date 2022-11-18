@@ -135,11 +135,9 @@ class ArtistController extends Controller
         return response()->json($songs);
     }
 
-    public function getTopArtists(ArtistRequest $request): JsonResponse
+    public function getTopArtists(int $limit): JsonResponse
     {
-        $songs = Song::getArtists(
-            $request->route()->parameter('artist_id')
-        )
+        $songs = Song::getArtists($limit)
             ->each(fn (User $artist) => $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture));
 
         return response()->json($songs);

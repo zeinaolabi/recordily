@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
 
         ResetPassword::createUrlUsing(
             function ($user, string $token) {
-                return 'http://192.168.1.101/reset_password';
+                return 'http://192.168.1.114/reset_password';
             }
         );
     }
