@@ -44,6 +44,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     artistProfileViewModel.getAlbums(token, artist_id, limit)
     artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
     artistProfileViewModel.getArtistSongs(token, artist_id, limit)
+    artistProfileViewModel.getArtistTopAlbums(token, artist_id, limit)
 
     val artistInfo by artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers by artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
@@ -51,6 +52,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     val albums by artistProfileViewModel.albumsResultLiveData.observeAsState()
     val topSongs by artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
     val songs by artistProfileViewModel.artistSongsResultLiveData.observeAsState()
+    val topAlbums by artistProfileViewModel.artistTopAlbumsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -67,7 +69,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            ArtistProfileContent(navController, albums, topSongs, songs, artist_id)
+            ArtistProfileContent(navController, albums, topSongs, songs, topAlbums, artist_id)
         }
 
         AnimatedVisibility(
@@ -102,6 +104,7 @@ private fun ArtistProfileContent(
     albums: List<AlbumResponse>?,
     topSongs: List<SongResponse>?,
     songs: List<SongResponse>?,
+    topAlbums: List<AlbumResponse>?,
     artist_id: String
 ){
     Column(
@@ -112,15 +115,9 @@ private fun ArtistProfileContent(
     ){
         AlbumsBox(
             title = stringResource(id = R.string.top_albums),
-            destination = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.AlbumPage.route,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            }
+            navController = navController,
+            albums = topAlbums
         )
-
 
         AlbumsCards(
             title = stringResource(id = R.string.albums),
@@ -134,7 +131,6 @@ private fun ArtistProfileContent(
                 )
             }
         )
-
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),

@@ -70,6 +70,19 @@ interface ArtistAPI {
         @Path("limit") limit: Int
     ): List<SongResponse>
 
+    @GET("auth/get_artist_top_albums/{artist_id}/{limit}")
+    suspend fun getArtistTopAlbums(
+        @Header("Authorization") token: String,
+        @Path("artist_id") artist_id: String,
+        @Path("limit") limit: Int
+    ): List<AlbumResponse>
+
+    @GET("auth/get_top_artists/{limit}")
+    suspend fun getTopArtists(
+        @Header("Authorization") token: String,
+        @Path("limit") limit: Int
+    ): List<UserResponse>
+
     @GET("auth/get_views_per_month")
     suspend fun getViewsPerMonth(
         @Header("Authorization") token: String

@@ -90,7 +90,7 @@ private fun SongSquareCard(onClick: () -> (Unit), song: SongResponse){
     ){
         Image(
             painter =
-            if(song.picture != ""){
+            if(song.picture !== null && song.picture != ""){
                 rememberAsyncImagePainter(song.picture)
             }
             else{

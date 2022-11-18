@@ -17,10 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.AlbumResponse
 
 @Composable
-fun AlbumsBox(title: String, destination: () -> (Unit)){
+fun AlbumsBox(title: String, navController: NavController, albums: List<AlbumResponse>?){
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -43,15 +48,26 @@ fun AlbumsBox(title: String, destination: () -> (Unit)){
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
         ){
-            for (i in 1..5) {
-                AlbumsBoxContent(destination)
+            if (albums != null) {
+                for (album in albums) {
+                    AlbumsBoxContent(
+                        destination = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.AlbumPage.route + '/' + album.id,
+                                popUpTo = Screen.ArtistProfilePage.route
+                            )
+                        },
+                        album = album
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun AlbumsBoxContent(destination: () -> (Unit)){
+private fun AlbumsBoxContent(destination: () -> (Unit), album: AlbumResponse){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
@@ -64,7 +80,13 @@ private fun AlbumsBoxContent(destination: () -> (Unit)){
             }
     ){
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(album.picture !== null && album.picture != ""){
+                rememberAsyncImagePainter(album.picture)
+            }
+            else{
+                painterResource(id = R.drawable.recordily_dark_logo)
+            },
             contentDescription = "album picture",
             modifier = Modifier
                 .size(115.dp)
@@ -73,14 +95,14 @@ private fun AlbumsBoxContent(destination: () -> (Unit)){
         )
 
         Text(
-            text = "Album name",
+            text = album.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             color = MaterialTheme.colors.onPrimary
         )
 
         Text(
-            text = "Artist name",
+            text = album.artist_name,
             fontWeight = FontWeight.Medium,
             fontSize = dimensionResource(id = R.dimen.font_very_small).value.sp,
             color = MaterialTheme.colors.onPrimary

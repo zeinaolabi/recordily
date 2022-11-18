@@ -49,4 +49,12 @@ class ArtistService {
     suspend fun getViewsPerMonth(token: String): Array<Int>{
         return RetrofitInstance.artistAPI.getViewsPerMonth(token)
     }
+
+    suspend fun getArtistTopAlbums(token: String, artistID: String, limit: Int): List<AlbumResponse>{
+        return RetrofitInstance.artistAPI.getArtistTopAlbums(token, artistID, limit)
+    }
+
+    suspend fun getTopArtists(token: String, limit: Int): List<UserResponse>{
+        return RetrofitInstance.artistAPI.getTopArtists(token, limit)
+    }
 }

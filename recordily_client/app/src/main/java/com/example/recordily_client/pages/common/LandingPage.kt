@@ -39,6 +39,7 @@ fun CommonLandingPage(navController: NavController){
     landingPageViewModel.getRecentlyPlayed(token, limit)
     landingPageViewModel.getSuggested(token, limit)
     landingPageViewModel.getTopLiked(token, limit)
+    landingPageViewModel.getTopArtists(token, limit)
 
     Scaffold(
         topBar = { Header(navController) },
@@ -69,6 +70,7 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
     val getRecentlyPlayedResponse by landingPageViewModel.recentlyPlayedResultLiveData.observeAsState()
     val getSuggestedResponse by landingPageViewModel.suggestedResultLiveData.observeAsState()
     val getTopLikedResponse by landingPageViewModel.topLikedResultLiveData.observeAsState()
+    val getTopArtists by landingPageViewModel.topArtistsResultLiveData.observeAsState()
 
     Column(
         modifier = Modifier
@@ -90,7 +92,8 @@ private fun LandingPageContent(navController: NavController, landingPageViewMode
 
         ArtistsBox(
             title = stringResource(id = R.string.top_5_artists),
-            navController = navController
+            navController = navController,
+            artists = getTopArtists
         )
 
         SongsBox(
