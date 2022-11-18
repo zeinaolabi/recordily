@@ -40,10 +40,12 @@ class AuthController extends Controller
 
     protected function createNewToken(string $token): JsonResponse
     {
-        return response()->json([
+        return response()->json(
+            [
                 "id" => $this->auth->user()->id,
                 "user_type_id" => $this->auth->user()->user_type_id,
                 "token" => $token
-            ]);
+            ]
+        );
     }
 }

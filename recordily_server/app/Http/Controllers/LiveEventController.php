@@ -21,24 +21,16 @@ class LiveEventController extends Controller
     {
         $id = $this->authManager->guard()->id();
 
-        $created = LiveEvent::addLiveEvent($request->get("name"), $request->get("firebase_id"), $id);
-
-        if (!$created) {
-            return response()->json("Failed to add live event", 400);
-        }
+        LiveEvent::addLiveEvent($request->get("name"), $request->get("firebase_id"), $id);
 
         return response()->json("Live Event Created", 201);
     }
 
     public function addMessage(MessageRequest $request): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
-        $created = Message::addMessage($request->get("message"), $request->get("live_event_id"), $id);
-
-        if (!$created) {
-            return response()->json("Failed to add message", 400);
-        }
+        Message::addMessage($request->get("message"), $request->get("live_event_id"), $id);
 
         return response()->json("Message Created", 201);
     }

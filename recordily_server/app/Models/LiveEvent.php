@@ -16,13 +16,13 @@ class LiveEvent extends Model
         'firebase_id'
     ];
 
-    public static function addLiveEvent(string $name, string $firebaseID, int $id): Boolean
+    public static function addLiveEvent(string $name, string $firebaseID, int $id): self
     {
         return self::create(
             [
-            'name' => $name,
-            'firebase_id' => $firebaseID,
-            'user_id' => $id
+                'name' => $name,
+                'firebase_id' => $firebaseID,
+                'user_id' => $id
             ]
         );
     }

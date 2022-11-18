@@ -23,76 +23,41 @@ class Song extends Model
         'album_id'
     ];
 
-    public function likes()
-    {
-        return $this->hasMany(Like::class, 'user_id');
-    }
-
-    public function plays()
-    {
-        return $this->hasMany(Play::class, 'user_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id')->select('name');
     }
 
-    public static function exists(int $song_id): bool
+    public static function getArtistTopSongs(int $limit, int $artistID): Collection
     {
-        return (bool)self::find($song_id);
+        return self::whereIn(
+            'id',
+            self::select('song_id', DB::raw('count(*) as plays'))
+                ->join('plays', 'songs.id', 'song_id')
+                ->where('songs.user_id', $artistID)
+                ->groupBy('song_id')
+                ->orderBy('plays', 'desc')
+                ->limit($limit)
+                ->pluck('song_id')
+        )->get();
     }
 
-    public static function getArtistSongs(int $artist_id, int $limit): Collection
+    public static function searchForSong(string $input): Collection
     {
-        $is_published = 1;
-
-        return self::where('user_id', $artist_id)
-            ->where('is_published', $is_published)
-            ->limit($limit)
-            ->get();
-    }
-
-    public static function getArtistTopSongs(int $limit, int $artist_id): Collection
-    {
-        return self::select('song_id', DB::raw('count(*) as plays'))
-            ->join('plays', 'songs.id', 'song_id')
-            ->where('songs.user_id', $artist_id)
-            ->groupBy('song_id')
-            ->orderBy('plays', 'desc')
-            ->limit($limit)
-            ->pluck('song_id');
-    }
-
-    public static function getArtistUnreleasedSongs(int $id, int $limit): Collection
-    {
-        $not_published = 0;
-
-        return self::where('is_published', $not_published)
-            ->where('user_id', $id)
-            ->where('album_id', null)
-            ->limit($limit)
-            ->get();
-    }
-
-    public static function searchForSong(string $input)
-    {
-        $is_published = 1;
-
-        return self::where('is_published', $is_published)->
+        return self::where('is_published', 1)->
         where('name', 'like', '%' . $input . '%')
             ->get();
     }
 
-    public static function fetchSongs(Collection $song_ids)
+    public static function fetchSongs(Collection $songIDs): Collection
     {
-        return self::whereIn('id', $song_ids)
+        return self::whereIn('id', $songIDs)
             ->get();
     }
 
-    public static function publishSong(int $song_id): JsonResponse
+    public static function publishSong(int $songID): JsonResponse
     {
-        $isPublished = Song::where('id', $song_id)->update(['is_published' => 1]);
+        $isPublished = Song::where('id', $songID)->update(['is_published' => 1]);
 
         if ($isPublished === null) {
             return response()->json("Unsuccessful publish attempt");
@@ -101,38 +66,90 @@ class Song extends Model
         return response()->json("Successfully published");
     }
 
-    public static function deleteFromAlbum(int $song_id): JsonResponse
+    public static function deleteFromAlbum(int $songID): JsonResponse
     {
-        $isDeleted = Song::find($song_id)->delete();
+        $isDeleted = Song::find($songID)->delete();
 
-        if ($isDeleted === null) {
+        if (!$isDeleted) {
             return response()->json("Unsuccessful delete attempt");
         }
 
         return response()->json("Successfully deleted");
     }
 
-    public static function searchReleasedSongs(int $user_id, string $input)
+    public static function searchReleasedSongs(int $userID, string $input): Collection
     {
-        $is_published = 1;
-
-        return self::where('user_id', $user_id)->
-        where('is_published', $is_published)
+        return self::where('user_id', $userID)
+            ->where('is_published', 1)
             ->where('name', 'like', '%' . $input . '%')->get();
+    }
+
+    public static function getSuggestedSongs(int $limit, int $published): Collection
+    {
+        return self::where('is_published', $published)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function songIsLiked(int $id, int $songID): bool
+    {
+        $isLiked = Like::where('user_id', $id)
+            ->where('song_id', $songID)->count();
+
+        return $isLiked !== 0;
+    }
+
+    public static function likeSong(int $id, int $songID): Like
+    {
+        return Like::create(
+            [
+            'user_id' => $id,
+            'song_id' => $songID
+            ]
+        );
+    }
+
+    public static function unlikeSong(int $id, int $songID): int
+    {
+        return Like::where('user_id', $id)
+            ->where('song_id', $songID)
+            ->delete();
+    }
+
+    public static function incrementSongPlays(int $id, int $songID): Play
+    {
+        return Play::create(
+            [
+            'user_id' => $id,
+            'song_id' => $songID
+            ]
+        );
+    }
+
+    public static function getArtistUnreleasedSongs(int $id, int $limit): Collection
+    {
+        return self::where('is_published', 0)
+            ->where('user_id', $id)
+            ->where('album_id', null)
+            ->limit($limit)
+            ->get();
     }
 
     public static function createSong(
         string $name,
         string $picturePath,
         string $songPath,
+        int $size,
         int $userID,
-        int $albumID
-    ): bool {
+        ?int $albumID
+    ): self {
         return self::create(
             [
                 'name' => $name,
                 'picture' => $picturePath,
                 'path' => $songPath,
+                'size' => $size,
                 'user_id' => $userID,
                 'album_id' => $albumID
             ]

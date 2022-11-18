@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ArtistRequest;
 use App\Models\Album;
 use App\Models\Follow;
-use App\Models\Like;
-use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\URL;
 
 class ArtistController extends Controller
 {
+    use InfoTrait;
+
     public function __construct(
         private readonly Factory $authManager,
         private readonly UrlGenerator $urlGenerator
@@ -25,27 +25,30 @@ class ArtistController extends Controller
     public function getFollowedArtists(): JsonResponse
     {
         $id = $this->authManager->guard()->id();
-        $followedArtists = Follow::getFollowedArtists($id);
+
+        $followedArtists = User::getFollowedArtists($id)
+            ->each(fn (User $artist) => $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture));
 
         return response()->json($followedArtists);
     }
 
-    public function isFollowed(int $artistID): JsonResponse
+    public function isFollowed(ArtistRequest $request): JsonResponse
     {
         $id = $this->authManager->guard()->id();
 
-        return response()->json(Follow::checkIfFollowed($id, $artistID));
+        return response()->json(Follow::artistIsFollowed($id, $request->route()->parameter('artist_id')));
     }
 
-    public function followArtist(int $artistID): JsonResponse
+    public function followArtist(ArtistRequest $request): JsonResponse
     {
         $id = $this->authManager->guard()->id();
+        $artistID = $request->route()->parameter('artist_id');
 
         if (!User::isArtist($artistID)) {
-            return response()->json(User::isArtist($artistID), 400);
+            return response()->json(false, 400);
         }
 
-        if (Follow::checkIfFollowed($id, $artistID)) {
+        if (Follow::artistIsFollowed($id, $artistID)) {
             return response()->json('Already Followed', 400);
         }
 
@@ -54,15 +57,16 @@ class ArtistController extends Controller
         return response()->json('Artist Followed', 201);
     }
 
-    public function unfollowArtist(int $artistID): JsonResponse
+    public function unfollowArtist(ArtistRequest $request): JsonResponse
     {
         $id = $this->authManager->guard()->id();
+        $artistID = $request->route()->parameter('artist_id');
 
         if (!User::isArtist($artistID)) {
             return response()->json(User::isArtist($artistID), 400);
         }
 
-        if (!Follow::checkIfFollowed($id, $artistID)) {
+        if (!Follow::artistIsFollowed($id, $artistID)) {
             return response()->json('Not Followed', 400);
         }
 
@@ -71,61 +75,51 @@ class ArtistController extends Controller
         return response()->json('Artist Unfollowed', 201);
     }
 
-    public function getArtistInfo(int $artistID): JsonResponse
+    public function getArtistInfo(ArtistRequest $request): JsonResponse
     {
-        $artist = User::find($artistID);
+        $artist = User::find($request->route()->parameter('artist_id'));
 
-        if (!$artist) {
-            return response()->json('Invalid ID', 400);
+        if ($artist->profile_picture !== null) {
+            $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture);
         }
-        $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture);
 
         return response()->json($artist);
     }
 
-    public function getArtistFollowers(int $artistID): int
+    public function getArtistFollowers(ArtistRequest $request): int
     {
-        return Follow::where('followed_id', $artistID)->count();
+        return Follow::where('followed_id', $request->route()->parameter('artist_id'))->count();
     }
 
-    public function getArtistAlbums(int $artistID, int $limit): JsonResponse
+    public function getArtistAlbums(ArtistRequest $request): JsonResponse
     {
-        $albums = Album::getAlbums($artistID, $limit)
-            ->each(
-                function (Album $album) {
-                    $album->artist_name = $album->user->name;
-                    $album->picture = $this->urlGenerator->to($album->picture);
-                    unset($album->user);
-                }
-            );
+        $albums = User::getArtistAlbums(
+            $request->route()->parameter('artist_id'),
+            $request->route()->parameter('limit')
+        )
+            ->each(fn (Album $album) => $this->imageToURL($album));
 
         return response()->json($albums);
     }
 
-    public function getArtistSongs(int $artistID, int $limit): JsonResponse
+    public function getArtistSongs(ArtistRequest $request): JsonResponse
     {
-        $songs = Song::getArtistSongs($artistID, $limit)
-            ->each(
-                function (Song $song) {
-                    $song->artist_name = $song->user->name;
-                    $song->picture = $this->urlGenerator->to($song->picture);
-                    unset($song->user);
-                }
-            );
+        $songs = User::getArtistSongs(
+            $request->route()->parameter('artist_id'),
+            $request->route()->parameter('limit')
+        )
+            ->each(fn (Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);
     }
 
-    public function getArtistTopSongs(int $artistID, int $limit): JsonResponse
+    public function getArtistTopSongs(ArtistRequest $request): JsonResponse
     {
-        $songs = Song::getArtistTopSongs($limit, $artistID)
-            ->each(
-                function (Song $song) {
-                    $song->artist_name = $song->user->name;
-                    $song->picture = $this->urlGenerator->to($song->picture);
-                    unset($song->user);
-                }
-            );
+        $songs = Song::getArtistTopSongs(
+            $request->route()->parameter('artist_id'),
+            $request->route()->parameter('limit')
+        )
+            ->each(fn (Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);
     }
@@ -133,58 +127,18 @@ class ArtistController extends Controller
     public function searchFollowedArtist(string $input): JsonResponse
     {
         $id = $this->authManager->guard()->id();
-        $artists = Follow::searchFollowedArtists($id, $input);
+        $artists = Follow::searchFollowedArtists($id, $input)
+            ->each(fn (User $artist) => $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture));
 
         return response()->json($artists);
     }
 
-    public function getViewsPerMonth(): JsonResponse
+    public function getUnreleasedAlbums(int $limit): JsonResponse
     {
         $id = $this->authManager->guard()->id();
+        $albums = User::getArtistAlbums($id, $limit)
+            ->each(fn (Album $album) => $this->imageToURL($album));
 
-        $plays = Play::getViewsPerMonth($id);
-
-        return response()->json($this->getViews($plays));
-    }
-
-    public function getSongViewsPerMonth(int $song_id): JsonResponse
-    {
-        $plays = Play::getSongViewsPerMonth($song_id);
-
-        return response()->json($this->getViews($plays));
-    }
-
-    public function getSongLikes(int $song_id): JsonResponse
-    {
-        $likes = Like::where('song_id', $song_id)->count();
-
-        return response()->json($likes);
-    }
-
-    public function getSongViews(int $song_id): JsonResponse
-    {
-        $views = Play::where('song_id', $song_id)->count();
-
-        return response()->json($views);
-    }
-
-    private function getViews(Collection $plays): array
-    {
-        $playsCount = [];
-        $playsArray = [];
-
-        foreach ($plays as $key => $value) {
-            $playsCount[(int)$key] = count($value);
-        }
-
-        for ($i = 1; $i <= 12; $i++) {
-            if (!empty($playsCount[$i])) {
-                $playsArray[] = $playsCount[$i];
-            } else {
-                $playsArray[] = 0;
-            }
-        }
-
-        return $playsArray;
+        return response()->json($albums);
     }
 }

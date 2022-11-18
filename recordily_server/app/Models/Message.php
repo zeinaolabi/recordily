@@ -16,7 +16,7 @@ class Message extends Model
         'user_id'
     ];
 
-    public static function addMessage(string $message, string $liveEventID, int $id): Boolean
+    public static function addMessage(string $message, string $liveEventID, int $id): self
     {
         return self::create(
             [

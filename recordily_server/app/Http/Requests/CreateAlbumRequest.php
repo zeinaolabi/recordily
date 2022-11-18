@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UploadSongRequest extends FormRequest
+class CreateAlbumRequest extends FormRequest
 {
     public function authorize()
     {
@@ -15,9 +15,7 @@ class UploadSongRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'image' => 'required',
-            'file' => 'required'
-        //            'album_id' => 'required|int'
+            'picture' => 'required|file'
         ];
     }
 }

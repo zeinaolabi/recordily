@@ -3,13 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Symfony\Component\Console\Input\Input;
 
-class AlbumRequest extends FormRequest
+class SongRequest extends FormRequest
 {
     public function all($keys = null)
     {
-        $request['album_id'] = $this->route('album_id');
+        $request['song_id'] = $this->route('song_id');
         return $request;
     }
 
@@ -21,7 +20,7 @@ class AlbumRequest extends FormRequest
     public function rules()
     {
         return [
-            'album_id' => 'required|exists:albums,id'
+            'song_id' => 'required|exists:songs,id'
         ];
     }
 }
