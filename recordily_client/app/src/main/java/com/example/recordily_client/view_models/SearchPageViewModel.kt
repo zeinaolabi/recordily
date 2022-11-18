@@ -24,9 +24,7 @@ class SearchPageViewModel: ViewModel(){
         }
     }
 
-    fun getSuggestedResult(token: String, limit: Int) {
-        viewModelScope.launch {
-            suggestedResult.postValue(songService.getSuggested(token, limit))
-        }
+    suspend fun getSuggestedResult(token: String, limit: Int): List<SongResponse>{
+        return songService.getSuggested(token, limit)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -10,10 +11,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -32,21 +31,30 @@ import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SearchPageViewModel
 import com.example.recordily_client.view_models.SongViewModel
+import kotlinx.coroutines.launch
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
+@SuppressLint("UnrememberedMutableState", "CoroutineCreationDuringComposition")
 @ExperimentalAnimationApi
 @Composable
 fun CommonSearchPage(navController: NavController){
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+    val coroutinesScope = rememberCoroutineScope()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val songs = mutableStateListOf<SongResponse>()
 
-    searchPageViewModel.getSuggestedResult(token, limit)
+    coroutinesScope.launch{
+        val suggestedSongs = searchPageViewModel.getSuggestedResult(token, limit)
+        for(suggestedSong in suggestedSongs){
+            songs.add(suggestedSong)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -67,7 +75,7 @@ fun CommonSearchPage(navController: NavController){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
-                SearchPageContent(navController, searchPageViewModel, token)
+                SearchPageContent(navController, searchPageViewModel, token, songs)
             }
 
             Row(
@@ -102,6 +110,12 @@ fun CommonSearchPage(navController: NavController){
             )
         }
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            searchInput.value = ""
+        }
+    }
 }
 
 @ExperimentalAnimationApi
@@ -109,10 +123,10 @@ fun CommonSearchPage(navController: NavController){
 private fun SearchPageContent(
     navController: NavController,
     searchPageViewModel: SearchPageViewModel,
-    token: String
+    token: String,
+    suggestedResult: List<SongResponse>
 ){
     val searchResult by searchPageViewModel.searchResultLiveData.observeAsState()
-    val suggestedResult by searchPageViewModel.suggestedResultLiveData.observeAsState()
 
     Text(
         text = stringResource(id = R.string.discover_songs),

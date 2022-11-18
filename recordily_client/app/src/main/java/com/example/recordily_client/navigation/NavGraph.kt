@@ -19,7 +19,8 @@ import com.example.recordily_client.view_models.LoginViewModel
 @Composable
 fun SetupNavGraph(navController: NavHostController){
     val loginViewModel: LoginViewModel = viewModel()
-    val destination = if(loginViewModel.sharedPreferences.getString("token", "") != ""){
+    val token = loginViewModel.sharedPreferences.getString("token", "")
+    val destination = if(token != ""){
         Screen.LandingPage.route
     }
     else{
@@ -219,7 +220,7 @@ fun SetupNavGraph(navController: NavHostController){
         composable(
             route = Screen.ResetPasswordPage.route
         ){
-            ResetPasswordPage(navController)
+            ResetPasswordPage()
         }
 
         composable(
@@ -236,7 +237,7 @@ fun SetupNavGraph(navController: NavHostController){
             backStackEntry.arguments?.getString("live_event_id")?.let { live_event_id ->
                 backStackEntry.arguments?.getString("host_id")?.let { host_id ->
                     backStackEntry.arguments?.getString("live_name")?.let { live_name ->
-                        LiveEventPage(live_event_id, host_id, live_name)
+                        LiveEventPage(navController, live_event_id, host_id, live_name)
                     }
                 }
             }

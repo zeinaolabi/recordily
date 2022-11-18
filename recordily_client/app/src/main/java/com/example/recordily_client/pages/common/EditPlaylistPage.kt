@@ -143,14 +143,16 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
         visibility = true
     )
 
-    if (progressVisibility.value) {
+    if (!progressVisibility.value) {
         MediumRoundButton(
             text = stringResource(id = R.string.save),
             onClick = {
+                progressVisibility.value = true
+
                 val multipart =
                     if (image != null) {
                         MultipartBody.Part.createFormData(
-                            "profile_picture", "profile_picture",
+                            "picture", "picture",
                             RequestBody.create(
                                 "image/*".toMediaTypeOrNull(),
                                 image!!
@@ -171,11 +173,13 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
                     if (!isEdited) {
                         errorMessage.value = "Network Error"
                         visible.value = true
+                        progressVisibility.value = false
                         return@launch
                     }
 
                     errorMessage.value = "Successfully Edited!"
-                    visible.value = false
+                    visible.value = true
+                    progressVisibility.value = false
                 }
 
             }

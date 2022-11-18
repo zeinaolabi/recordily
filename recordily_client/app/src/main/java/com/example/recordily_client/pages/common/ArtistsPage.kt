@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,12 @@ fun ArtistsPage(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
             ArtistsPageContent(navController, followedArtistsResult, artistsViewModel, token)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            searchInput.value = ""
         }
     }
 }

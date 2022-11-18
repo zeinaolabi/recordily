@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -65,6 +66,12 @@ fun PlaylistsPage(navController: NavController){
                     )
                 }
             )
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            searchInput.value = ""
         }
     }
 }

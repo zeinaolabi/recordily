@@ -1,6 +1,5 @@
 package com.example.recordily_client.components
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,15 +23,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
-import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
-import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SongsPopUp(input: MutableState<String>, popUpVisibility: MutableState<Boolean>, live_event_id: String){
+fun SongsPopUp(
+    input: MutableState<String>,
+    popUpVisibility: MutableState<Boolean>,
+    live_event_id: String,
+    onClick: () -> (Unit)
+){
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -78,6 +80,9 @@ fun SongsPopUp(input: MutableState<String>, popUpVisibility: MutableState<Boolea
                         horizontal = dimensionResource(id = R.dimen.padding_medium)
                     )
             ){
+                SmallTealButton(text = stringResource(id = R.string.end_live)) {
+                    onClick()
+                }
                 SearchTextField(input = input)
 
                 PopupContent(input, popUpVisibility, live_event_id)
@@ -129,7 +134,7 @@ private fun SongContent(songs: List<SongResponse>?, popUpVisibility: MutableStat
                     .clickable
                     {
                         coroutineScope.launch {
-                            popUpViewModel.playSong(song.path, live_event_id)
+                            popUpViewModel.playSong(song.id.toString(), live_event_id)
                             popUpVisibility.value = false
                         }
                     }

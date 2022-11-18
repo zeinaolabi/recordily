@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -108,7 +109,7 @@ private fun CreatePlaylistContent(){
         }
         else{
             painterResource(id = logo)
-            },
+        },
         contentDescription = "logo",
         modifier = Modifier
             .size(160.dp)
@@ -128,13 +129,17 @@ private fun CreatePlaylistContent(){
         visibility = true
     )
 
-    if(progressVisibility.value) {
+    if(!progressVisibility.value) {
         MediumRoundButton(
             text = stringResource(id = R.string.save),
             onClick = {
+                progressVisibility.value = true
+                visible.value = false
+
                 if(playlistName.value == "" || image == File("")){
                     errorMessage.value = "Empty Field"
                     visible.value = true
+                    progressVisibility.value = false
                     return@MediumRoundButton
                 }
 
@@ -151,11 +156,13 @@ private fun CreatePlaylistContent(){
                     if(!isCreated){
                         errorMessage.value = "Network Error"
                         visible.value = true
+                        progressVisibility.value = false
                         return@launch
                     }
 
                     errorMessage.value = "Successfully Created!"
                     visible.value = true
+                    progressVisibility.value = false
                 }
             }
         )

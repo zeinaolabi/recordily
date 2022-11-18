@@ -143,7 +143,7 @@ private fun SongDetails(navController: NavController, song: SongResponse, songVi
     val progress = remember { mutableStateOf(0f) }
     val finishedSeconds = remember { mutableStateOf(0L) }
 
-    LaunchedEffect(key1 = currentTime.value, key2 = isPlaying.value, key3 = isPaused.value) {
+    LaunchedEffect(key1 = isPlaying.value, key2 = isPaused.value) {
         val timer = object : CountDownTimer(duration!!, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 finishedSeconds.value = duration!! - millisUntilFinished
@@ -185,7 +185,6 @@ private fun SongDetails(navController: NavController, song: SongResponse, songVi
         progress = progress.value,
         modifier = Modifier
             .fillMaxWidth()
-
     )
 
     Row(
@@ -203,7 +202,6 @@ private fun SongDetails(navController: NavController, song: SongResponse, songVi
     }
 
     PlayButtonRow(navController, song, songViewModel, token, songID)
-
 }
 
 @Composable

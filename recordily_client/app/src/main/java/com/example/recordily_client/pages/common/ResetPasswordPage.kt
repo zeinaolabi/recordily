@@ -19,19 +19,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.components.CircularProgressBar
 import com.example.recordily_client.components.RoundButton
 import com.example.recordily_client.validation.isValidEmail
 import kotlinx.coroutines.launch
 import com.example.recordily_client.components.TextField
+import com.example.recordily_client.view_models.ForgotPasswordViewModel
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
+private var progressVisibility = mutableStateOf(false)
 
 @ExperimentalAnimationApi
 @Composable
-fun ResetPasswordPage(navController: NavController) {
+fun ResetPasswordPage() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -56,14 +60,21 @@ fun ResetPasswordPage(navController: NavController) {
                 .padding(dimensionResource(R.dimen.padding_large))
                 .zIndex(1f),
         ) {
-            BoxContent(navController)
+            BoxContent()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
         }
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-private fun BoxContent(navController: NavController) {
+private fun BoxContent() {
     val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_white_logo
     val logo: Painter = painterResource(id = image)
 
@@ -88,7 +99,7 @@ private fun BoxContent(navController: NavController) {
             fontWeight = FontWeight.ExtraBold
         )
 
-        TextFieldColumn(navController)
+        TextFieldColumn()
 
         AnimatedVisibility(
             visible = visible.value,
@@ -109,9 +120,9 @@ private fun BoxContent(navController: NavController) {
 
 @SuppressLint("CommitPrefEdits")
 @Composable
-private fun TextFieldColumn(navController: NavController) {
+private fun TextFieldColumn() {
     val email = remember { mutableStateOf("") }
-
+    val forgotPasswordViewModel: ForgotPasswordViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -129,19 +140,37 @@ private fun TextFieldColumn(navController: NavController) {
             visibility = true
         )
 
-        RoundButton(text = stringResource(R.string.submit), onClick = {
+        if(!progressVisibility.value) {
+            RoundButton(text = stringResource(R.string.submit), onClick = {
+                progressVisibility.value = true
+                visible.value = false
 
-            if(!isValidEmail(email.value)){
-                errorMessage.value = "Invalid Email"
-                visible.value = true
-                return@RoundButton
-            }
+                if (!isValidEmail(email.value)) {
+                    errorMessage.value = "Invalid Email"
+                    visible.value = true
+                    progressVisibility.value = false
+                    return@RoundButton
+                }
 
-            coroutineScope.launch {
+                coroutineScope.launch {
+                    val emailSent = forgotPasswordViewModel.resetPassword(email.value)
 
-            }
+                    if (!emailSent) {
+                        errorMessage.value = "Invalid Email"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
 
-        })
+                    errorMessage.value = "Email Sent"
+                    visible.value = true
+                    progressVisibility.value = false
+                }
+
+            })
+        } else {
+            CircularProgressBar()
+        }
     }
 }
 

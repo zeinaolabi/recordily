@@ -53,6 +53,10 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     val songInfoResultLiveData: LiveData<SongResponse>
         get() = songInfoResult
 
+    private val isLiveResult = MutableLiveData<Boolean>()
+    val isLiveResultLiveData: LiveData<Boolean>
+        get() = isLiveResult
+
     fun getArtist(token: String, artist_id: String){
         viewModelScope.launch {
             userInfoResult.postValue(artistService.getArtist(token, artist_id))
@@ -128,6 +132,27 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         })
     }
 
+    fun isLive(live_event_id: String) {
+        val reference = database.getReference("rooms/$live_event_id")
+
+        reference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    isLiveResult.postValue(true)
+                } else {
+                    isLiveResult.postValue(false)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
+
+    fun endLive(live_event_id: String) {
+       database.getReference("rooms/$live_event_id").removeValue()
+    }
+
     fun startPlayingSong(audioUrl: String) {
         if(!mediaPlayer.isPlaying) {
             try {
@@ -156,6 +181,10 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
 
     fun displayMessages(): LinkedHashMap<String, ChatMessage> {
         return chatMessages
+    }
+
+    fun clearMessages() {
+        chatMessages.clear()
     }
 
     fun getDuration(audioUrl: String): Long? {

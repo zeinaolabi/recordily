@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
@@ -63,7 +64,6 @@ private fun AlbumsCardContent(albums: List<AlbumResponse>?, navController: NavCo
                 }
             )
         }
-
     }
 }
 
@@ -102,7 +102,13 @@ private fun AlbumCardContent(album: AlbumResponse, navController: NavController)
     )
     {
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(album.picture != ""){
+                rememberAsyncImagePainter(album.picture)
+            }
+            else{
+                painterResource(R.drawable.recordily_dark_logo)
+            },
             contentDescription = "album picture",
             modifier = Modifier
                 .size(50.dp)

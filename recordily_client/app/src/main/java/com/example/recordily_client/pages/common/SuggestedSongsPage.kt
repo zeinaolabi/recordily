@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
@@ -7,10 +8,8 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -25,11 +24,13 @@ import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.SuggestedSongsViewModel
+import kotlinx.coroutines.launch
 
-private val popUpVisibility = mutableStateOf(false)
+private val popUpVisibility =mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
+@SuppressLint("CoroutineCreationDuringComposition", "UnrememberedMutableState")
 @ExperimentalAnimationApi
 @Composable
 fun SuggestedSongsPage(navController: NavController){
@@ -37,10 +38,15 @@ fun SuggestedSongsPage(navController: NavController){
     val loginViewModel: LoginViewModel = viewModel()
     val suggestedSongsViewModel: SuggestedSongsViewModel = viewModel()
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-
-    suggestedSongsViewModel.getSuggestedSongs(token, limit)
-
-    val songs = suggestedSongsViewModel.suggestedSongsResultLiveData.observeAsState().value
+    val coroutinesScope = rememberCoroutineScope()
+    val songs = mutableStateListOf<SongResponse>()
+    
+    coroutinesScope.launch{
+        val suggestedSongs = suggestedSongsViewModel.getSuggestedSongs(token, limit)
+        for(suggestedSong in suggestedSongs){
+            songs.add(suggestedSong)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -60,7 +66,7 @@ fun SuggestedSongsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                songs?.let { SuggestedSongsContent(navController, it) }
+                SuggestedSongsContent(navController, songs)
             }
         }
 

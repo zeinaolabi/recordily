@@ -86,7 +86,7 @@ class PopUpViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    suspend fun playSong(songURL: String, live_event_id: String): Boolean{
+    fun playSong(songURL: String, live_event_id: String): Boolean{
         val reference = database.getReference("rooms/$live_event_id/song")
 
         return try {
