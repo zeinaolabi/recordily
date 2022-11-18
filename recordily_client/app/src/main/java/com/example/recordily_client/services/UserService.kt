@@ -15,6 +15,10 @@ class UserService {
         return RetrofitInstance.authAPI.register(registrationRequest)
     }
 
+    suspend fun forgotPassword(email: String): String {
+        return RetrofitInstance.authAPI.forgotPassword(email)
+    }
+
     suspend fun getInfo(token: String): UserResponse {
         return RetrofitInstance.userAPI.getInfo(token)
     }

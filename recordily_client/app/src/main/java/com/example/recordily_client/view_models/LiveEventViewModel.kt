@@ -4,17 +4,24 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
+import android.text.format.DateFormat
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.requests.MessageRequest
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
 import com.example.recordily_client.services.LiveEventService
+import com.example.recordily_client.services.SongService
 import com.google.firebase.database.*
 import kotlinx.coroutines.launch
 import java.io.IOException
+
+val chatMessages: LinkedHashMap<String, ChatMessage> =
+    mutableMapOf<String, ChatMessage>() as LinkedHashMap<String, ChatMessage>
 
 @SuppressLint("StaticFieldLeak")
 class LiveEventViewModel(application: Application): AndroidViewModel(application) {
@@ -24,6 +31,7 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
 
     private val artistService = ArtistService()
     private val liveEventService = LiveEventService()
+    private val songService = SongService()
 
     private val messagesResult = MutableLiveData<ChatMessage>()
     val messagesResultLiveData: LiveData<ChatMessage>
@@ -41,9 +49,19 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     val songResultLiveData: LiveData<String>
         get() = songResult
 
+    private val songInfoResult = MutableLiveData<SongResponse>()
+    val songInfoResultLiveData: LiveData<SongResponse>
+        get() = songInfoResult
+
     fun getArtist(token: String, artist_id: String){
         viewModelScope.launch {
             userInfoResult.postValue(artistService.getArtist(token, artist_id))
+        }
+    }
+
+    fun getSongInfo(token: String, songID: String){
+        viewModelScope.launch {
+            songInfoResult.postValue(songService.getSong(token, songID))
         }
     }
 
@@ -61,6 +79,7 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
                 val chatMessage = snapshot.getValue(ChatMessage::class.java)
 
                 if (chatMessage != null) {
+                    chatMessages[chatMessage.id] = chatMessage
                     messagesResult.postValue(chatMessage!!)
                 }
             }
@@ -110,15 +129,18 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     }
 
     fun startPlayingSong(audioUrl: String) {
-        try {
-            mediaPlayer.setDataSource(audioUrl)
-            mediaPlayer.isLooping = true
-            mediaPlayer.prepare()
-            mediaPlayer.start()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (t: Throwable) {
-            t.printStackTrace()
+        if(!mediaPlayer.isPlaying) {
+            try {
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(audioUrl)
+                mediaPlayer.isLooping = true
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
         }
     }
 
@@ -130,5 +152,21 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+    }
+
+    fun displayMessages(): LinkedHashMap<String, ChatMessage> {
+        return chatMessages
+    }
+
+    fun getDuration(audioUrl: String): Long? {
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(audioUrl)
+        val durationStr: String? = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+
+        return durationStr?.toLong()
+    }
+
+    fun convertDate(dateInMilliseconds: Long, dateFormat: String): String {
+        return DateFormat.format(dateFormat, dateInMilliseconds).toString()
     }
 }

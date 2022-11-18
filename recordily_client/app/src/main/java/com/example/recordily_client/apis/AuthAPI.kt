@@ -13,4 +13,7 @@ interface AuthAPI {
 
     @POST("register")
     suspend fun register(@Body registrationRequest: RegistrationRequest): RegistrationResponse
+
+    @POST("forgot_password")
+    suspend fun forgotPassword(@Body email: String): String
 }
