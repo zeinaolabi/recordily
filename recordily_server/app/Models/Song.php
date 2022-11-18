@@ -28,7 +28,7 @@ class Song extends Model
         return $this->belongsTo(User::class, 'user_id')->select('name');
     }
 
-    public static function getArtistTopSongs(int $limit, int $artistID): Collection
+    public static function getArtistTopSongs(int $artistID, int $limit): Collection
     {
         return self::whereIn(
             'id',
@@ -39,6 +39,33 @@ class Song extends Model
                 ->orderBy('plays', 'desc')
                 ->limit($limit)
                 ->pluck('song_id')
+        )->get();
+    }
+
+    public static function getArtistTopAlbums(int $artistID, int $limit): Collection
+    {
+        return Album::whereIn(
+            'id',
+            self::select('album_id', DB::raw('count(*) as plays'))
+                ->join('plays', 'songs.id', 'song_id')
+                ->where('songs.user_id', $artistID)
+                ->groupBy('album_id')
+                ->orderBy('plays', 'desc')
+                ->limit($limit)
+                ->pluck('album_id')
+        )->get();
+    }
+
+    public static function getArtists(int $limit): Collection
+    {
+        return User::whereIn(
+            'id',
+            self::select('songs.user_id', DB::raw('count(*) as plays'))
+                ->join('plays', 'songs.id', 'song_id')
+                ->groupBy('songs.user_id')
+                ->orderBy('plays', 'desc')
+                ->limit($limit)
+                ->pluck('songs.user_id')
         )->get();
     }
 

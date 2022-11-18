@@ -124,6 +124,27 @@ class ArtistController extends Controller
         return response()->json($songs);
     }
 
+    public function getArtistTopAlbum(ArtistRequest $request): JsonResponse
+    {
+        $songs = Song::getArtistTopAlbums(
+            $request->route()->parameter('artist_id'),
+            $request->route()->parameter('limit')
+        )
+            ->each(fn (Album $album) => $this->imageToURL($album));
+
+        return response()->json($songs);
+    }
+
+    public function getTopArtists(ArtistRequest $request): JsonResponse
+    {
+        $songs = Song::getArtists(
+            $request->route()->parameter('artist_id')
+        )
+            ->each(fn (User $artist) => $artist->profile_picture = $this->urlGenerator->to($artist->profile_picture));
+
+        return response()->json($songs);
+    }
+
     public function searchFollowedArtist(string $input): JsonResponse
     {
         $id = $this->authManager->guard()->id();
