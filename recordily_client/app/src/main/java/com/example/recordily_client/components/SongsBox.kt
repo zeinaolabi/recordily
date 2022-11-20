@@ -17,6 +17,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -107,7 +108,10 @@ private fun SongSquareCard(onClick: () -> (Unit), song: SongResponse){
             text = song.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-            color = MaterialTheme.colors.onPrimary
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.width(115.dp),
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
         )
 
         Text(

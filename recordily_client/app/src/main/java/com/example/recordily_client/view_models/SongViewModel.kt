@@ -101,7 +101,9 @@ class SongViewModel: ViewModel() {
 
     fun stopSong() {
         try {
+            mediaPlayer.release()
             mediaPlayer.stop()
+            mediaPlayer.reset()
         } catch (we: Exception) {
             we.printStackTrace()
         }

@@ -2,6 +2,7 @@ package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -31,6 +32,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.components.RoundSendButton
 import com.example.recordily_client.components.SongsPopUp
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.requests.MessageRequest
 import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.SongResponse
@@ -56,6 +59,7 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
     val id = loginViewModel.sharedPreferences.getInt("id", -1)
     val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
     val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
+    val coroutineScope = rememberCoroutineScope()
 
     liveEventViewModel.getHostImage(token, host_id)
     liveEventViewModel.getMessages(live_event_id)
@@ -71,17 +75,21 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
 
     isLive.value?.let {
         if(!it){
-            navController.popBackStack()
+            navigateTo(
+                navController = navController,
+                destination = Screen.LiveEventsPage.route,
+                popUpTo = Screen.LiveEventsPage.route
+
+            )
+            liveEventViewModel.stopPlayingSong()
             liveEventViewModel.clearMessages()
         }
     }
 
-    if(chatMessage.value !== null){
-        if(!senderInfo.containsKey(chatMessage.value!!.fromID)){
-            liveEventViewModel.getArtist(token, chatMessage.value!!.fromID.toString())
-
-            liveEventViewModel.userInfoResultLiveData.value?.let {
-                senderInfo[chatMessage.value!!.fromID] = it
+    chatMessage.value?.let {
+        coroutineScope.launch {
+            if (!senderInfo.containsKey(it.fromID)) {
+                senderInfo[it.fromID] = liveEventViewModel.getArtist(token, it.fromID.toString())
             }
         }
     }
@@ -115,9 +123,7 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
 
             SongPlaying(songInfo.value, liveEventViewModel, userType)
 
-            if (chatMessages != null) {
-                ChatSection(id, liveEventViewModel, chatMessages)
-            }
+            ChatSection(id, liveEventViewModel, chatMessages)
         }
 
         SendMessageRow(token, id, live_event_id, liveEventViewModel)
@@ -482,7 +488,7 @@ private fun SongPlaying(song: SongResponse?, liveEventViewModel: LiveEventViewMo
             .background(MaterialTheme.colors.secondary)
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
             .clickable {
-                if(userType == artistType){
+                if (userType == artistType) {
                     popUpVisibility.value = true
                 }
             }

@@ -37,10 +37,6 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     val messagesResultLiveData: LiveData<ChatMessage>
         get() = messagesResult
 
-    private val userInfoResult = MutableLiveData<UserResponse>()
-    val userInfoResultLiveData: LiveData<UserResponse>
-        get() = userInfoResult
-
     private val hostPictureResult = MutableLiveData<UserResponse>()
     val hostPictureResultLiveData: LiveData<UserResponse>
         get() = hostPictureResult
@@ -57,10 +53,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     val isLiveResultLiveData: LiveData<Boolean>
         get() = isLiveResult
 
-    fun getArtist(token: String, artist_id: String){
-        viewModelScope.launch {
-            userInfoResult.postValue(artistService.getArtist(token, artist_id))
-        }
+    suspend fun getArtist(token: String, artist_id: String): UserResponse{
+        return artistService.getArtist(token, artist_id)
     }
 
     fun getSongInfo(token: String, songID: String){
