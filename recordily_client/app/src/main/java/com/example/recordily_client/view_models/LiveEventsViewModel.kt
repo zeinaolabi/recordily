@@ -3,8 +3,11 @@ package com.example.recordily_client.view_models
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.recordily_client.requests.LiveEventRequest
+import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.LiveEvent
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
@@ -15,6 +18,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
+val liveEvents: HashMap<String, LiveEvent> =
+    mutableMapOf<String, LiveEvent>() as HashMap<String, LiveEvent>
+
 class LiveEventsViewModel(application: Application): AndroidViewModel(application) {
     private val database = FirebaseDatabase.getInstance("https://recordily-default-rtdb.firebaseio.com/")
     private val reference = database.getReference("rooms/")
@@ -24,8 +30,8 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
     private val artistService = ArtistService()
     private val liveEventService = LiveEventService()
 
-    private val liveEventsResult = MutableLiveData<List<LiveEvent>>()
-    val liveEventsResultLiveData: LiveData<List<LiveEvent>>
+    private val liveEventsResult = MutableLiveData<LiveEvent>()
+    val liveEventsResultLiveData: LiveData<LiveEvent>
         get() = liveEventsResult
 
     private val artistInfoResult = MutableLiveData<UserResponse>()
@@ -39,25 +45,14 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
     }
 
     fun getLiveEvents(){
-        val liveEvents: ArrayList<LiveEvent> = ArrayList()
 
         reference.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val liveEvent = snapshot.getValue(LiveEvent::class.java)
 
-                if (liveEvent != null) {
-                    liveEvents.add(
-                        LiveEvent(
-                            liveEvent.id,
-                            liveEvent.name,
-                            liveEvent.hostID,
-                            liveEvent.createdAt,
-                            hashMapOf(),
-                            ""
-                        )
-                    )
-
-                    liveEventsResult.postValue(liveEvents)
+                liveEvent?.let{
+                    liveEvents[it.id] = it
+                    liveEventsResult.postValue(it)
                 }
             }
 
@@ -71,6 +66,10 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
+                val liveEvent = snapshot.getValue(LiveEvent::class.java)
+                liveEvent?.let{
+                    liveEvents.remove(it.id)
+                }
             }
         })
     }
@@ -103,5 +102,9 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
         } catch (exception: Throwable) {
             null
         }
+    }
+
+    fun displayLives(): HashMap<String, LiveEvent>{
+        return liveEvents
     }
 }

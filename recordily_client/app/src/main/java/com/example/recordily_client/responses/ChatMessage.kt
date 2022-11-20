@@ -6,4 +6,6 @@ data class ChatMessage(
     val fromID: Int,
     val roomID: String,
     val createdAt: Long
-)
+){
+    constructor(): this( "",  "", -1, "", 0)
+}
