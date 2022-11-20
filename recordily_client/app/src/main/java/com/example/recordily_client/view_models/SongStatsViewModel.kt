@@ -27,27 +27,27 @@ class SongStatsViewModel: ViewModel() {
     val songResultLiveData: LiveData<SongResponse>
         get() = songResult
 
-    fun getSongViewsPerMonth(token: String, song_id: String){
+    fun getSongViewsPerMonth(token: String, songID: String){
         viewModelScope.launch{
-            viewsPerMonthResult.postValue(songService.getSongViewsPerMonth(token, song_id))
+            viewsPerMonthResult.postValue(songService.getSongViewsPerMonth(token, songID))
         }
     }
 
-    fun getSongViews(token: String, song_id: String){
+    fun getSongViews(token: String, songID: String){
         viewModelScope.launch{
-            viewsResult.postValue(songService.getSongViews(token, song_id))
+            viewsResult.postValue(songService.getSongViews(token, songID))
         }
     }
 
-    fun getSongLikes(token: String, song_id: String){
+    fun getSongLikes(token: String, songID: String){
         viewModelScope.launch{
-            likesResult.postValue(songService.getSongLikes(token, song_id))
+            likesResult.postValue(songService.getSongLikes(token, songID))
         }
     }
 
-    fun getSong(token: String, song_id: String){
+    fun getSong(token: String, songID: String){
         viewModelScope.launch{
-            songResult.postValue(songService.getSong(token, song_id))
+            songResult.postValue(songService.getSong(token, songID))
         }
     }
 }

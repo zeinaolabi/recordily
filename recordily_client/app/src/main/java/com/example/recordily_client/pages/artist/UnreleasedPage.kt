@@ -3,7 +3,6 @@ package com.example.recordily_client.pages.artist
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
 

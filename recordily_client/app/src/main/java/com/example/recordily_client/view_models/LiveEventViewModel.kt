@@ -2,12 +2,10 @@ package com.example.recordily_client.view_models
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.text.format.DateFormat
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.requests.MessageRequest
@@ -53,8 +51,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
     val isLiveResultLiveData: LiveData<Boolean>
         get() = isLiveResult
 
-    suspend fun getArtist(token: String, artist_id: String): UserResponse{
-        return artistService.getArtist(token, artist_id)
+    suspend fun getArtist(token: String, artistID: String): UserResponse{
+        return artistService.getArtist(token, artistID)
     }
 
     fun getSongInfo(token: String, songID: String){
@@ -63,22 +61,22 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    fun getHostImage(token: String, artist_id: String){
+    fun getHostImage(token: String, artistID: String){
         viewModelScope.launch {
-            hostPictureResult.postValue(artistService.getArtist(token, artist_id))
+            hostPictureResult.postValue(artistService.getArtist(token, artistID))
         }
     }
 
-    fun getMessages(live_event_id: String){
-        val reference = database.getReference("rooms/$live_event_id/messages/")
+    fun getMessages(liveEventID: String){
+        val reference = database.getReference("rooms/$liveEventID/messages/")
 
         reference.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java)
 
-                if (chatMessage != null) {
-                    chatMessages[chatMessage.id] = chatMessage
-                    messagesResult.postValue(chatMessage!!)
+                chatMessage?.let{
+                    chatMessages[it.id] = it
+                    messagesResult.postValue(it)
                 }
             }
 
@@ -103,7 +101,13 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
             liveEventService.addMessage(token, messageRequest)
 
             val sentMessage = reference.key?.let {
-                ChatMessage(it, messageRequest.message, id, messageRequest.live_event_id, System.currentTimeMillis())
+                ChatMessage(
+                    it,
+                    messageRequest.message,
+                    id,
+                    messageRequest.live_event_id,
+                    System.currentTimeMillis()
+                )
             }
 
             reference.setValue(sentMessage)
@@ -113,8 +117,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    fun getSong(live_event_id: String) {
-        val reference = database.getReference("rooms/$live_event_id/song")
+    fun getSong(liveEventID: String) {
+        val reference = database.getReference("rooms/$liveEventID/song")
 
         reference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -126,8 +130,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         })
     }
 
-    fun isLive(live_event_id: String) {
-        val reference = database.getReference("rooms/$live_event_id")
+    fun isLive(liveEventID: String) {
+        val reference = database.getReference("rooms/$liveEventID")
 
         reference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -143,8 +147,8 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
         })
     }
 
-    fun endLive(live_event_id: String) {
-       database.getReference("rooms/$live_event_id").removeValue()
+    fun endLive(liveEventID: String) {
+       database.getReference("rooms/$liveEventID").removeValue()
     }
 
     fun startPlayingSong(audioUrl: String) {

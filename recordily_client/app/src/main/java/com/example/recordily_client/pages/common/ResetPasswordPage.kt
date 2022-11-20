@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.CircularProgressBar
 import com.example.recordily_client.components.RoundButton
@@ -75,7 +74,9 @@ fun ResetPasswordPage() {
 @ExperimentalAnimationApi
 @Composable
 private fun BoxContent() {
-    val image = if (isSystemInDarkTheme()) R.drawable.recordily_dark_logo else R.drawable.recordily_white_logo
+    val image = if (isSystemInDarkTheme())
+        R.drawable.recordily_dark_logo
+        else R.drawable.recordily_white_logo
     val logo: Painter = painterResource(id = image)
 
     Column(

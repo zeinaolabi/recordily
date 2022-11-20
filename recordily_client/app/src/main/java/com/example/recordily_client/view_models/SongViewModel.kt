@@ -10,9 +10,7 @@ import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 import java.io.IOException
 import android.media.MediaMetadataRetriever
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import kotlin.time.Duration.Companion.milliseconds
 
 val queue: MutableList<Int> = mutableStateListOf()
@@ -29,39 +27,39 @@ class SongViewModel: ViewModel() {
     val isLikedResultLiveData : LiveData<Boolean>
         get() = isLikedResult
 
-    fun getSong(token: String, song_id: String){
+    fun getSong(token: String, songID: String){
         viewModelScope.launch {
-            songResult.postValue(songService.getSong(token, song_id))
+            songResult.postValue(songService.getSong(token, songID))
         }
     }
 
-    fun isLiked(token: String, song_id: Int){
+    fun isLiked(token: String, songID: Int){
         viewModelScope.launch {
-            isLikedResult.postValue(songService.isLiked(token, song_id))
+            isLikedResult.postValue(songService.isLiked(token, songID))
         }
     }
 
-    suspend fun likeSong(token: String, song_id: Int): Boolean {
+    suspend fun likeSong(token: String, songID: Int): Boolean {
         return try {
-            songService.likeSong(token, song_id)
+            songService.likeSong(token, songID)
             true
         } catch (exception: Throwable) {
             false
         }
     }
 
-    suspend fun unlikeSong(token: String, song_id: Int): Boolean {
+    suspend fun unlikeSong(token: String, songID: Int): Boolean {
         return try {
-            songService.unlikeSong(token, song_id)
+            songService.unlikeSong(token, songID)
             true
         } catch (exception: Throwable) {
             false
         }
     }
 
-    suspend fun playSong(token: String, song_id: Int): Boolean {
+    suspend fun playSong(token: String, songID: Int): Boolean {
         return try {
-            songService.playSong(token, song_id)
+            songService.playSong(token, songID)
             true
         } catch (exception: Throwable) {
             false

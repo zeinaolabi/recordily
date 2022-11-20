@@ -5,11 +5,11 @@ import com.example.recordily_client.services.UserService
 
 class ForgotPasswordViewModel: ViewModel() {
 
-    private val service = UserService()
+    private val userService = UserService()
 
     suspend fun resetPassword(email: String): Boolean {
         return try {
-            service.forgotPassword(email)
+            userService.forgotPassword(email)
             true
         } catch (exception: Throwable) {
             false

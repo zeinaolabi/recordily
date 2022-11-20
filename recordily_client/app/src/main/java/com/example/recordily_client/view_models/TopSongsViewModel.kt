@@ -9,7 +9,7 @@ import com.example.recordily_client.services.UserService
 import kotlinx.coroutines.launch
 
 class TopSongsViewModel: ViewModel() {
-    private val service = UserService()
+    private val userService = UserService()
 
     private val topSongsResult = MutableLiveData<List<SongResponse>>()
     val topSongsResultLiveData : LiveData<List<SongResponse>>
@@ -17,7 +17,7 @@ class TopSongsViewModel: ViewModel() {
 
     fun getTopSongs(token: String, limit: Int){
         viewModelScope.launch {
-            topSongsResult.postValue(service.getTopSongs(token, limit))
+            topSongsResult.postValue(userService.getTopSongs(token, limit))
         }
     }
 }

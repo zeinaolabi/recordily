@@ -39,7 +39,6 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.EditProfileViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -93,8 +92,14 @@ fun EditProfilePage(navController: NavController) {
 }
 
 @Composable
-private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: EditProfileViewModel, token: String){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+private fun EditProfileContent(
+    userInfo: UserResponse,
+    editProfileViewModel: EditProfileViewModel,
+    token: String
+){
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)

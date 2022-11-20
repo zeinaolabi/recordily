@@ -25,7 +25,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
 import kotlinx.coroutines.launch
 
@@ -33,7 +32,7 @@ import kotlinx.coroutines.launch
 fun SongsPopUp(
     input: MutableState<String>,
     popUpVisibility: MutableState<Boolean>,
-    live_event_id: String,
+    liveEventID: String,
     onClick: () -> (Unit)
 ){
     Box(
@@ -86,14 +85,18 @@ fun SongsPopUp(
                 }
                 SearchTextField(input = input)
 
-                PopupContent(input, popUpVisibility, live_event_id)
+                PopupContent(input, popUpVisibility, liveEventID)
             }
         }
     }
 }
 
 @Composable
-private fun PopupContent(input: MutableState<String>, popUpVisibility: MutableState<Boolean>, live_event_id: String){
+private fun PopupContent(
+    input: MutableState<String>,
+    popUpVisibility: MutableState<Boolean>,
+    liveEventID: String
+){
     val popUpViewModel: PopUpViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
@@ -112,13 +115,17 @@ private fun PopupContent(input: MutableState<String>, popUpVisibility: MutableSt
     ){
         if(input.value !== "") {
             popUpViewModel.getSearchResult(token, input.value)
-            SongContent(searchResult, popUpVisibility, live_event_id)
+            SongContent(searchResult, popUpVisibility, liveEventID)
         }
     }
 }
 
 @Composable
-private fun SongContent(songs: List<SongResponse>?, popUpVisibility: MutableState<Boolean>, live_event_id: String){
+private fun SongContent(
+    songs: List<SongResponse>?,
+    popUpVisibility: MutableState<Boolean>,
+    liveEventID: String
+){
     val coroutineScope = rememberCoroutineScope()
     val popUpViewModel: PopUpViewModel = viewModel()
 
@@ -135,7 +142,7 @@ private fun SongContent(songs: List<SongResponse>?, popUpVisibility: MutableStat
                     .clickable
                     {
                         coroutineScope.launch {
-                            popUpViewModel.playSong(song.id.toString(), live_event_id)
+                            popUpViewModel.playSong(song.id.toString(), liveEventID)
                             popUpVisibility.value = false
                         }
                     }

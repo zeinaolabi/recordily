@@ -16,17 +16,16 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.AlbumsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 
 @ExperimentalAnimationApi
 @Composable
-fun AlbumsPage(navController: NavController, artist_id: String){
+fun AlbumsPage(navController: NavController, artistID: String){
     val limit = 40
     val albumViewModel: AlbumsViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    albumViewModel.getAlbums(token, artist_id, limit)
+    albumViewModel.getAlbums(token, artistID, limit)
     val albums = albumViewModel.albumsResultLiveData.observeAsState()
 
     Box(

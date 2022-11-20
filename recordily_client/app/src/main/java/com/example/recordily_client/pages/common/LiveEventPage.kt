@@ -2,7 +2,6 @@ package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -40,10 +39,6 @@ import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventViewModel
-import com.example.recordily_client.view_models.LoginViewModel
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -58,17 +53,17 @@ private val senderInfo: HashMap<Int, UserResponse> =
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LiveEventPage(navController: NavController, live_event_id: String, host_id: String, live_name: String){
+fun LiveEventPage(navController: NavController, liveID: String, hostID: String, liveName: String){
     val liveEventViewModel: LiveEventViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
     val userID = userCredentials.getID()
     val coroutineScope = rememberCoroutineScope()
 
-    liveEventViewModel.getHostImage(token, host_id)
-    liveEventViewModel.getMessages(live_event_id)
-    liveEventViewModel.getSong(live_event_id)
-    liveEventViewModel.isLive(live_event_id)
+    liveEventViewModel.getHostImage(token, hostID)
+    liveEventViewModel.getMessages(liveID)
+    liveEventViewModel.getSong(liveID)
+    liveEventViewModel.isLive(liveID)
 
     val hostPicture = liveEventViewModel.hostPictureResultLiveData.observeAsState()
     val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
@@ -123,14 +118,14 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            LiveHeader(hostPicture.value, live_name)
+            LiveHeader(hostPicture.value, liveName)
 
-            SongPlaying(songInfo.value, liveEventViewModel, host_id.toInt(), userID)
+            SongPlaying(songInfo.value, liveEventViewModel, hostID.toInt(), userID)
 
             ChatSection(userID, liveEventViewModel, chatMessages, token)
         }
 
-        SendMessageRow(token, userID, live_event_id, liveEventViewModel)
+        SendMessageRow(token, userID, liveID, liveEventViewModel)
 
         AnimatedVisibility(
             visible = popUpVisibility.value,
@@ -140,9 +135,9 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
             SongsPopUp(
                 input = input,
                 popUpVisibility = popUpVisibility,
-                live_event_id = live_event_id,
+                liveEventID = liveID,
                 onClick = {
-                    liveEventViewModel.endLive(live_event_id)
+                    liveEventViewModel.endLive(liveID)
                     navController.popBackStack()
                 }
             )
@@ -179,7 +174,8 @@ private fun ChatSection(
 
             runBlocking {
                 if (!senderInfo.containsKey(message.fromID)) {
-                    senderInfo[message.fromID] = liveEventViewModel.getArtist(token, message.fromID.toString())
+                    senderInfo[message.fromID] =
+                        liveEventViewModel.getArtist(token, message.fromID.toString())
                 }
             }
 
@@ -207,7 +203,12 @@ private fun ChatSection(
 }
 
 @Composable
-private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEventViewModel: LiveEventViewModel){
+private fun SendMessageRow(
+    token: String,
+    id: Int,
+    liveEventID: String,
+    liveEventViewModel: LiveEventViewModel
+){
     val coroutinesScope = rememberCoroutineScope()
 
     Row(
@@ -248,7 +249,7 @@ private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEv
                     return@launch
                 }
 
-                val liveEventRequest = MessageRequest(message.value, live_event_id)
+                val liveEventRequest = MessageRequest(message.value, liveEventID)
                 val messageSent = liveEventViewModel.sendMessage(token, liveEventRequest, id)
 
                 if(!messageSent){
@@ -462,7 +463,12 @@ private fun FromMessage(message: String, time: String, name: String?, picture: S
 }
 
 @Composable
-private fun SongPlaying(song: SongResponse?, liveEventViewModel: LiveEventViewModel, hostID: Int, userID: Int){
+private fun SongPlaying(
+    song: SongResponse?,
+    liveEventViewModel: LiveEventViewModel,
+    hostID: Int,
+    userID: Int
+){
     val duration = remember { mutableStateOf(0L) }
 
     song?.path?.let { path ->

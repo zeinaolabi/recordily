@@ -41,7 +41,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.EditPlaylistViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -56,12 +55,12 @@ private var progressVisibility = mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun EditPlaylistPage(navController: NavController, playlist_id: String) {
+fun EditPlaylistPage(navController: NavController, playlistID: String) {
     val editPlaylistModel: EditPlaylistViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    editPlaylistModel.getPlaylist(token, playlist_id)
+    editPlaylistModel.getPlaylist(token, playlistID)
     val playlist = editPlaylistModel.playlistResultLiveData.observeAsState()
 
     Scaffold(
@@ -79,7 +78,9 @@ fun EditPlaylistPage(navController: NavController, playlist_id: String) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
                 ){
-                    playlist.value?.let { it -> CreatePlaylistContent(navController, it, token, editPlaylistModel) }
+                    playlist.value?.let { it ->
+                        CreatePlaylistContent(navController, it, token, editPlaylistModel)
+                    }
                 }
             }
         }

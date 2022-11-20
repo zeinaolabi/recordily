@@ -33,7 +33,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.os.Environment
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -45,17 +44,13 @@ import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.FileOutputStream
-
 import java.io.File
-
 import java.io.BufferedInputStream
-
 import java.io.FileInputStream
 import kotlin.collections.ArrayList
 
@@ -109,8 +104,13 @@ fun UploadSongPage(navController: NavController) {
 @SuppressLint("UsableSpace")
 @Composable
 private fun UploadSongContent(){
-    val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    val logo =
+        if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo
+        else R.drawable.recordily_light_mode
+
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)
@@ -325,8 +325,9 @@ private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: S
 
 @Composable
 private fun PickAudioRow(){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult())
-    { result: ActivityResult ->
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)

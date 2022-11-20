@@ -32,20 +32,20 @@ private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
-fun ArtistProfilePage(navController: NavController, artist_id: String){
+fun ArtistProfilePage(navController: NavController, artistID: String){
     val limit = 3
     val topLimit = 5
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    artistProfileViewModel.getArtistFollowers(token, artist_id)
-    artistProfileViewModel.getArtist(token, artist_id)
-    artistProfileViewModel.isFollowed(token, artist_id)
-    artistProfileViewModel.getAlbums(token, artist_id, limit)
-    artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
-    artistProfileViewModel.getArtistSongs(token, artist_id, limit)
-    artistProfileViewModel.getArtistTopAlbums(token, artist_id, limit)
+    artistProfileViewModel.getArtistFollowers(token, artistID)
+    artistProfileViewModel.getArtist(token, artistID)
+    artistProfileViewModel.isFollowed(token, artistID)
+    artistProfileViewModel.getAlbums(token, artistID, limit)
+    artistProfileViewModel.getArtistTopSongs(token, artistID, topLimit)
+    artistProfileViewModel.getArtistSongs(token, artistID, limit)
+    artistProfileViewModel.getArtistTopAlbums(token, artistID, limit)
 
     val artistInfo by artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers by artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
@@ -70,7 +70,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            ArtistProfileContent(navController, albums, topSongs, songs, topAlbums, artist_id)
+            ArtistProfileContent(navController, albums, topSongs, songs, topAlbums, artistID)
         }
 
         AnimatedVisibility(

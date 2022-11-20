@@ -3,7 +3,6 @@ package com.example.recordily_client.pages.artist
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -20,7 +19,6 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumsViewModel
 import kotlinx.coroutines.launch
 
@@ -55,7 +53,12 @@ fun UnreleasedAlbumsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                UnreleasedAlbumsContent(navController, unreleasedAlbums, unreleasedAlbumsViewModel, token)
+                UnreleasedAlbumsContent(
+                    navController,
+                    unreleasedAlbums,
+                    unreleasedAlbumsViewModel,
+                    token
+                )
             }
         }
     }

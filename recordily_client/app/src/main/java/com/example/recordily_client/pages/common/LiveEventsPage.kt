@@ -1,7 +1,6 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 
 private val liveEventName = mutableStateOf("")

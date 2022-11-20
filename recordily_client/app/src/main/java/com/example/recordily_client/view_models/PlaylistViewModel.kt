@@ -20,15 +20,15 @@ class PlaylistViewModel: ViewModel() {
     val playlistResultLiveData : LiveData<PlaylistResponse>
         get() = playlistResult
 
-    fun getPlaylistSongs(token: String, playlist_id: String){
+    fun getPlaylistSongs(token: String, playlistID: String){
         viewModelScope.launch {
-            playlistSongsResult.postValue(playlistService.getPlaylistSongs(token, playlist_id))
+            playlistSongsResult.postValue(playlistService.getPlaylistSongs(token, playlistID))
         }
     }
 
-    fun getPlaylist(token: String, playlist_id: String){
+    fun getPlaylist(token: String, playlistID: String){
         viewModelScope.launch {
-            playlistResult.postValue(playlistService.getPlaylist(token, playlist_id))
+            playlistResult.postValue(playlistService.getPlaylist(token, playlistID))
         }
     }
 }

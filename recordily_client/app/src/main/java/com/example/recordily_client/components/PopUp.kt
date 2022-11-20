@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.R
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
 import kotlinx.coroutines.launch
 

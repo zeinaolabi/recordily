@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -24,7 +23,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.SuggestedSongsViewModel
 import kotlinx.coroutines.launch

@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -123,7 +122,11 @@ fun SongCard(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Un
 }
 
 @Composable
-private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun SongCardContent(
+    song: SongResponse,
+    onSongClick: ()->(Unit),
+    onMoreClick: () -> (Unit)
+){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

@@ -23,7 +23,12 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.PlaylistResponse
 
 @Composable
-fun PlaylistsCard(title: String, playlists: List<PlaylistResponse>?, destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+fun PlaylistsCard(
+    title: String,
+    playlists: List<PlaylistResponse>?,
+    destination: ()->(Unit),
+    onPlaylistClick: ()->(Unit)
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -40,7 +45,11 @@ fun PlaylistsCard(title: String, playlists: List<PlaylistResponse>?, destination
 }
 
 @Composable
-private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+private fun PlaylistsCardContent(
+    playlists: List<PlaylistResponse>?,
+    destination: ()->(Unit),
+    onPlaylistClick: ()->(Unit)
+){
     Column(
         modifier = Modifier
             .fillMaxWidth()

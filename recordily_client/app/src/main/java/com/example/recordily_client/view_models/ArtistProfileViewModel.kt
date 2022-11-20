@@ -11,7 +11,7 @@ import com.example.recordily_client.services.ArtistService
 import kotlinx.coroutines.launch
 
 class ArtistProfileViewModel: ViewModel() {
-    private val service = ArtistService()
+    private val artistService = ArtistService()
 
     private val artistInfoResult = MutableLiveData<UserResponse>()
     val artistInfoResultLiveData : LiveData<UserResponse>
@@ -41,60 +41,60 @@ class ArtistProfileViewModel: ViewModel() {
     val artistTopAlbumsResultLiveData : LiveData<List<AlbumResponse>>
         get() = artistTopAlbumsResult
 
-    fun getArtist(token: String, artist_id: String){
+    fun getArtist(token: String, artistID: String){
         viewModelScope.launch {
-            artistInfoResult.postValue(service.getArtist(token, artist_id))
+            artistInfoResult.postValue(artistService.getArtist(token, artistID))
         }
     }
 
-    fun getArtistFollowers(token: String, artist_id: String){
+    fun getArtistFollowers(token: String, artistID: String){
         viewModelScope.launch {
-            artistFollowersResult.postValue(service.getArtistFollowers(token, artist_id))
+            artistFollowersResult.postValue(artistService.getArtistFollowers(token, artistID))
         }
     }
 
-    fun isFollowed(token: String, artist_id: String){
+    fun isFollowed(token: String, artistID: String){
         viewModelScope.launch {
-            isFollowedResult.postValue(service.isFollowed(token, artist_id))
+            isFollowedResult.postValue(artistService.isFollowed(token, artistID))
         }
     }
 
-    fun getAlbums(token: String, artist_id: String, limit: Int){
+    fun getAlbums(token: String, artistID: String, limit: Int){
         viewModelScope.launch {
-            albumsResult.postValue(service.getAlbums(token, artist_id, limit))
+            albumsResult.postValue(artistService.getAlbums(token, artistID, limit))
         }
     }
 
-    fun getArtistTopSongs(token: String, artist_id: String, limit: Int){
+    fun getArtistTopSongs(token: String, artistID: String, limit: Int){
         viewModelScope.launch {
-            artistTopSongsResult.postValue(service.getArtistTopSongs(token, artist_id, limit))
+            artistTopSongsResult.postValue(artistService.getArtistTopSongs(token, artistID, limit))
         }
     }
 
-    fun getArtistSongs(token: String, artist_id: String, limit: Int){
+    fun getArtistSongs(token: String, artistID: String, limit: Int){
         viewModelScope.launch {
-            artistSongsResult.postValue(service.getArtistSongs(token, artist_id, limit))
+            artistSongsResult.postValue(artistService.getArtistSongs(token, artistID, limit))
         }
     }
 
-    fun getArtistTopAlbums(token: String, artist_id: String, limit: Int){
+    fun getArtistTopAlbums(token: String, artistID: String, limit: Int){
         viewModelScope.launch {
-            artistTopAlbumsResult.postValue(service.getArtistTopAlbums(token, artist_id, limit))
+            artistTopAlbumsResult.postValue(artistService.getArtistTopAlbums(token, artistID, limit))
         }
     }
 
-    suspend fun follow(token: String, artist_id: String): Boolean {
+    suspend fun follow(token: String, artistID: String): Boolean {
         return try {
-            service.follow(token, artist_id)
+            artistService.follow(token, artistID)
             true
         } catch (exception: Throwable) {
             false
         }
     }
 
-    suspend fun unfollow(token: String, artist_id: String): Boolean {
+    suspend fun unfollow(token: String, artistID: String): Boolean {
         return try {
-            service.unfollow(token, artist_id)
+            artistService.unfollow(token, artistID)
             true
         } catch (exception: Throwable) {
             false

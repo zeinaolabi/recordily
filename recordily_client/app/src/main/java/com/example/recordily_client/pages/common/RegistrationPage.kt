@@ -39,8 +39,8 @@ import com.example.recordily_client.view_models.RegistrationViewModel
 
 private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
-private val user_type = mutableStateOf("")
-private val user_type_id = mutableStateOf(-1)
+private val userType = mutableStateOf("")
+private val userTypeID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
@@ -170,7 +170,7 @@ private fun RegistrationColumn(navController: NavController) {
                 val request = RegistrationRequest(
                     email.value.lowercase().trim(),
                     password.value,
-                    user_type_id.value
+                    userTypeID.value
                 )
 
                 if (!registerViewModel.register(request)){
@@ -261,7 +261,7 @@ private fun RadioButtons(){
                 selected = (text == selectedOption),
                 onClick = {
                     onOptionSelected(text)
-                    user_type.value = text
+                    userType.value = text
                 },
                 colors = RadioButtonDefaults.colors(
                     selectedColor = MaterialTheme.colors.secondary,
@@ -295,13 +295,13 @@ private fun errorHandling(email: String, password: String, confirmPassword: Stri
 }
 
 private fun setTypeId(): Boolean{
-    if(user_type.value == "Artist"){
-        user_type_id.value = 0
+    if(userType.value == "Artist"){
+        userTypeID.value = 0
         setErrorMessage("", false)
         return true
     }
-    else if(user_type.value == "Listener"){
-        user_type_id.value = 1
+    else if(userType.value == "Listener"){
+        userTypeID.value = 1
         setErrorMessage("", false)
         return true
     }

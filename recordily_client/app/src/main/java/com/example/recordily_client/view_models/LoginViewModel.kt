@@ -3,9 +3,7 @@ package com.example.recordily_client.view_models
 import android.annotation.SuppressLint
 import android.app.Application
 import com.example.recordily_client.requests.LoginRequest
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.services.UserService
 import com.example.recordily_client.validation.UserCredentials
 

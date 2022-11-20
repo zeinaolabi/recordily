@@ -22,20 +22,19 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 @Composable
-fun UnreleasedAlbumPage(navController: NavController, album_id: String){
+fun UnreleasedAlbumPage(navController: NavController, albumID: String){
     val unreleasedAlbumViewModel: UnreleasedAlbumViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    unreleasedAlbumViewModel.getAlbumInfo(token, album_id)
-    unreleasedAlbumViewModel.getAlbumSongs(token, album_id)
+    unreleasedAlbumViewModel.getAlbumInfo(token, albumID)
+    unreleasedAlbumViewModel.getAlbumSongs(token, albumID)
 
     val album by unreleasedAlbumViewModel.albumInfoResultLiveData.observeAsState()
     val songs by unreleasedAlbumViewModel.albumSongsResultLiveData.observeAsState()

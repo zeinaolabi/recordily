@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,7 +36,6 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.CreatePlaylistViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -89,7 +87,9 @@ fun CreatePlaylistPage(navController: NavController) {
 @Composable
 private fun CreatePlaylistContent(){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)

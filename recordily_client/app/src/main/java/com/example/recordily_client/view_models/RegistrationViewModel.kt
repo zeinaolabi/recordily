@@ -6,11 +6,11 @@ import com.example.recordily_client.services.UserService
 
 class RegistrationViewModel: ViewModel() {
 
-    private val service = UserService()
+    private val userService = UserService()
 
     suspend fun register(registrationRequest: RegistrationRequest): Boolean {
         return try {
-            service.register(registrationRequest)
+            userService.register(registrationRequest)
             true
         } catch (exception: Throwable) {
             false

@@ -22,8 +22,6 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.ExitBar
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
-import com.example.recordily_client.view_models.PlaylistsViewModel
 import com.example.recordily_client.view_models.SongStatsViewModel
 import com.jaikeerthick.composable_graphs.color.LinearGraphColors
 import com.jaikeerthick.composable_graphs.composables.LineGraph
@@ -33,15 +31,15 @@ import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun SongStatsPage(navController: NavController, song_id: String){
+fun SongStatsPage(navController: NavController, songID: String){
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
     val songStatsViewModel: SongStatsViewModel = viewModel()
 
-    songStatsViewModel.getSongViewsPerMonth(token, song_id)
-    songStatsViewModel.getSongViews(token, song_id)
-    songStatsViewModel.getSongLikes(token, song_id)
-    songStatsViewModel.getSong(token, song_id)
+    songStatsViewModel.getSongViewsPerMonth(token, songID)
+    songStatsViewModel.getSongViews(token, songID)
+    songStatsViewModel.getSongLikes(token, songID)
+    songStatsViewModel.getSong(token, songID)
 
     val viewsPerMonth by songStatsViewModel.viewsPerMonthResultLiveData.observeAsState()
     val views by songStatsViewModel.viewsResultLiveData.observeAsState()
@@ -60,16 +58,14 @@ fun SongStatsPage(navController: NavController, song_id: String){
                     .padding(dimensionResource(id = R.dimen.padding_medium)),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
             ){
-                if(viewsPerMonth !== null && views !== null && likes !== null && song !== null){
-                    SongStatsContent(viewsPerMonth!!, views!!, likes!!, song!!)
-                }
+                SongStatsContent(viewsPerMonth, views, likes, song)
             }
         }
     )
 }
 
 @Composable
-private fun SongStatsContent(viewsPerMonth: Array<Int>, views: Int, likes: Int, song: SongResponse){
+private fun SongStatsContent(viewsPerMonth: Array<Int>?, views: Int?, likes: Int?, song: SongResponse?){
     val graphStyle = LineGraphStyle(
         visibility = LinearGraphVisibility(
             isHeaderVisible = true,
@@ -87,7 +83,7 @@ private fun SongStatsContent(viewsPerMonth: Array<Int>, views: Int, likes: Int, 
     )
 
     Text(
-        text = song.name,
+        text = song?.name ?: "Song Name",
         fontSize = dimensionResource(id = R.dimen.font_large).value.sp,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colors.onPrimary
@@ -112,12 +108,16 @@ private fun SongStatsContent(viewsPerMonth: Array<Int>, views: Int, likes: Int, 
         )
     }
 
-    LineGraph(
-        xAxisData = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec").map {
-            GraphData.String(it)
-        },
-        yAxisData = viewsPerMonth.toList(),
-        style = graphStyle
-    )
+    if (viewsPerMonth != null) {
+        LineGraph(
+            xAxisData =
+            listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+                .map {
+                    GraphData.String(it)
+                },
+            yAxisData = viewsPerMonth.toList(),
+            style = graphStyle
+        )
+    }
 }
 

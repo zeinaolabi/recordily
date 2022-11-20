@@ -21,7 +21,6 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.AlbumViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -30,13 +29,13 @@ private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
-fun AlbumPage(navController: NavController, album_id: String){
+fun AlbumPage(navController: NavController, albumID: String){
     val albumViewModel: AlbumViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    albumViewModel.getAlbumInfo(token, album_id)
-    albumViewModel.getAlbumSongs(token, album_id)
+    albumViewModel.getAlbumInfo(token, albumID)
+    albumViewModel.getAlbumSongs(token, albumID)
 
     val album by albumViewModel.albumInfoResultLiveData.observeAsState()
     val songs by albumViewModel.albumSongsResultLiveData.observeAsState()

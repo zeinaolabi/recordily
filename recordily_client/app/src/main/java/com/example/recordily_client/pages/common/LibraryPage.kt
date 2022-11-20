@@ -26,7 +26,6 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LikesPageViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 
 private val searchInput = mutableStateOf("")
@@ -90,7 +89,12 @@ fun LibraryPage(navController: NavController){
 }
 
 @Composable
-private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?, token: String, likesPageViewModel: LikesPageViewModel){
+private fun LibraryPageContent(
+    navController: NavController,
+    songsLiked: List<SongResponse>?,
+    token: String,
+    likesPageViewModel: LikesPageViewModel
+){
     val searchResult = likesPageViewModel.searchResultLiveData.observeAsState()
 
     Column(
@@ -175,8 +179,8 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (songsLiked != null) {
-            for(song in songsLiked){
+        songsLiked?.let{
+            for(song in it){
                 SongCard(
                     song = song,
                     onSongClick = {

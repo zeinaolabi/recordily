@@ -27,7 +27,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 
 @Composable
 fun ProfileHeader(navController: NavController, profile: UserResponse){

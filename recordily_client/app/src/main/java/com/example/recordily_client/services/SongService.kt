@@ -48,44 +48,44 @@ class SongService {
         return RetrofitInstance.songAPI.getUnreleasedSongs(token, limit)
     }
 
-    suspend fun publishSong(token: String, song_id: Int) {
-        return RetrofitInstance.songAPI.publishSong(token, song_id)
+    suspend fun publishSong(token: String, songID: Int) {
+        return RetrofitInstance.songAPI.publishSong(token, songID)
     }
 
-    suspend fun deleteFromAlbum(token: String, song_id: Int) {
-        return RetrofitInstance.songAPI.deleteFromAlbum(token, song_id)
+    suspend fun deleteFromAlbum(token: String, songID: Int) {
+        return RetrofitInstance.songAPI.deleteFromAlbum(token, songID)
     }
 
-    suspend fun isLiked(token: String, song_id: Int): Boolean {
-        return RetrofitInstance.songAPI.isLiked(token, song_id)
+    suspend fun isLiked(token: String, songID: Int): Boolean {
+        return RetrofitInstance.songAPI.isLiked(token, songID)
     }
 
-    suspend fun likeSong(token: String, song_id: Int) {
-        return RetrofitInstance.songAPI.likeSong(token, song_id)
+    suspend fun likeSong(token: String, songID: Int) {
+        return RetrofitInstance.songAPI.likeSong(token, songID)
     }
 
-    suspend fun unlikeSong(token: String, song_id: Int) {
-        return RetrofitInstance.songAPI.unlikeSong(token, song_id)
+    suspend fun unlikeSong(token: String, songID: Int) {
+        return RetrofitInstance.songAPI.unlikeSong(token, songID)
     }
 
-    suspend fun getSongViewsPerMonth(token: String, song_id: String): Array<Int> {
-        return RetrofitInstance.songAPI.getSongViewsPerMonth(token, song_id)
+    suspend fun getSongViewsPerMonth(token: String, songID: String): Array<Int> {
+        return RetrofitInstance.songAPI.getSongViewsPerMonth(token, songID)
     }
 
-    suspend fun getSongLikes(token: String, song_id: String): Int {
-        return RetrofitInstance.songAPI.getSongLikes(token, song_id)
+    suspend fun getSongLikes(token: String, songID: String): Int {
+        return RetrofitInstance.songAPI.getSongLikes(token, songID)
     }
 
-    suspend fun getSongViews(token: String, song_id: String): Int {
-        return RetrofitInstance.songAPI.getSongViews(token, song_id)
+    suspend fun getSongViews(token: String, songID: String): Int {
+        return RetrofitInstance.songAPI.getSongViews(token, songID)
     }
 
-    suspend fun getSong(token: String, song_id: String): SongResponse {
-        return RetrofitInstance.songAPI.getSong(token, song_id)
+    suspend fun getSong(token: String, songID: String): SongResponse {
+        return RetrofitInstance.songAPI.getSong(token, songID)
     }
 
-    suspend fun playSong(token: String, song_id: Int) {
-        return RetrofitInstance.songAPI.playSong(token, song_id)
+    suspend fun playSong(token: String, songID: Int) {
+        return RetrofitInstance.songAPI.playSong(token, songID)
     }
 
     suspend fun search(token: String, input: String): List<SongResponse> {

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.example.recordily_client.R
 
 @Composable
-fun RoundButton(text:String, onClick: () -> Unit){
+fun RoundButton(text: String, onClick: () -> Unit){
     Button(modifier = Modifier
         .height(48.dp)
         .width(120.dp)
@@ -42,7 +42,7 @@ fun RoundButton(text:String, onClick: () -> Unit){
 }
 
 @Composable
-fun SmallRoundButton(text:String, onClick: () -> (Unit)){
+fun SmallRoundButton(text: String, onClick: () -> (Unit)){
     Button(modifier = Modifier
         .innerShadow(
             blur = 7.dp,
@@ -70,7 +70,7 @@ fun SmallRoundButton(text:String, onClick: () -> (Unit)){
 }
 
 @Composable
-fun MediumRoundButton(text:String, onClick: () -> (Unit)){
+fun MediumRoundButton(text: String, onClick: () -> (Unit)){
     Button(modifier = Modifier
         .clip(MaterialTheme.shapes.medium)
         .innerShadow(
@@ -97,7 +97,7 @@ fun MediumRoundButton(text:String, onClick: () -> (Unit)){
 }
 
 @Composable
-fun LargeRoundButton(text:String, onClick: () -> (Unit)){
+fun LargeRoundButton(text: String, onClick: () -> (Unit)){
     Button(modifier = Modifier
         .height(45.dp)
         .fillMaxWidth()
@@ -116,7 +116,7 @@ fun LargeRoundButton(text:String, onClick: () -> (Unit)){
 }
 
 @Composable
-fun SmallTealButton(text:String, onClick: () -> (Unit)){
+fun SmallTealButton(text: String, onClick: () -> (Unit)){
     Button(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_small))

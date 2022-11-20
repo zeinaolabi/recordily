@@ -1,7 +1,6 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -30,13 +29,10 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import android.os.CountDownTimer
 import com.example.recordily_client.validation.UserCredentials
-
 
 private val isPlaying = mutableStateOf(false)
 private val isPaused = mutableStateOf(false)

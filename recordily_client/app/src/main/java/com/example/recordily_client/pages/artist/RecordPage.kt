@@ -2,7 +2,6 @@ package com.example.recordily_client.pages.artist
 
 import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,15 +40,8 @@ import com.example.recordily_client.components.NoRippleInteractionSource
 import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
-import java.util.jar.Manifest
 import androidx.core.content.ContextCompat.startActivity
-
-import android.net.Uri
-
 import android.content.Intent
-
-
-
 
 private val recordState = mutableStateOf(false)
 private val buttonsVisibility = mutableStateOf(false)

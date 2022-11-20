@@ -4,7 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -22,7 +21,6 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistViewModel
 import com.example.recordily_client.view_models.SongViewModel
 
@@ -54,8 +52,8 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.playlists))
 
-            if(playlist.value != null) {
-                PlaylistHeader(navController, playlist.value!!)
+            playlist.value?.let {
+                PlaylistHeader(navController, it)
             }
             HorizontalLine()
 
@@ -99,13 +97,13 @@ private fun PlaylistPageContent(navController: NavController, songs: List<SongRe
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (songs != null) {
-            for(song in songs){
+        songs?.let {
+            for(song in it){
                 SongCard(
                     song = song,
                     onSongClick = {
                         songViewModel.clearQueue()
-                        for(queueSong in songs){
+                        for(queueSong in it){
                             songViewModel.updateQueue(queueSong.id)
                         }
 

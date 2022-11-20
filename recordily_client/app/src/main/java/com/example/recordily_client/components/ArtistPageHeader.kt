@@ -53,7 +53,6 @@ fun ArtistPageHeader(artistInfo: UserResponse?, artistFollowers: Int?, isFollowe
 
 @Composable
 private fun ArtistHeaderContent(artistInfo: UserResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
-
     val coroutinesScope = rememberCoroutineScope()
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
 

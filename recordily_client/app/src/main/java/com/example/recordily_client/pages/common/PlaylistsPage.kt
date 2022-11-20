@@ -12,13 +12,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -28,7 +23,6 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.validation.UserCredentials
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistsViewModel
 
 private val searchInput = mutableStateOf("")
@@ -154,8 +148,8 @@ private fun SearchResult(navController: NavController, playlists: List<PlaylistR
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (playlists != null) {
-            for(playlist in playlists){
+        playlists?.let {
+            for(playlist in it){
                 PlaylistCard(
                     playlist = playlist,
                     onPlaylistClick = {

@@ -30,7 +30,6 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ArtistsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 
@@ -70,8 +69,8 @@ private fun ArtistsPageContent(
     navController: NavController,
     artists: List<UserResponse>?,
     artistsViewModel: ArtistsViewModel,
-    token: String)
-{
+    token: String
+){
     val searchResult = artistsViewModel.searchArtistsResultLiveData.observeAsState()
 
     Column(
@@ -162,7 +161,7 @@ private fun SearchResult(navController: NavController, artists: List<UserRespons
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (artists != null) {
+        artists?.let{
             for(artist in artists){
                 ArtistCard(
                     artist = artist,

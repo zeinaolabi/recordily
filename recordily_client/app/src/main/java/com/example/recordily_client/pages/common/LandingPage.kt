@@ -20,7 +20,6 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LandingPageViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

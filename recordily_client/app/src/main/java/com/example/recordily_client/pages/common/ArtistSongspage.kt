@@ -20,7 +20,6 @@ import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ArtistSongsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -29,13 +28,13 @@ private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
-fun ArtistSongsPage(navController: NavController, artist_id: String){
+fun ArtistSongsPage(navController: NavController, artistID: String){
     val limit = 40
     val artistSongsViewModel: ArtistSongsViewModel = viewModel()
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
 
-    artistSongsViewModel.getAlbums(token, artist_id, limit)
+    artistSongsViewModel.getAlbums(token, artistID, limit)
     val songs = artistSongsViewModel.songsResultLiveData.observeAsState()
 
     Box(

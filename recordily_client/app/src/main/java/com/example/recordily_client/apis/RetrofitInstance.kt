@@ -9,9 +9,9 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
-    val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+    private val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
 
-    val retrofit: Retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("http://192.168.1.114/api/")
         .client(getLoggingHttpClient())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
