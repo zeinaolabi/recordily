@@ -21,6 +21,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.SuggestedSongsViewModel
@@ -35,9 +36,9 @@ private val songID = mutableStateOf(-1)
 @Composable
 fun SuggestedSongsPage(navController: NavController){
     val limit = 20
-    val loginViewModel: LoginViewModel = viewModel()
     val suggestedSongsViewModel: SuggestedSongsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
     val coroutinesScope = rememberCoroutineScope()
     val songs = mutableStateListOf<SongResponse>()
     

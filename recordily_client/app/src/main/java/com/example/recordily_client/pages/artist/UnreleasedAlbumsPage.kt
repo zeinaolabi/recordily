@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumsViewModel
 import kotlinx.coroutines.launch
@@ -28,9 +29,9 @@ private const val limit = 40
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedAlbumsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val unreleasedAlbumsViewModel: UnreleasedAlbumsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     unreleasedAlbumsViewModel.getUnreleasedSongs(token, limit)
 

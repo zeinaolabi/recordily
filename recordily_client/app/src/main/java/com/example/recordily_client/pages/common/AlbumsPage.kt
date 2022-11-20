@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.AlbumResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.AlbumsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -21,11 +22,11 @@ import com.example.recordily_client.view_models.LoginViewModel
 @Composable
 fun AlbumsPage(navController: NavController, artist_id: String){
     val limit = 40
-    val loginViewModel: LoginViewModel = viewModel()
     val albumViewModel: AlbumsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    albumViewModel.getAlbums(token, artist_id, limit)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
+    albumViewModel.getAlbums(token, artist_id, limit)
     val albums = albumViewModel.albumsResultLiveData.observeAsState()
 
     Box(

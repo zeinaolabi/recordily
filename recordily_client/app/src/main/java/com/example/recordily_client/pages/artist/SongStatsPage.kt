@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.ExitBar
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistsViewModel
 import com.example.recordily_client.view_models.SongStatsViewModel
@@ -33,8 +34,8 @@ import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun SongStatsPage(navController: NavController, song_id: String){
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
     val songStatsViewModel: SongStatsViewModel = viewModel()
 
     songStatsViewModel.getSongViewsPerMonth(token, song_id)

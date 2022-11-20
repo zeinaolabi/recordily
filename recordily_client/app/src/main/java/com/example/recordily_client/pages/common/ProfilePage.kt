@@ -29,6 +29,7 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 
@@ -44,9 +45,10 @@ fun CommonProfilePage(navController: NavController){
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
-    val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val userType = userCredentials.getType()
 
     profileViewModel.getInfo(token)
     profileViewModel.getTopSongs(token, limit)
@@ -71,7 +73,7 @@ fun CommonProfilePage(navController: NavController){
             profile?.let {
                 ProfileHeader(navController, it)
 
-                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == artistType) {
+                if (userType == artistType) {
                     TopNavBar(
                         pageOptions = pageOptions,
                         currentPage = R.string.profile,

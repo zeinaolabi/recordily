@@ -27,6 +27,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 
@@ -34,12 +35,10 @@ import com.example.recordily_client.view_models.ProfileViewModel
 fun Header(navController: NavController){
     val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
     val profileViewModel: ProfileViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     profileViewModel.getInfo(token)
-
     val picture = profileViewModel.userInfoResultLiveData.observeAsState().value?.profile_picture
 
     Row(

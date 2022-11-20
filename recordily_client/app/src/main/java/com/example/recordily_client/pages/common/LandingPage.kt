@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.TopNavItem
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LandingPageViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -27,13 +28,13 @@ fun CommonLandingPage(navController: NavController){
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
-    val loginViewModel : LoginViewModel = viewModel()
     val landingPageViewModel : LandingPageViewModel = viewModel()
 
     val limit = 5
     val artistType = 0
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val userType = userCredentials.getType()
 
     landingPageViewModel.getTopPlayed(token, limit)
     landingPageViewModel.getRecentlyPlayed(token, limit)

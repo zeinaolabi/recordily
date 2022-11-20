@@ -20,6 +20,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistViewModel
 import com.example.recordily_client.view_models.SongViewModel
@@ -31,9 +32,9 @@ private val songID = mutableStateOf(-1)
 @ExperimentalAnimationApi
 @Composable
 fun PlaylistPage(navController: NavController, playlist_id: String){
-    val loginViewModel: LoginViewModel = viewModel()
     val playlistViewModel: PlaylistViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     playlistViewModel.getPlaylistSongs(token, playlist_id)
     playlistViewModel.getPlaylist(token, playlist_id)

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.R
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
 import kotlinx.coroutines.launch
@@ -33,9 +34,9 @@ fun Popup(
     playlistPopUpVisibility: MutableState<Boolean>,
     playlistID: Int?
 ){
-    val loginViewModel: LoginViewModel = viewModel()
     val popUpViewModel: PopUpViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     popUpViewModel.isLiked(token, songID)
 

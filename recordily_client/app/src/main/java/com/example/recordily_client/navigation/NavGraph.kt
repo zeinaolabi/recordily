@@ -1,6 +1,7 @@
 package com.example.recordily_client.navigation
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
@@ -12,14 +13,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.recordily_client.pages.artist.*
 import com.example.recordily_client.pages.common.*
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 
 @RequiresApi(Build.VERSION_CODES.S)
 @ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(navController: NavHostController){
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = loginViewModel.sharedPreferences.getString("token", "")
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    Log.i("tokentest", token)
+
     val destination = if(token != ""){
         Screen.LandingPage.route
     }

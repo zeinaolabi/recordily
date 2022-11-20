@@ -22,6 +22,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.RecentlyPlaySongsViewModel
 import com.example.recordily_client.view_models.SongViewModel
@@ -34,11 +35,11 @@ private val songID = mutableStateOf(-1)
 @Composable
 fun RecentlyPlayedSongsPage(navController: NavController){
     val limit = 40
-    val loginViewModel: LoginViewModel = viewModel()
     val recentlyPlayedViewModel: RecentlyPlaySongsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    recentlyPlayedViewModel.getRecentlyPlayed(token, limit)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
+    recentlyPlayedViewModel.getRecentlyPlayed(token, limit)
     val songs by recentlyPlayedViewModel.recentlyPlayResultLiveData.observeAsState()
 
     Box(

@@ -24,6 +24,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventsViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
@@ -34,14 +35,14 @@ private val openDialog = mutableStateOf(false)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CommonLiveEventsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val liveEventsViewModel: LiveEventsViewModel = viewModel()
 
     liveEventsViewModel.getLiveEvents()
 
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
-    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
-    val token = "Bearer" + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val id = userCredentials.getID()
+    val userType = userCredentials.getType()
     val lives by liveEventsViewModel.liveEventsResultLiveData.observeAsState()
 
     Scaffold(

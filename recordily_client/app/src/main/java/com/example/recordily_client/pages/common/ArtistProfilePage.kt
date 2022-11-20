@@ -22,6 +22,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ArtistProfileViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -35,8 +36,8 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     val limit = 3
     val topLimit = 5
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     artistProfileViewModel.getArtistFollowers(token, artist_id)
     artistProfileViewModel.getArtist(token, artist_id)

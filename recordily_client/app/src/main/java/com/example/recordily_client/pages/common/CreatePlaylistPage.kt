@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.CreatePlaylistViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
@@ -99,8 +100,8 @@ private fun CreatePlaylistContent(){
         }
     }
     val createPlaylistModel: CreatePlaylistViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
     val coroutineScope = rememberCoroutineScope()
 
     Image(

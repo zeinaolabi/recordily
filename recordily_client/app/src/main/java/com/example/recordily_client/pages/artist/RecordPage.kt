@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.components.NoRippleInteractionSource
 import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
@@ -249,7 +250,10 @@ private fun WaveRecordAnimation(recordViewModel: RecordViewModel){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable {
+            .clickable(
+                interactionSource = remember { NoRippleInteractionSource() },
+                indication = null
+            ) {
                 recordViewModel.stopRecording()
                 recordState.value = false
                 buttonsVisibility.value = true

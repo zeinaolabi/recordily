@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PopUpViewModel
 import kotlinx.coroutines.launch
@@ -77,12 +78,11 @@ fun PlaylistPopup(songID: Int, popUpVisibility: MutableState<Boolean>){
 
 @Composable
 private fun PopupContent(songID: Int){
-    val loginViewModel: LoginViewModel = viewModel()
     val popUpViewModel: PopUpViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     popUpViewModel.getPlaylists(token)
-
     val playlists = popUpViewModel.playlistsResultLiveData.observeAsState()
 
     Column(

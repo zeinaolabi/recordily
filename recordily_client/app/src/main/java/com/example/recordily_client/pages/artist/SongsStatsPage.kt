@@ -26,6 +26,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongsStatsViewModel
 import com.example.recordily_client.view_models.UnreleasedAlbumViewModel
@@ -38,9 +39,9 @@ private val songID = mutableStateOf(-1)
 @ExperimentalAnimationApi
 @Composable
 fun SongsStatsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
+    val userCredentials: UserCredentials = viewModel()
     val songsStatsViewModel: SongsStatsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val token = userCredentials.getToken()
 
     songsStatsViewModel.getUserSongs(token)
 

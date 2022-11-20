@@ -28,6 +28,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SearchResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SearchPageViewModel
 import com.example.recordily_client.view_models.SongViewModel
@@ -44,9 +45,9 @@ private val songID = mutableStateOf(-1)
 fun CommonSearchPage(navController: NavController){
     val limit = 3
     val searchPageViewModel: SearchPageViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
     val coroutinesScope = rememberCoroutineScope()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
     val songs = mutableStateListOf<SongResponse>()
 
     coroutinesScope.launch{

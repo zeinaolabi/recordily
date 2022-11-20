@@ -29,6 +29,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.TopSongsViewModel
@@ -41,11 +42,11 @@ private val songID = mutableStateOf(-1)
 @Composable
 fun TopSongsPage(navController: NavController){
     val limit = 40
-    val loginViewModel: LoginViewModel = viewModel()
     val topSongsViewModel: TopSongsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    topSongsViewModel.getTopSongs(token, limit)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
+    topSongsViewModel.getTopSongs(token, limit)
     val songs by topSongsViewModel.topSongsResultLiveData.observeAsState()
 
     Box(

@@ -35,8 +35,7 @@ import com.example.recordily_client.view_models.SongViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import android.os.CountDownTimer
-
-
+import com.example.recordily_client.validation.UserCredentials
 
 
 private val isPlaying = mutableStateOf(false)
@@ -48,8 +47,8 @@ private val popUpVisibility = mutableStateOf(false)
 @Composable
 fun SongPage(navController: NavController, songID: String) {
     val songViewModel: SongViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     songViewModel.isLiked(token, songID.toInt())
     songViewModel.getSong(token, songID)

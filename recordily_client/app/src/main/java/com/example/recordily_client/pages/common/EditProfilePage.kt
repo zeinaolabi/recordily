@@ -34,6 +34,7 @@ import coil.compose.rememberImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.UserResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.EditProfileViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
@@ -52,8 +53,8 @@ private var progressVisibility = mutableStateOf(false)
 @Composable
 fun EditProfilePage(navController: NavController) {
     val editProfileViewModel: EditProfileViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     editProfileViewModel.getUserInfo(token)
     val userInfo by editProfileViewModel.userInfoResultLiveData.observeAsState()

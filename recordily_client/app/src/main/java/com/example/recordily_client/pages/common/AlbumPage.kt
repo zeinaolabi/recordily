@@ -19,6 +19,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.AlbumViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
@@ -30,9 +31,9 @@ private val songID = mutableStateOf(-1)
 @ExperimentalAnimationApi
 @Composable
 fun AlbumPage(navController: NavController, album_id: String){
-    val loginViewModel: LoginViewModel = viewModel()
     val albumViewModel: AlbumViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     albumViewModel.getAlbumInfo(token, album_id)
     albumViewModel.getAlbumSongs(token, album_id)

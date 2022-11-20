@@ -18,6 +18,7 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedSongsViewModel
@@ -28,9 +29,9 @@ private const val limit = 40
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedSongsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val unreleasedSongsViewModel: UnreleasedSongsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     unreleasedSongsViewModel.getUnreleasedSongs(token, limit)
 

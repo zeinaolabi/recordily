@@ -21,6 +21,7 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.ProfileViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
@@ -33,10 +34,10 @@ fun UnreleasedPage(navController: NavController) {
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
-    val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
     val unreleasedViewModel: UnreleasedViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     profileViewModel.getInfo(token)
     unreleasedViewModel.getUnreleasedSongs(token, limit)

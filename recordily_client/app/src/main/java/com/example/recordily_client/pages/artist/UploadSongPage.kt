@@ -41,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -122,10 +123,9 @@ private fun UploadSongContent(){
 
     val coroutinesScope = rememberCoroutineScope()
     val uploadSongViewModel: UploadSongViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val id = userCredentials.getID()
 
     Image(
         painter =

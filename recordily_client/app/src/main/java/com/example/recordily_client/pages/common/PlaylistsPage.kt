@@ -27,6 +27,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LoginViewModel
 import com.example.recordily_client.view_models.PlaylistsViewModel
 
@@ -34,8 +35,8 @@ private val searchInput = mutableStateOf("")
 
 @Composable
 fun PlaylistsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
     val playlistsViewModel: PlaylistsViewModel = viewModel()
 
     playlistsViewModel.getPlaylists(token)

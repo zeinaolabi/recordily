@@ -38,9 +38,14 @@ import com.example.recordily_client.requests.MessageRequest
 import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventViewModel
 import com.example.recordily_client.view_models.LoginViewModel
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private val isPlaying = mutableStateOf(false)
 private val progress = mutableStateOf(0f)
@@ -54,11 +59,10 @@ private val senderInfo: HashMap<Int, UserResponse> =
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LiveEventPage(navController: NavController, live_event_id: String, host_id: String, live_name: String){
-    val loginViewModel: LoginViewModel = viewModel()
     val liveEventViewModel: LiveEventViewModel = viewModel()
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val userID = userCredentials.getID()
     val coroutineScope = rememberCoroutineScope()
 
     liveEventViewModel.getHostImage(token, host_id)
@@ -79,8 +83,8 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
                 navController = navController,
                 destination = Screen.LiveEventsPage.route,
                 popUpTo = Screen.LiveEventsPage.route
-
             )
+
             liveEventViewModel.stopPlayingSong()
             liveEventViewModel.clearMessages()
         }
@@ -121,12 +125,12 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
         ){
             LiveHeader(hostPicture.value, live_name)
 
-            SongPlaying(songInfo.value, liveEventViewModel, userType)
+            SongPlaying(songInfo.value, liveEventViewModel, host_id.toInt(), userID)
 
-            ChatSection(id, liveEventViewModel, chatMessages)
+            ChatSection(userID, liveEventViewModel, chatMessages, token)
         }
 
-        SendMessageRow(token, id, live_event_id, liveEventViewModel)
+        SendMessageRow(token, userID, live_event_id, liveEventViewModel)
 
         AnimatedVisibility(
             visible = popUpVisibility.value,
@@ -155,10 +159,14 @@ fun LiveEventPage(navController: NavController, live_event_id: String, host_id: 
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, chatMessages: LinkedHashMap<String, ChatMessage>){
-    liveEventViewModel.messagesResultLiveData.observeAsState()
-
+private fun ChatSection(
+    id: Int,
+    liveEventViewModel: LiveEventViewModel,
+    chatMessages: LinkedHashMap<String, ChatMessage>,
+    token: String
+){
     Column(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_small))
@@ -168,6 +176,13 @@ private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, chatMes
             .verticalScroll(ScrollState(rememberScrollState().maxValue))
     ){
         for(message in chatMessages.values){
+
+            runBlocking {
+                if (!senderInfo.containsKey(message.fromID)) {
+                    senderInfo[message.fromID] = liveEventViewModel.getArtist(token, message.fromID.toString())
+                }
+            }
+
             if (message.fromID == id) {
                 Row(modifier = Modifier.align(Alignment.End)) {
                     ToMessage(
@@ -447,9 +462,8 @@ private fun FromMessage(message: String, time: String, name: String?, picture: S
 }
 
 @Composable
-private fun SongPlaying(song: SongResponse?, liveEventViewModel: LiveEventViewModel, userType: Int){
+private fun SongPlaying(song: SongResponse?, liveEventViewModel: LiveEventViewModel, hostID: Int, userID: Int){
     val duration = remember { mutableStateOf(0L) }
-    val artistType = 0
 
     song?.path?.let { path ->
          liveEventViewModel.getDuration(path)?.let { durationTime ->
@@ -488,7 +502,7 @@ private fun SongPlaying(song: SongResponse?, liveEventViewModel: LiveEventViewMo
             .background(MaterialTheme.colors.secondary)
             .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
             .clickable {
-                if (userType == artistType) {
+                if (hostID == userID) {
                     popUpVisibility.value = true
                 }
             }

@@ -36,6 +36,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.EditPlaylistViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
@@ -54,8 +55,8 @@ private var progressVisibility = mutableStateOf(false)
 @Composable
 fun EditPlaylistPage(navController: NavController, playlist_id: String) {
     val editPlaylistModel: EditPlaylistViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     editPlaylistModel.getPlaylist(token, playlist_id)
     val playlist = editPlaylistModel.playlistResultLiveData.observeAsState()
