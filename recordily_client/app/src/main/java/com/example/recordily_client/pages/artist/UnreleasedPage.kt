@@ -1,6 +1,7 @@
 package com.example.recordily_client.pages.artist
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -133,7 +134,7 @@ private fun UnreleasedContentColumn(
 ){
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(ScrollState(0))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
         UnreleasedSongsCard(

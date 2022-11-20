@@ -1,8 +1,10 @@
 package com.example.recordily_client.pages.artist
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -74,6 +76,7 @@ private fun UnreleasedAlbumContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
         if(songs == null || songs.isEmpty()){

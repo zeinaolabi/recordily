@@ -140,8 +140,7 @@ private fun SongsStatsContent(
 @Composable
 private fun SongsResult(navController: NavController, songs: List<SongResponse>) {
     Column(
-        modifier = Modifier
-            .verticalScroll(ScrollState(0))
+        modifier = Modifier.verticalScroll(ScrollState(0))
     ) {
         if (songs.isEmpty()) {
             EmptyState(message = stringResource(id = R.string.no_songs_found))

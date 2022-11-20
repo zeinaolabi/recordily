@@ -62,60 +62,71 @@ fun CommonSearchPage(navController: NavController){
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ){
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        vertical = dimensionResource(id = R.dimen.padding_large),
-                        horizontal = dimensionResource(id = R.dimen.padding_medium)
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-            ){
-                SearchPageContent(navController, searchPageViewModel, token, songs)
-            }
-
-            Row(
-                modifier = Modifier.fillMaxHeight(),
-                verticalAlignment = Alignment.Bottom
-            ){
-                BottomNavigationBar(navController)
-            }
-        }
-
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            Popup(
-                songID = songID.value,
-                popUpVisibility = popUpVisibility,
-                playlistPopUpVisibility = playlistPopUpVisibility,
-                playlistID = null
-            )
-        }
-
-        AnimatedVisibility(
-            visible = playlistPopUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            PlaylistPopup(
-                songID = songID.value,
-                popUpVisibility = playlistPopUpVisibility
-            )
-        }
+        SearchPageLayout(navController, searchPageViewModel, token, songs)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             searchInput.value = ""
         }
+    }
+}
+
+@ExperimentalAnimationApi
+@Composable
+private fun SearchPageLayout(
+    navController: NavController,
+    searchPageViewModel: SearchPageViewModel,
+    token: String,
+    suggestedResult: List<SongResponse>
+){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = dimensionResource(id = R.dimen.padding_large),
+                    horizontal = dimensionResource(id = R.dimen.padding_medium)
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+        ){
+            SearchPageContent(navController, searchPageViewModel, token, suggestedResult)
+        }
+
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.Bottom
+        ){
+            BottomNavigationBar(navController)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = popUpVisibility.value,
+        enter = expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+    ) {
+        Popup(
+            songID = songID.value,
+            popUpVisibility = popUpVisibility,
+            playlistPopUpVisibility = playlistPopUpVisibility,
+            playlistID = null
+        )
+    }
+
+    AnimatedVisibility(
+        visible = playlistPopUpVisibility.value,
+        enter = expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+    ) {
+        PlaylistPopup(
+            songID = songID.value,
+            popUpVisibility = playlistPopUpVisibility
+        )
     }
 }
 

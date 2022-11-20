@@ -5,8 +5,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -54,46 +56,51 @@ fun SuggestedSongsPage(navController: NavController){
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
-        Column(modifier = Modifier.fillMaxSize()){
-            ExitBar(
-                navController = navController,
-                title = stringResource(id = R.string.suggested)
-            )
+        SuggestedSongsLayout(navController, songs)
+    }
+}
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = dimensionResource(id = R.dimen.padding_medium)),
-            ){
-                HorizontalLine()
+@Composable
+private fun SuggestedSongsLayout(navController: NavController, songs: List<SongResponse>) {
+    Column(modifier = Modifier.fillMaxSize()){
+        ExitBar(
+            navController = navController,
+            title = stringResource(id = R.string.suggested)
+        )
 
-                SuggestedSongsContent(navController, songs)
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = dimensionResource(id = R.dimen.padding_medium)),
+        ){
+            HorizontalLine()
+
+            SuggestedSongsContent(navController, songs)
         }
+    }
 
-        AnimatedVisibility(
-            visible = popUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            Popup(
-                songID = songID.value,
-                popUpVisibility = popUpVisibility,
-                playlistPopUpVisibility = playlistPopUpVisibility,
-                playlistID = null
-            )
-        }
+    AnimatedVisibility(
+        visible = popUpVisibility.value,
+        enter = expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+    ) {
+        Popup(
+            songID = songID.value,
+            popUpVisibility = popUpVisibility,
+            playlistPopUpVisibility = playlistPopUpVisibility,
+            playlistID = null
+        )
+    }
 
-        AnimatedVisibility(
-            visible = playlistPopUpVisibility.value,
-            enter = expandVertically(expandFrom = Alignment.CenterVertically),
-            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-        ) {
-            PlaylistPopup(
-                songID = songID.value,
-                popUpVisibility = playlistPopUpVisibility
-            )
-        }
+    AnimatedVisibility(
+        visible = playlistPopUpVisibility.value,
+        enter = expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+    ) {
+        PlaylistPopup(
+            songID = songID.value,
+            popUpVisibility = playlistPopUpVisibility
+        )
     }
 }
 
@@ -104,6 +111,7 @@ private fun SuggestedSongsContent(navController: NavController, songs: List<Song
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
         for(song in songs){
