@@ -153,7 +153,7 @@ class LiveEventViewModel(application: Application): AndroidViewModel(application
                 mediaPlayer.reset()
                 mediaPlayer.setDataSource(audioUrl)
                 mediaPlayer.isLooping = true
-                mediaPlayer.prepare()
+                mediaPlayer.prepareAsync()
                 mediaPlayer.start()
             } catch (e: IOException) {
                 e.printStackTrace()

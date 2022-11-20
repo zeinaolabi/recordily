@@ -3,6 +3,7 @@ package com.example.recordily_client.pages.common
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
@@ -22,11 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -109,6 +112,11 @@ private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: Edi
     val name = remember { mutableStateOf(userInfo.name ?: "") }
     val bio = remember { mutableStateOf(userInfo.biography ?: "") }
 
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){}
+    val context = LocalContext.current
+
     Image(
         painter =
         when {
@@ -128,9 +136,21 @@ private fun EditProfileContent(userInfo: UserResponse, editProfileViewModel: Edi
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
             .clickable {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) -> {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.type = "image/*"
+                        startForResult.launch(intent)
+                    }
+                    else -> {
+                        permissionLauncher.launch(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                        )
+                    }
+                }
             },
         contentScale = ContentScale.Crop
     )

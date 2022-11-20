@@ -72,7 +72,7 @@ class SongViewModel: ViewModel() {
         try {
             mediaPlayer.setDataSource(audioUrl)
             mediaPlayer.isLooping = true
-            mediaPlayer.prepare()
+            mediaPlayer.prepareAsync()
             mediaPlayer.start()
         } catch (e: IOException) {
             e.printStackTrace()

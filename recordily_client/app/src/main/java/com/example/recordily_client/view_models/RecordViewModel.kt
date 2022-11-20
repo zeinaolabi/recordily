@@ -25,23 +25,9 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
     private var state: Boolean = false
     private var currentFile: File? = null
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    fun recordAudio(){
-        if(ActivityCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO)  != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(
-                context as Activity, arrayOf(
-                    android.Manifest.permission.RECORD_AUDIO,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                111)
-        }
-        else{
-            startRecording()
-        }
-    }
-
     @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.S)
-    private fun startRecording(){
+     fun startRecording(){
         mediaRecorder = MediaRecorder()
 
         val dir = File(Environment.getExternalStorageDirectory().absolutePath)
@@ -98,7 +84,7 @@ class RecordViewModel(application: Application): AndroidViewModel(application) {
         val mediaPlayer = MediaPlayer()
         try {
             mediaPlayer.setDataSource(path)
-            mediaPlayer.prepare()
+            mediaPlayer.prepareAsync()
             mediaPlayer.start()
         } catch (e: IOException) {
             e.printStackTrace()

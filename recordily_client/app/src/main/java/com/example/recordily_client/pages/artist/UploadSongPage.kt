@@ -3,6 +3,7 @@ package com.example.recordily_client.pages.artist
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.*
@@ -38,7 +39,9 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.validation.UserCredentials
@@ -126,6 +129,10 @@ private fun UploadSongContent(){
     val userCredentials: UserCredentials = viewModel()
     val token = userCredentials.getToken()
     val id = userCredentials.getID()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){}
+    val context = LocalContext.current
 
     Image(
         painter =
@@ -141,9 +148,21 @@ private fun UploadSongContent(){
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
             .clickable {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) -> {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.type = "image/*"
+                        startForResult.launch(intent)
+                    }
+                    else -> {
+                        permissionLauncher.launch(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                        )
+                    }
+                }
             },
         contentScale = ContentScale.Crop
     )
