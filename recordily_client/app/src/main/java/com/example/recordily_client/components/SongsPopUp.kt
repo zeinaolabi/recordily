@@ -80,9 +80,15 @@ fun SongsPopUp(
                         horizontal = dimensionResource(id = R.dimen.padding_medium)
                     )
             ){
-                SmallTealButton(text = stringResource(id = R.string.end_live)) {
-                    onClick()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    SmallTealButton(text = stringResource(id = R.string.end_live)) {
+                        onClick()
+                    }
                 }
+
                 SearchTextField(input = input)
 
                 PopupContent(input, popUpVisibility, liveEventID)
