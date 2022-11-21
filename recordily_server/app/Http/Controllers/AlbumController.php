@@ -48,7 +48,7 @@ class AlbumController extends Controller
 
     public function getAlbumSongs(AlbumRequest $request): JsonResponse
     {
-        $songs = Album::find($request->route()->parameter('album_id'))->songs->where('is_published', 1)
+        $songs = Album::find($request->route()->parameter('album_id'))->songs
             ->each(fn (Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SongRequest;
+use App\Jobs\ProcessSong;
 use App\Models\Like;
 use App\Models\Play;
 use App\Models\Song;
@@ -226,67 +227,17 @@ class SongController extends Controller
         return response()->json($songs);
     }
 
-    /**
-     * @throws Exception
-     * @todo   dependency injection
-     */
     public function uploadSong(Request $request): JsonResponse
     {
         $id = $this->authManager->guard()->id();
         $metadata = json_decode($request->get('metadata'), true);
+        $song = base64_encode($request->file('file')->getContent());
+        $picture = base64_encode($request->file('picture')->getContent());
+        $pictureExtension = $request->file('picture')->extension();
 
-        $path = public_path() . '/uploads/' . $id . '/';
-        $songPath = $path . $metadata['song_id'] . '/';
+        ProcessSong::dispatch($id, $metadata, $song, $picture, $pictureExtension);
 
-        if (!File::exists($path)) {
-            File::makeDirectory($path);
-        }
-
-        if (!File::exists($songPath)) {
-            File::makeDirectory($songPath);
-        }
-
-        try {
-            $song = $request->file('file')->getContent();
-            file_put_contents($songPath . $metadata['chunk_num'], $song);
-        } catch (Exception $e) {
-            return response()->json($e, 400);
-        }
-
-        $chunks = Storage::disk('uploads')->files($id . '/' . $metadata['song_id'] . '/');
-
-        if (count($chunks) == $metadata['chunks_size']) {
-            for ($i = 0; $i < count($chunks); $i++) {
-                $contents = file_get_contents($songPath . $i);
-                file_put_contents($songPath . $metadata['song_id'] . '.mp3', $contents, FILE_APPEND);
-                File::delete($songPath . $i);
-            }
-
-            try {
-                $picture = $request->file('picture');
-
-                $picturePath = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
-                file_put_contents(public_path() . $picturePath, $picture->getContent());
-            } catch (Exception $e) {
-                return response()->json(['error' => $e], 400);
-            }
-
-            $size = File::size($songPath . $metadata['song_id'] . '.mp3');
-
-            if (!array_key_exists("album_id", $metadata)) {
-                $albumID = null;
-            } else {
-                $albumID = $metadata['album_id'];
-            }
-
-            $songSavedPath = '/uploads/' . $id . '/' . $metadata['song_id'] . '/' . $metadata['song_id'] . '.mp3';
-
-            Song::createSong($metadata['name'], $picturePath, $songSavedPath, $size, $id, $albumID);
-
-            return response()->json("Successfully Uploaded", 201);
-        }
-
-        return response()->json("Chunk Uploaded Successfully", 201);
+        return response()->json("Successfully uploaded", 201);
     }
 
     private function getViews(Collection $plays): array

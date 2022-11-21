@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('search_for_song/{input}',"searchForSong");
             Route::get('get_song_likes/{song_id}',"getSongLikes");
             Route::get('get_song_plays/{song_id}',"getSongViews");
+            Route::get('get_song_monthly_views/{song_id}',"getSongViewsPerMonth");
             Route::get('get_views_per_month',"getViewsPerMonth");
             Route::get('unreleased_songs/{limit}',"getUnreleasedSongs");
         }
@@ -47,7 +48,6 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'auth'], function () {
             Route::get('search_playlists/{input}', "searchPlaylists");
             Route::get('add_to_playlist/{playlist_id}/{song_id}', "addToPlaylist");
             Route::get('remove_to_playlist/{playlist_id}/{song_id}', "removeFromPlaylist");
-            Route::get('get_song_monthly_views/{song_id}',"getSongViewsPerMonth");
         }
     );
 
