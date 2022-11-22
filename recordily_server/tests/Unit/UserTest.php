@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Song;
 use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,6 +14,8 @@ class UserTest extends TestCase
 
     public function test_unauthorization()
     {
+        $this->seed();
+
         $response = $this->post('/api/login', [
             'email' => 'not_registered@gmail.com',
             'password' => 'test123'
@@ -23,6 +26,8 @@ class UserTest extends TestCase
 
     public function test_registration()
     {
+        $this->seed();
+
         $response = $this->post('/api/register', [
             'email' => 'new_user@gmail.com',
             'password' => 'test123',
@@ -34,6 +39,8 @@ class UserTest extends TestCase
 
     public function test_user_can_get_liked_songs()
     {
+        $this->seed();
+
         $token = JWTAuth::fromUser(User::take(1)->first());
         $response = $this->get('/api/auth/liked_songs', ['Authorization' => "Bearer $token"]);
         $response->assertStatus(200);
@@ -41,15 +48,21 @@ class UserTest extends TestCase
 
     public function test_check_if_song_is_liked()
     {
+        $this->seed();
+
         $token = JWTAuth::fromUser(User::take(1)->first());
-        $response = $this->get('/api/auth/is_liked/1', ['Authorization' => "Bearer $token"]);
+        $songID = Song::take(1)->first()->id;
+        $response = $this->get('/api/auth/is_liked/'. $songID, ['Authorization' => "Bearer $token"]);
         $response->assertStatus(200);
     }
 
     public function test_get_song()
     {
+        $this->seed();
+
         $token = JWTAuth::fromUser(User::take(1)->first());
-        $response = $this->get('/api/auth/get_song/1', ['Authorization' => "Bearer $token"]);
+        $songID = Song::take(1)->first()->id;
+        $response = $this->get('/api/auth/get_song/'.$songID, ['Authorization' => "Bearer $token"]);
         $response->assertStatus(200);
     }
 
@@ -64,10 +77,5 @@ class UserTest extends TestCase
         $this->assertDatabaseHas('users', [
             'email' => 'john_doe@gmail.com'
         ]);
-    }
-
-    public function test_if_seeders_work()
-    {
-        $this->seed();
     }
 }
