@@ -3,104 +3,87 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AlbumRequest;
+use App\Http\Requests\createAlbumRequest;
 use App\Models\Album;
 use App\Models\Song;
 use Exception;
 use File;
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {
-    public function getAlbum(int $album_id): JsonResponse
-    {
-        $album = Album::where('id', $album_id)->first();
+    use InfoTrait;
 
-        $album->picture = URL::to($album->picture);
-        $album->artist_name = $album->user->name;
-        unset($album->user);
+    public function __construct(
+        private readonly Factory $authManager,
+        private readonly UrlGenerator $urlGenerator,
+        private readonly Filesystem $filesystem,
+        private readonly FilesystemManager $filesystemManager
+    ) {
+    }
+
+    public function getAlbum(AlbumRequest $request): JsonResponse
+    {
+        $album = Album::find($request->route()->parameter('album_id'));
+
+        $this->imageToURL($album);
 
         return response()->json($album);
     }
 
     public function getAlbums(): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
 
-        $albums = Album::where('user_id', $id)->get();
-        $this->getArtistName($albums);
+        $albums = Album::where('user_id', $id)->get()
+            ->each(fn (Album $album) => $this->imageToURL($album));
 
         return response()->json($albums);
     }
 
-    public function getAlbumSongs(int $album_id): JsonResponse
+    public function getAlbumSongs(AlbumRequest $request): JsonResponse
     {
-        $songs = Song::where('album_id', $album_id)->where('is_published', 0)->get();
-
-        $this->getPicture($songs);
-        $this->getArtistName($songs);
+        $songs = Album::find($request->route()->parameter('album_id'))->songs
+            ->each(fn (Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);
     }
 
+    public function addAlbum(createAlbumRequest $request): JsonResponse
+    {
+        $id = $this->authManager->guard()->id();
+
+        $pictureSaved = $this->saveImage($request->file('picture'), $id);
+
+        if ($pictureSaved === false) {
+            return response()->json(['Unable To Save Picture'], 400);
+        }
+
+        $albumName = str_replace('"', '', $request->get('name'));
+
+        if (Album::createAlbum($id, $albumName, $pictureSaved) === null) {
+            return response()->json('Unsuccessful Attempt to Create Album', 400);
+        }
+
+        return response()->json("Successfully Created", 201);
+    }
+
+    public function publishAlbum(AlbumRequest $request): JsonResponse
+    {
+        return Album::publishAlbum($request->route()->parameter('album_id'));
+    }
+
     public function getUnreleasedAlbums(int $limit): JsonResponse
     {
-        $id = Auth::id();
-        $albums = Album::getArtistUnreleasedAlbums($id, $limit);
-
-        $this->getPicture($albums);
-        $this->getArtistName($albums);
+        $id = $this->authManager->guard()->id();
+        $albums = Album::getArtistUnreleasedAlbums($id, $limit)
+            ->each(fn (Album $album) => $this->imageToURL($album));
 
         return response()->json($albums);
-    }
-
-    public function addAlbum(AlbumRequest $request): JsonResponse
-    {
-        $id = Auth::id();
-
-        $path = public_path() . '/images/' . $id;
-
-        if (!File::exists($path)) {
-            File::makeDirectory($path);
-        }
-
-        try {
-            $picture = $request->file('picture');
-
-            $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
-            file_put_contents(public_path() . $picture_path, $picture->getContent());
-        } catch (Exception $e) {
-            return response()->json(['error' => $e], 400);
-        }
-
-        $album_name = str_replace('"', '', $request->get('name'));
-
-        if (!Album::createAlbum($id, $album_name, $picture_path)) {
-            return response()->json('unsuccessfully attempt', 400);
-        }
-
-        return response()->json('successfully created', 201);
-    }
-
-    public function publishAlbum(int $album_id): JsonResponse
-    {
-        return Album::publishAlbum($album_id);
-    }
-
-    private function getPicture(Collection $array)
-    {
-        foreach ($array as $data) {
-            $data->picture = URL::to($data->picture);
-        }
-    }
-
-    private function getArtistName($array)
-    {
-        foreach ($array as $data) {
-            $data->artist_name = $data->user->name;
-            unset($data->user);
-        }
     }
 }

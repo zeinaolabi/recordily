@@ -9,15 +9,15 @@ import com.example.recordily_client.services.ArtistService
 import kotlinx.coroutines.launch
 
 class AlbumsViewModel: ViewModel() {
-    private val service = ArtistService()
+    private val albumService = ArtistService()
 
     private val albumsResult = MutableLiveData<List<AlbumResponse>>()
     val albumsResultLiveData : LiveData<List<AlbumResponse>>
         get() = albumsResult
 
-    fun getAlbums(token: String, artist_id: String, limit: Int){
+    fun getAlbums(token: String, artistID: String, limit: Int){
         viewModelScope.launch {
-            albumsResult.postValue(service.getAlbums(token, artist_id, limit))
+            albumsResult.postValue(albumService.getAlbums(token, artistID, limit))
         }
     }
 }

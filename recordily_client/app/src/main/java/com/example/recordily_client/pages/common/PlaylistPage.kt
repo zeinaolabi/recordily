@@ -1,9 +1,9 @@
 package com.example.recordily_client.pages.common
 
 import androidx.compose.animation.*
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -20,8 +20,9 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.PlaylistViewModel
+import com.example.recordily_client.view_models.SongViewModel
 
 private val popUpVisibility = mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
@@ -30,9 +31,9 @@ private val songID = mutableStateOf(-1)
 @ExperimentalAnimationApi
 @Composable
 fun PlaylistPage(navController: NavController, playlist_id: String){
-    val loginViewModel: LoginViewModel = viewModel()
     val playlistViewModel: PlaylistViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     playlistViewModel.getPlaylistSongs(token, playlist_id)
     playlistViewModel.getPlaylist(token, playlist_id)
@@ -51,8 +52,8 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
         ){
             ExitBar(navController, stringResource(id = R.string.playlists))
 
-            if(playlist.value != null) {
-                PlaylistHeader(navController, playlist.value!!)
+            playlist.value?.let {
+                PlaylistHeader(navController, it)
             }
             HorizontalLine()
 
@@ -88,20 +89,27 @@ fun PlaylistPage(navController: NavController, playlist_id: String){
 
 @Composable
 private fun PlaylistPageContent(navController: NavController, songs: List<SongResponse>?){
+    val songViewModel: SongViewModel = viewModel()
+
     Column(
         modifier = Modifier
+            .verticalScroll(ScrollState(0))
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-            .verticalScroll(rememberScrollState())
     ){
-        if (songs != null) {
-            for(song in songs){
+        songs?.let {
+            for(song in it){
                 SongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in it){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id,
                             popUpTo = Screen.PlaylistPage.route
                         )
                     },

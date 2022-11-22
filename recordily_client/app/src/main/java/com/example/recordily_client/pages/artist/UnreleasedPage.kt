@@ -1,7 +1,8 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,21 +21,22 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ProfileViewModel
 import com.example.recordily_client.view_models.UnreleasedViewModel
 
 private const val limit = 3
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UnreleasedPage(navController: NavController) {
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
-    val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
     val unreleasedViewModel: UnreleasedViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     profileViewModel.getInfo(token)
     unreleasedViewModel.getUnreleasedSongs(token, limit)
@@ -130,30 +132,23 @@ private fun UnreleasedContentColumn(
 ){
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(ScrollState(0))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
         ){
         UnreleasedSongsCard(
             title = stringResource(id = R.string.unreleased_songs),
             songs = unreleasedSongs,
+            navController = navController,
             destination = {
-                       navigateTo(
-                           navController = navController,
-                           destination = Screen.UnreleasedSongsPage.route,
-                           popUpTo = Screen.UnreleasedPage.route
-                       )
-            },
-            onSongClick = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.SongPage.route,
+                    destination = Screen.UnreleasedSongsPage.route,
                     popUpTo = Screen.UnreleasedPage.route
                 )
             },
             viewModel = unreleasedViewModel,
             token = token,
             onUploadClick = { unreleasedViewModel.getUnreleasedSongs(token, limit) }
-
         )
 
         UnreleasedAlbumsCard(

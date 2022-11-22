@@ -3,6 +3,7 @@ package com.example.recordily_client.pages.artist
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.*
@@ -37,20 +38,19 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.core.content.ContextCompat
 import coil.compose.rememberImagePainter
 import com.example.recordily_client.requests.UploadSongRequest
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.FileOutputStream
-
 import java.io.File
-
 import java.io.BufferedInputStream
-
 import java.io.FileInputStream
 import kotlin.collections.ArrayList
 
@@ -62,7 +62,9 @@ private val songName = mutableStateOf("")
 private val fileName = mutableStateOf("")
 private var chunks: File = File("")
 private var selectedAlbum: MutableState<Int?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun UploadSongPage(navController: NavController) {
     Scaffold(
@@ -85,13 +87,30 @@ fun UploadSongPage(navController: NavController) {
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            songName.value = ""
+            fileName.value = ""
+            selectedAlbum.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @SuppressLint("UsableSpace")
 @Composable
 private fun UploadSongContent(){
-    val logo = if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo else R.drawable.recordily_light_mode
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    val logo =
+        if (isSystemInDarkTheme()) R.drawable.recordily_gray_logo
+        else R.drawable.recordily_light_mode
+
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)
@@ -107,10 +126,13 @@ private fun UploadSongContent(){
 
     val coroutinesScope = rememberCoroutineScope()
     val uploadSongViewModel: UploadSongViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val id = userCredentials.getID()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){}
+    val context = LocalContext.current
 
     Image(
         painter =
@@ -126,11 +148,23 @@ private fun UploadSongContent(){
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
             .clickable {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) -> {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.type = "image/*"
+                        startForResult.launch(intent)
+                    }
+                    else -> {
+                        permissionLauncher.launch(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                        )
+                    }
+                }
             },
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
     
     TextField(
@@ -143,58 +177,67 @@ private fun UploadSongContent(){
 
     PickAudioRow()
 
-    MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
-        if(songName.value == "" || image == File("")){
-            errorMessage.value = "Empty Field"
-            visible.value = true
-            return@MediumRoundButton
-        }
+    if(!progressVisibility.value) {
+        MediumRoundButton(text = stringResource(id = R.string.save), onClick = {
+            progressVisibility.value = true
+            visible.value = false
 
-        val files = splitFile(chunks)
-        val songID = System.currentTimeMillis().toString() + id
+            if(songName.value == "" || image == File("")){
+                errorMessage.value = "Empty Field"
+                visible.value = true
+                progressVisibility.value = false
+                return@MediumRoundButton
+            }
 
-        files.forEachIndexed { index, file ->
-            val uploadSongRequest = UploadSongRequest(
-                user_id =  id,
-                name = songName.value,
-                image ="test",
-                chunks_size = files.size,
-                chunk_num = index,
-                song_id = songID,
-                album_id = selectedAlbum.value
-            )
+            val files = splitFile(chunks)
+            val songID = System.currentTimeMillis().toString() + id
 
-            coroutinesScope.launch {
-                val isCreated = uploadSongViewModel.uploadSong(
-                    token = token,
-                    uploadSongRequest = uploadSongRequest,
-                    song = MultipartBody.Part.createFormData(
-                        "file",
-                        songName.value,
-                        RequestBody.create("audio/*".toMediaTypeOrNull(),
-                            file)
-                    ),
-                    image = MultipartBody.Part.createFormData(
-                        "picture",
-                        "picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image
-                        )
-                    )
+            files.forEachIndexed { index, file ->
+                val uploadSongRequest = UploadSongRequest(
+                    user_id =  id,
+                    name = songName.value,
+                    image ="test",
+                    chunks_size = files.size,
+                    chunk_num = index,
+                    song_id = songID,
+                    album_id = selectedAlbum.value
                 )
 
-                if(!isCreated){
-                    errorMessage.value = "Network error"
-                    visible.value = true
-                    return@launch
+                coroutinesScope.launch {
+                    val isCreated = uploadSongViewModel.uploadSong(
+                        token = token,
+                        uploadSongRequest = uploadSongRequest,
+                        song = MultipartBody.Part.createFormData(
+                            "file",
+                            songName.value,
+                            RequestBody.create("audio/*".toMediaTypeOrNull(),
+                                file)
+                        ),
+                        image = MultipartBody.Part.createFormData(
+                            "picture",
+                            "picture",
+                            RequestBody.create("image/*".toMediaTypeOrNull(),
+                                image
+                            )
+                        )
+                    )
+
+                    if(!isCreated){
+                        errorMessage.value = "Network error"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
                 }
             }
 
-        }
-
-        errorMessage.value = "Successfully Created!"
-        visible.value = true
-    })
+            errorMessage.value = "Successfully Created!"
+            visible.value = true
+            progressVisibility.value = false
+        })
+    } else {
+        CircularProgressBar()
+    }
 
     AnimatedVisibility(
         visible = visible.value,
@@ -259,9 +302,8 @@ private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: S
             },
             modifier = Modifier
                 .fillMaxWidth(0.9f)
-                .height(250.dp)
+                .height(200.dp)
                 .background(colorResource(id = R.color.darker_gray))
-                .verticalScroll(ScrollState(0))
         ) {
             albumList.keys.forEach { albumID ->
                 DropdownMenuItem(
@@ -283,8 +325,9 @@ private fun DropDownAlbumMenu(uploadSongViewModel: UploadSongViewModel, token: S
 
 @Composable
 private fun PickAudioRow(){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult())
-    { result: ActivityResult ->
+    val startForResult = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val intent = result.data
             val dir = File(Environment.getExternalStorageDirectory().absolutePath)

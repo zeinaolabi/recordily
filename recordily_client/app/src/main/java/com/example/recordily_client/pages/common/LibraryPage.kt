@@ -1,8 +1,6 @@
 package com.example.recordily_client.pages.common
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ScrollState
@@ -10,17 +8,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
@@ -29,22 +24,22 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LikesPageViewModel
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.view_models.SongViewModel
 
 private val searchInput = mutableStateOf("")
 private val popUpVisibility = mutableStateOf(false)
 private val playlistPopUpVisibility = mutableStateOf(false)
 private val songID = mutableStateOf(-1)
 
-@ExperimentalAnimationApi
 @Composable
 fun LibraryPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val likesPageViewModel: LikesPageViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
-    likesPageViewModel.getLikedSongs(token)
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
+    likesPageViewModel.getLikedSongs(token)
     val songsLiked = likesPageViewModel.likedSongsResultLiveData.observeAsState()
 
     Box(
@@ -85,10 +80,21 @@ fun LibraryPage(navController: NavController){
             )
         }
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            searchInput.value = ""
+        }
+    }
 }
 
 @Composable
-private fun LibraryPageContent(navController: NavController, songsLiked: List<SongResponse>?, token: String, likesPageViewModel: LikesPageViewModel){
+private fun LibraryPageContent(
+    navController: NavController,
+    songsLiked: List<SongResponse>?,
+    token: String,
+    likesPageViewModel: LikesPageViewModel
+){
     val searchResult = likesPageViewModel.searchResultLiveData.observeAsState()
 
     Column(
@@ -114,6 +120,7 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
     val pageOptions = listOf(
         TopNavItem.LikesPage, TopNavItem.PlaylistsPage, TopNavItem.ArtistsPage
     )
+    val songViewModel: SongViewModel = viewModel()
 
     TopNavBar(
         pageOptions = pageOptions,
@@ -134,13 +141,17 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
         }
         else{
             for(song in songsLiked){
-                Log.i("song", song.toString())
                 SongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songsLiked){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
                             popUpTo = Screen.LibraryPage.route
                         )
                     },
@@ -168,14 +179,14 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (songsLiked != null) {
-            for(song in songsLiked){
+        songsLiked?.let{
+            for(song in it){
                 SongCard(
                     song = song,
                     onSongClick = {
                         navigateTo(
                             navController = navController,
-                            destination = Screen.SongPage.route,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
                             popUpTo = Screen.LibraryPage.route
                         )
                     },

@@ -6,6 +6,10 @@ use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
 use Exception;
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -15,37 +19,41 @@ use Illuminate\Support\Facades\URL;
 
 class UserController extends Controller
 {
+    use InfoTrait;
+
+    public function __construct(
+        private readonly Factory $authManager,
+        private readonly UrlGenerator $urlGenerator,
+        private readonly Filesystem $filesystem,
+        private readonly FilesystemManager $filesystemManager
+    ) {
+    }
+
     public function getUserInfo(): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
         $user = User::find($id);
-        $user->profile_picture = URL::to($user->profile_picture);
+
+        if ($user->profile_picture !== null) {
+            $user->profile_picture = $this->urlGenerator->to($user->profile_picture);
+        }
 
         return response()->json($user);
     }
 
     public function editProfile(Request $request): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
         $user = User::find($id);
 
-        $path = public_path() . '/images/' . $id;
+        if ($request->file('profile_picture') !== null) {
+            $pictureSaved = $this->saveImage($request->file('profile_picture'), $id);
 
-        if (!File::exists($path)) {
-            File::makeDirectory($path);
-        }
-
-        if ($request->file('profile_picture')) {
-            try {
-                $picture = $request->file('profile_picture');
-
-                $picture_path = '/images/' . $id . '/' . uniqid() . '.' . $picture->extension();
-                file_put_contents(public_path() . $picture_path, $picture->getContent());
-
-                $user->profile_picture = $picture_path;
-            } catch (Exception $e) {
-                return response()->json(['error' => $e], 400);
+            if ($pictureSaved === false) {
+                return response()->json(['Unable To Save Picture'], 400);
             }
+
+            $user->profile_picture = $pictureSaved;
         }
 
         $user->name = $request->get('name') ? str_replace('"', '', $request->get('name')) : $user->name;
@@ -59,60 +67,50 @@ class UserController extends Controller
         return response()->json('successfully edited', 201);
     }
 
+    /*
+     @todo use relations
+    */
     public function getUserTopSongs(int $limit)
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
         $songs = Play::getUserTopSongs($id, $limit);
 
-        $result = Song::fetchSongs($songs);
+        $result = Song::fetchSongs($songs)
+            ->each(fn(Song $song) => $this->imageToURL($song));
 
         return response()->json($result);
     }
 
+    /*
+     @todo use relations
+    */
     public function getRecentlyPlayed(int $limit): JsonResponse
     {
-        $id = Auth::id();
+        $id = $this->authManager->guard()->id();
         $topSongs = Play::getRecentlyPlayed($id, $limit);
 
-        $result = Song::fetchSongs($topSongs);
+        $result = Song::fetchSongs($topSongs)
+            ->each(fn(Song $song) => $this->imageToURL($song));
 
         return response()->json($result);
     }
 
     public function getUserSongs(): JsonResponse
     {
-        $id = Auth::id();
-        $published = 1;
+        $id = $this->authManager->guard()->id();
 
-        $songs = Song::where('user_id', $id)->where('is_published', $published)->get();
-        $this->getArtistName($songs);
-        $this->getPicture($songs);
+        $songs = Song::where('user_id', $id)->where('is_published', 1)->get()
+            ->each(fn(Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);
     }
 
     public function searchReleasedSongs(string $input): JsonResponse
     {
-        $id = Auth::id();
-        $songs = Song::searchReleasedSongs($id, $input);
-        $this->getArtistName($songs);
-        $this->getPicture($songs);
+        $id = $this->authManager->guard()->id();
+        $songs = Song::searchReleasedSongs($id, $input)
+            ->each(fn(Song $song) => $this->imageToURL($song));
 
         return response()->json($songs);
-    }
-
-    private function getPicture(Collection $array)
-    {
-        foreach ($array as $data) {
-            $data->picture = URL::to($data->picture);
-        }
-    }
-
-    private function getArtistName($array)
-    {
-        foreach ($array as $data) {
-            $data->artist_name = $data->user->name;
-            unset($data->user);
-        }
     }
 }

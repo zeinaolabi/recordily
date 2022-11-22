@@ -14,8 +14,6 @@ return new class extends Migration
             $table->string('picture');
             $table->string('path');
             $table->integer('size');
-            $table->string('type');
-            $table->integer('time_length');
             $table->integer('is_published')->default(0);
             $table->foreignId('user_id');
             $table->foreignId('album_id')->nullable();

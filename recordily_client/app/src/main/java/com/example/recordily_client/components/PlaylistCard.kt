@@ -23,7 +23,12 @@ import com.example.recordily_client.R
 import com.example.recordily_client.responses.PlaylistResponse
 
 @Composable
-fun PlaylistsCard(title: String, playlists: List<PlaylistResponse>?, destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+fun PlaylistsCard(
+    title: String,
+    playlists: List<PlaylistResponse>?,
+    destination: ()->(Unit),
+    onPlaylistClick: ()->(Unit)
+){
     Column(
         modifier = Modifier.padding(bottom= dimensionResource(id = R.dimen.padding_medium))
     ){
@@ -40,14 +45,20 @@ fun PlaylistsCard(title: String, playlists: List<PlaylistResponse>?, destination
 }
 
 @Composable
-private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination: ()->(Unit), onPlaylistClick: ()->(Unit)){
+private fun PlaylistsCardContent(
+    playlists: List<PlaylistResponse>?,
+    destination: ()->(Unit),
+    onPlaylistClick: ()->(Unit)
+){
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if (playlists != null) {
+        if(playlists === null || playlists.isEmpty()){
+            EmptyState(stringResource(id = R.string.no_playlists_found))
+        } else {
             for(playlist in playlists){
                 PlaylistCard(
                     playlist = playlist,
@@ -56,15 +67,14 @@ private fun PlaylistsCardContent(playlists: List<PlaylistResponse>?,destination:
                     }
                 )
             }
+
+            SmallTealButton(
+                text = stringResource(id = R.string.more),
+                onClick = {
+                    destination()
+                }
+            )
         }
-
-        SmallTealButton(
-            text = stringResource(id = R.string.more),
-            onClick = {
-                destination()
-            }
-        )
-
     }
 }
 
@@ -81,7 +91,7 @@ fun PlaylistCard(playlist: PlaylistResponse, onPlaylistClick: () -> (Unit)){
             .clickable(
                 interactionSource = remember { NoRippleInteractionSource() },
                 indication = null
-            ){
+            ) {
                 onPlaylistClick()
             }
         ,

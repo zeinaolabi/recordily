@@ -102,6 +102,7 @@
     <string name="no_playlists_found">No Playlists Found</string>
     <string name="no_results">No Results Found</string>
     <string name="message">Type your message here..</string>
+    <string name="end_live">End Live</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

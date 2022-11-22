@@ -29,7 +29,7 @@ import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.PlaylistResponse
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ProfileViewModel
 
 private val popUpVisibility = mutableStateOf(false)
@@ -40,12 +40,14 @@ private val songID = mutableStateOf(-1)
 @Composable
 fun CommonProfilePage(navController: NavController){
     val limit = 3
+    val artistType = 0
     val pageOptions = listOf(
         TopNavItem.ProfilePage, TopNavItem.UnreleasedPage
     )
-    val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val userType = userCredentials.getType()
 
     profileViewModel.getInfo(token)
     profileViewModel.getTopSongs(token, limit)
@@ -55,7 +57,7 @@ fun CommonProfilePage(navController: NavController){
     val profile by profileViewModel.userInfoResultLiveData.observeAsState()
     val topSongs by profileViewModel.topSongsResultLiveData.observeAsState()
     val recentlyPlayedSongs by profileViewModel.recentlyPlayedResultLiveData.observeAsState()
-    val playlists by profileViewModel.playlistsResultResultLiveData.observeAsState()
+    val playlists by profileViewModel.playlistsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -70,7 +72,7 @@ fun CommonProfilePage(navController: NavController){
             profile?.let {
                 ProfileHeader(navController, it)
 
-                if (loginViewModel.sharedPreferences.getInt("user_type_id", -1) == 0) {
+                if (userType == artistType) {
                     TopNavBar(
                         pageOptions = pageOptions,
                         currentPage = R.string.profile,
@@ -127,17 +129,11 @@ private fun ProfileContentColumn(
         SongsCards(
             title = stringResource(id = R.string.top_songs),
             songs = topSongs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.TopSongsPage.route,
-                    popUpTo = Screen.ProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ProfilePage.route
                 )
             },
@@ -150,17 +146,11 @@ private fun ProfileContentColumn(
         SongsCards(
             title = stringResource(id = R.string.recently_played),
             songs = recentlyPlayedSongs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.RecentlyPlayedSongsPage.route,
-                    popUpTo = Screen.ProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ProfilePage.route
                 )
             },

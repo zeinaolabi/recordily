@@ -57,56 +57,68 @@ interface SongsAPI {
     @GET("auth/delete_song_from_album/{song_id}")
     suspend fun deleteFromAlbum(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: Int
+        @Path("song_id") songID: Int
     )
 
     @GET("auth/publish_song/{song_id}")
     suspend fun publishSong(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: Int
+        @Path("song_id") songID: Int
     )
 
     @GET("auth/is_liked/{song_id}")
     suspend fun isLiked(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: Int
+        @Path("song_id") songID: Int
     ): Boolean
 
     @GET("auth/like/{song_id}")
     suspend fun likeSong(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: Int
+        @Path("song_id") songID: Int
     )
 
     @GET("auth/unlike/{song_id}")
     suspend fun unlikeSong(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: Int
+        @Path("song_id") songID: Int
     )
 
     @GET("auth/get_song_monthly_views/{song_id}")
     suspend fun getSongViewsPerMonth(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: String
+        @Path("song_id") songID: String
     ): Array<Int>
 
     @GET("auth/get_song_likes/{song_id}")
     suspend fun getSongLikes(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: String
+        @Path("song_id") songID: String
     ): Int
 
     @GET("auth/get_song_plays/{song_id}")
     suspend fun getSongViews(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: String
+        @Path("song_id") songID: String
     ): Int
 
     @GET("auth/get_song/{song_id}")
     suspend fun getSong(
         @Header("Authorization") token: String,
-        @Path("song_id") song_id: String
+        @Path("song_id") songID: String
     ): SongResponse
+
+    @GET("auth/play_song/{song_id}")
+    suspend fun playSong(
+        @Header("Authorization") token: String,
+        @Path("song_id") songID: Int
+    )
+
+    @GET("auth/search_for_song/{input}")
+    suspend fun search(
+        @Header("Authorization") token: String,
+        @Path("input") input: String
+    ): List<SongResponse>
 
     @Multipart
     @POST("auth/upload_song")

@@ -10,36 +10,36 @@ class ArtistService {
         return RetrofitInstance.artistAPI.followedArtists(token)
     }
 
-    suspend fun getArtist(token: String, artist_id: String): UserResponse{
-        return RetrofitInstance.artistAPI.getArtist(token, artist_id)
+    suspend fun getArtist(token: String, artistID: String): UserResponse{
+        return RetrofitInstance.artistAPI.getArtist(token, artistID)
     }
 
-    suspend fun getArtistFollowers(token: String, artist_id: String): Int{
-        return RetrofitInstance.artistAPI.getArtistFollowers(token, artist_id)
+    suspend fun getArtistFollowers(token: String, artistID: String): Int{
+        return RetrofitInstance.artistAPI.getArtistFollowers(token, artistID)
     }
 
-    suspend fun isFollowed(token: String, artist_id: String): Boolean{
-        return RetrofitInstance.artistAPI.isFollowed(token, artist_id)
+    suspend fun isFollowed(token: String, artistID: String): Boolean{
+        return RetrofitInstance.artistAPI.isFollowed(token, artistID)
     }
 
-    suspend fun follow(token: String, artist_id: String){
-        return RetrofitInstance.artistAPI.follow(token, artist_id)
+    suspend fun follow(token: String, artistID: String){
+        return RetrofitInstance.artistAPI.follow(token, artistID)
     }
 
-    suspend fun unfollow(token: String, artist_id: String){
-        return RetrofitInstance.artistAPI.unfollow(token, artist_id)
+    suspend fun unfollow(token: String, artistID: String){
+        return RetrofitInstance.artistAPI.unfollow(token, artistID)
     }
 
-    suspend fun getAlbums(token: String, artist_id: String, limit: Int): List<AlbumResponse>{
-        return RetrofitInstance.artistAPI.getAlbums(token, artist_id, limit)
+    suspend fun getAlbums(token: String, artistID: String, limit: Int): List<AlbumResponse>{
+        return RetrofitInstance.artistAPI.getAlbums(token, artistID, limit)
     }
 
-    suspend fun getArtistTopSongs(token: String, artist_id: String, limit: Int): List<SongResponse>{
-        return RetrofitInstance.artistAPI.getArtistTopSongs(token, artist_id, limit)
+    suspend fun getArtistTopSongs(token: String, artistID: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.artistAPI.getArtistTopSongs(token, artistID, limit)
     }
 
-    suspend fun getArtistSongs(token: String, artist_id: String, limit: Int): List<SongResponse>{
-        return RetrofitInstance.artistAPI.getArtistSongs(token, artist_id, limit)
+    suspend fun getArtistSongs(token: String, artistID: String, limit: Int): List<SongResponse>{
+        return RetrofitInstance.artistAPI.getArtistSongs(token, artistID, limit)
     }
 
     suspend fun searchFollowedArtist(token: String, input: String): List<UserResponse>{
@@ -48,5 +48,13 @@ class ArtistService {
 
     suspend fun getViewsPerMonth(token: String): Array<Int>{
         return RetrofitInstance.artistAPI.getViewsPerMonth(token)
+    }
+
+    suspend fun getArtistTopAlbums(token: String, artistID: String, limit: Int): List<AlbumResponse>{
+        return RetrofitInstance.artistAPI.getArtistTopAlbums(token, artistID, limit)
+    }
+
+    suspend fun getTopArtists(token: String, limit: Int): List<UserResponse>{
+        return RetrofitInstance.artistAPI.getTopArtists(token, limit)
     }
 }

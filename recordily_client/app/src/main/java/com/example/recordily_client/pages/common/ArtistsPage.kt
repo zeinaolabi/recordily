@@ -8,6 +8,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -27,16 +28,16 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.TopNavItem
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.UserResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ArtistsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 
 private val searchInput = mutableStateOf("")
 
 @Composable
 fun ArtistsPage(navController: NavController) {
     val artistsViewModel: ArtistsViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     artistsViewModel.getFollowedArtists(token)
     val followedArtistsResult by artistsViewModel.followedArtistsResultLiveData.observeAsState()
@@ -55,6 +56,12 @@ fun ArtistsPage(navController: NavController) {
             ArtistsPageContent(navController, followedArtistsResult, artistsViewModel, token)
         }
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            searchInput.value = ""
+        }
+    }
 }
 
 @Composable
@@ -62,8 +69,8 @@ private fun ArtistsPageContent(
     navController: NavController,
     artists: List<UserResponse>?,
     artistsViewModel: ArtistsViewModel,
-    token: String)
-{
+    token: String
+){
     val searchResult = artistsViewModel.searchArtistsResultLiveData.observeAsState()
 
     Column(
@@ -154,7 +161,7 @@ private fun SearchResult(navController: NavController, artists: List<UserRespons
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        if (artists != null) {
+        artists?.let{
             for(artist in artists){
                 ArtistCard(
                     artist = artist,

@@ -16,24 +16,31 @@ class PlaylistHasSong extends Model
         'song_id'
     ];
 
-    public static function songInPlaylist(int $playlist_id, int $song_id)
+    public function songs()
     {
-        return (bool)self::where('playlist_id', $playlist_id)
-            ->where('song_id', $song_id)->first();
+        return $this->HasMany(Song::class, 'song_id')->select('song_id');
     }
 
-    public static function addToPlaylist(int $playlist_id, int $song_id): self
+    public static function songInPlaylist(int $playlistID, int $songID)
     {
-        return self::create([
-            'playlist_id' => $playlist_id,
-            'song_id' => $song_id
-        ]);
+        return (bool)self::where('playlist_id', $playlistID)
+            ->where('song_id', $songID)->first();
     }
 
-    public static function removeFromPlaylist(int $playlist_id, int $song_id): int
+    public static function addToPlaylist(int $playlistID, int $songID): self
     {
-        return self::where('playlist_id', $playlist_id)
-            ->where('song_id', $song_id)
+        return self::create(
+            [
+            'playlist_id' => $playlistID,
+            'song_id' => $songID
+            ]
+        );
+    }
+
+    public static function removeFromPlaylist(int $playlistID, int $songID): int
+    {
+        return self::where('playlist_id', $playlistID)
+            ->where('song_id', $songID)
             ->delete();
     }
 }

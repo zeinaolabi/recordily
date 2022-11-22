@@ -22,6 +22,7 @@ import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.AlbumResponse
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ArtistProfileViewModel
 import com.example.recordily_client.view_models.LoginViewModel
 
@@ -31,19 +32,20 @@ private val songID = mutableStateOf(-1)
 
 @ExperimentalAnimationApi
 @Composable
-fun ArtistProfilePage(navController: NavController, artist_id: String){
+fun ArtistProfilePage(navController: NavController, artistID: String){
     val limit = 3
     val topLimit = 5
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
-    artistProfileViewModel.getArtistFollowers(token, artist_id)
-    artistProfileViewModel.getArtist(token, artist_id)
-    artistProfileViewModel.isFollowed(token, artist_id)
-    artistProfileViewModel.getAlbums(token, artist_id, limit)
-    artistProfileViewModel.getArtistTopSongs(token, artist_id, topLimit)
-    artistProfileViewModel.getArtistSongs(token, artist_id, limit)
+    artistProfileViewModel.getArtistFollowers(token, artistID)
+    artistProfileViewModel.getArtist(token, artistID)
+    artistProfileViewModel.isFollowed(token, artistID)
+    artistProfileViewModel.getAlbums(token, artistID, limit)
+    artistProfileViewModel.getArtistTopSongs(token, artistID, topLimit)
+    artistProfileViewModel.getArtistSongs(token, artistID, limit)
+    artistProfileViewModel.getArtistTopAlbums(token, artistID, limit)
 
     val artistInfo by artistProfileViewModel.artistInfoResultLiveData.observeAsState()
     val artistFollowers by artistProfileViewModel.artistFollowersResultLiveData.observeAsState()
@@ -51,6 +53,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
     val albums by artistProfileViewModel.albumsResultLiveData.observeAsState()
     val topSongs by artistProfileViewModel.artistTopSongsResultLiveData.observeAsState()
     val songs by artistProfileViewModel.artistSongsResultLiveData.observeAsState()
+    val topAlbums by artistProfileViewModel.artistTopAlbumsResultLiveData.observeAsState()
 
     Box(
         modifier = Modifier
@@ -67,7 +70,7 @@ fun ArtistProfilePage(navController: NavController, artist_id: String){
 
             HorizontalLine()
 
-            ArtistProfileContent(navController, albums, topSongs, songs, artist_id)
+            ArtistProfileContent(navController, albums, topSongs, songs, topAlbums, artistID)
         }
 
         AnimatedVisibility(
@@ -102,6 +105,7 @@ private fun ArtistProfileContent(
     albums: List<AlbumResponse>?,
     topSongs: List<SongResponse>?,
     songs: List<SongResponse>?,
+    topAlbums: List<AlbumResponse>?,
     artist_id: String
 ){
     Column(
@@ -112,29 +116,22 @@ private fun ArtistProfileContent(
     ){
         AlbumsBox(
             title = stringResource(id = R.string.top_albums),
-            destination = {
+            navController = navController,
+            albums = topAlbums
+        )
+
+        AlbumsCards(
+            title = stringResource(id = R.string.albums),
+            albums = albums,
+            navController = navController,
+            buttonDestination = {
                 navigateTo(
                     navController = navController,
-                    destination = Screen.AlbumPage.route,
+                    destination = Screen.AlbumsPage.route + '/' + artist_id,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             }
         )
-
-        if (albums != null) {
-            AlbumsCards(
-                title = stringResource(id = R.string.albums),
-                albums = albums,
-                navController = navController,
-                buttonDestination = {
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.AlbumsPage.route + '/' + artist_id,
-                        popUpTo = Screen.ArtistProfilePage.route
-                    )
-                }
-            )
-        }
 
         SongsBox(
             title = stringResource(id = R.string.top_5_songs),
@@ -145,17 +142,11 @@ private fun ArtistProfileContent(
         SongsCards(
             title = stringResource(id = R.string.songs),
             songs = songs,
+            navController = navController,
             destination = {
                 navigateTo(
                     navController = navController,
                     destination = Screen.ArtistSongsPage.route + '/' + artist_id,
-                    popUpTo = Screen.ArtistProfilePage.route
-                )
-            },
-            onSongClick = {
-                navigateTo(
-                    navController = navController,
-                    destination = Screen.SongPage.route,
                     popUpTo = Screen.ArtistProfilePage.route
                 )
             },

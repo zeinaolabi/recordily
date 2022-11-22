@@ -16,6 +16,11 @@ class Play extends BaseModel
         'song_id'
     ];
 
+    public function song()
+    {
+        return $this->belongsTo(Song::class, 'song_id');
+    }
+
     public static function getRecentlyPlayed(int $id, int $limit): Collection
     {
         return self::select('song_id')
@@ -35,12 +40,6 @@ class Play extends BaseModel
             ->pluck('song_id');
     }
 
-
-    public function song()
-    {
-        return $this->belongsTo(Song::class, 'song_id');
-    }
-
     public static function getViewsPerMonth(int $id): Collection
     {
         return self::select('plays.id', 'plays.created_at')
@@ -48,19 +47,15 @@ class Play extends BaseModel
             ->whereYear('plays.created_at', '=', date("Y"))
             ->where('songs.user_id', $id)
             ->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            });
+            ->groupBy(fn ($date) => Carbon::parse($date->created_at)->format('m'));
     }
 
-    public static function getSongViewsPerMonth(int $song_id): Collection
+    public static function getSongViewsPerMonth(int $songID): Collection
     {
         return self::select('plays.id', 'plays.created_at')
             ->whereYear('plays.created_at', '=', date("Y"))
-            ->where('song_id', $song_id)
+            ->where('song_id', $songID)
             ->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            });
+            ->groupBy(fn ($date) => Carbon::parse($date->created_at)->format('m'));
     }
 }

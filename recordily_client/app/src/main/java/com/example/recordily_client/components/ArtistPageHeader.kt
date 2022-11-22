@@ -53,7 +53,6 @@ fun ArtistPageHeader(artistInfo: UserResponse?, artistFollowers: Int?, isFollowe
 
 @Composable
 private fun ArtistHeaderContent(artistInfo: UserResponse?, artistFollowers: Int?, isFollowed: Boolean?, token: String){
-
     val coroutinesScope = rememberCoroutineScope()
     val artistProfileViewModel: ArtistProfileViewModel = viewModel()
 
@@ -65,18 +64,16 @@ private fun ArtistHeaderContent(artistInfo: UserResponse?, artistFollowers: Int?
     ){
 
         Column{
-            artistInfo?.name?.let {
-                Text(
-                    text = it,
-                    fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
+            Text(
+                text = artistInfo?.name ?: "Username",
+                fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small)),
+                color = MaterialTheme.colors.onPrimary
+            )
 
             Text(
-                text = "$artistFollowers Followers",
+                text = if(artistFollowers !== null) "$artistFollowers Followers" else "",
                 fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.onPrimary

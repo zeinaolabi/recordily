@@ -1,15 +1,17 @@
 package com.example.recordily_client.pages.common
 
-import android.text.format.DateFormat
+import android.annotation.SuppressLint
+import android.os.CountDownTimer
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,26 +27,88 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.components.RoundSendButton
+import com.example.recordily_client.components.SongsPopUp
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.requests.MessageRequest
+import com.example.recordily_client.responses.ChatMessage
+import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.responses.UserResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
+private val isPlaying = mutableStateOf(false)
+private val progress = mutableStateOf(0f)
 private val message = mutableStateOf("")
+private val input = mutableStateOf("")
+private val popUpVisibility = mutableStateOf(false)
+private val currentlyPlaying = mutableStateOf("")
+private val senderInfo: HashMap<Int, UserResponse> =
+    mutableMapOf<Int, UserResponse>() as HashMap<Int, UserResponse>
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
-    val loginViewModel: LoginViewModel = viewModel()
+fun LiveEventPage(navController: NavController, liveID: String, hostID: String, liveName: String){
     val liveEventViewModel: LiveEventViewModel = viewModel()
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val userID = userCredentials.getID()
+    val coroutineScope = rememberCoroutineScope()
 
-    liveEventViewModel.getHostImage(token, host_id)
+    liveEventViewModel.getHostImage(token, hostID)
+    liveEventViewModel.getMessages(liveID)
+    liveEventViewModel.getSong(liveID)
+    liveEventViewModel.isLive(liveID)
 
     val hostPicture = liveEventViewModel.hostPictureResultLiveData.observeAsState()
+    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
+    val song = liveEventViewModel.songResultLiveData.observeAsState()
+    val songInfo = liveEventViewModel.songInfoResultLiveData.observeAsState()
+    val isLive = liveEventViewModel.isLiveResultLiveData.observeAsState()
+    val chatMessages = liveEventViewModel.displayMessages()
+
+    isLive.value?.let {
+        if(!it){
+            navigateTo(
+                navController = navController,
+                destination = Screen.LiveEventsPage.route,
+                popUpTo = Screen.LiveEventsPage.route
+            )
+
+            liveEventViewModel.stopPlayingSong()
+            liveEventViewModel.clearMessages()
+        }
+    }
+
+    chatMessage.value?.let {
+        coroutineScope.launch {
+            if (!senderInfo.containsKey(it.fromID)) {
+                senderInfo[it.fromID] = liveEventViewModel.getArtist(token, it.fromID.toString())
+            }
+        }
+    }
+
+    song.value?.let { songID ->
+        if(song.value != "") {
+            liveEventViewModel.getSongInfo(token, songID)
+
+            songInfo.value?.let { songInfo ->
+                if (currentlyPlaying.value != songID) {
+                    liveEventViewModel.stopPlayingSong()
+                    isPlaying.value = false
+                }
+
+                liveEventViewModel.startPlayingSong(songInfo.path)
+                isPlaying.value = true
+                currentlyPlaying.value = songInfo.id.toString()
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -54,25 +118,50 @@ fun LiveEventPage(live_event_id: String, host_id: String, live_name: String){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            hostPicture.value?.let { LiveHeader(it, live_name) }
+            LiveHeader(hostPicture.value, liveName)
 
-            SongPlaying()
+            SongPlaying(songInfo.value, liveEventViewModel, hostID.toInt(), userID)
 
-            ChatSection(id, liveEventViewModel, token, live_event_id)
+            ChatSection(userID, liveEventViewModel, chatMessages, token)
         }
 
-        SendMessageRow(token, id, live_event_id, liveEventViewModel)
+        SendMessageRow(token, userID, liveID, liveEventViewModel)
+
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            SongsPopUp(
+                input = input,
+                popUpVisibility = popUpVisibility,
+                liveEventID = liveID,
+                onClick = {
+                    liveEventViewModel.endLive(liveID)
+                    navController.popBackStack()
+                }
+            )
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            popUpVisibility.value = false
+            message.value = ""
+            input.value = ""
+            liveEventViewModel.stopPlayingSong()
+        }
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: String, live_event_id: String){
-
-    liveEventViewModel.getMessages(live_event_id)
-
-    val chatMessage = liveEventViewModel.messagesResultLiveData.observeAsState()
-    val artist = liveEventViewModel.userInfoResultLiveData.observeAsState().value
-
+private fun ChatSection(
+    id: Int,
+    liveEventViewModel: LiveEventViewModel,
+    chatMessages: LinkedHashMap<String, ChatMessage>,
+    token: String
+){
     Column(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_small))
@@ -81,35 +170,45 @@ private fun ChatSection(id: Int, liveEventViewModel: LiveEventViewModel, token: 
             .background(MaterialTheme.colors.background)
             .verticalScroll(ScrollState(rememberScrollState().maxValue))
     ){
-        if(chatMessage.value != null){
-//            for(message in chatMessage.value!!){
-//                liveEventViewModel.getArtist(token, message.fromID.toString())
-//
-//                if (message.fromID == id) {
-//                    Row(modifier = Modifier.align(Alignment.End)) {
-//                        ToMessage(
-//                            message = message.message,
-//                            time = convertDate(message.createdAt, "hh:mm"),
-//                            picture = artist?.profile_picture
-//                        )
-//                    }
-//                } else {
-//                    Row(modifier = Modifier.align(Alignment.Start)) {
-//                        FromMessage(
-//                            message = message.message,
-//                            time = convertDate(message.createdAt, "hh:mm"),
-//                            name = artist?.name,
-//                            picture = artist?.profile_picture
-//                        )
-//                    }
-//                }
-//            }
+        for(message in chatMessages.values){
+
+            runBlocking {
+                if (!senderInfo.containsKey(message.fromID)) {
+                    senderInfo[message.fromID] =
+                        liveEventViewModel.getArtist(token, message.fromID.toString())
+                }
+            }
+
+            if (message.fromID == id) {
+                Row(modifier = Modifier.align(Alignment.End)) {
+                    ToMessage(
+                        message = message.message,
+                        time = liveEventViewModel.convertDate(message.createdAt, "hh:mm"),
+                        picture = senderInfo[message.fromID]?.profile_picture
+                    )
+                }
+            } else {
+                Row(modifier = Modifier.align(Alignment.Start)) {
+                    FromMessage(
+                        message = message.message,
+                        time = liveEventViewModel.convertDate(message.createdAt, "hh:mm"),
+                        name = senderInfo[message.fromID]?.name,
+                        picture = senderInfo[message.fromID]?.profile_picture
+                    )
+                }
+            }
+
         }
     }
 }
 
 @Composable
-private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEventViewModel: LiveEventViewModel){
+private fun SendMessageRow(
+    token: String,
+    id: Int,
+    liveEventID: String,
+    liveEventViewModel: LiveEventViewModel
+){
     val coroutinesScope = rememberCoroutineScope()
 
     Row(
@@ -146,7 +245,11 @@ private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEv
 
         RoundSendButton(onClick = {
             coroutinesScope.launch {
-                val liveEventRequest = MessageRequest(message.value, live_event_id)
+                if(message.value === "") {
+                    return@launch
+                }
+
+                val liveEventRequest = MessageRequest(message.value, liveEventID)
                 val messageSent = liveEventViewModel.sendMessage(token, liveEventRequest, id)
 
                 if(!messageSent){
@@ -163,9 +266,9 @@ private fun SendMessageRow(token: String, id: Int, live_event_id: String, liveEv
 
 
 @Composable
-private fun LiveHeader(hostInfo: UserResponse, liveName: String){
-    val hostPicture = hostInfo.profile_picture
-    val hostName = hostInfo.name
+private fun LiveHeader(hostInfo: UserResponse?, liveName: String){
+    val hostPicture = hostInfo?.profile_picture
+    val hostName = hostInfo?.name
 
     Column(
         modifier = Modifier
@@ -360,19 +463,67 @@ private fun FromMessage(message: String, time: String, name: String?, picture: S
 }
 
 @Composable
-private fun SongPlaying(){
+private fun SongPlaying(
+    song: SongResponse?,
+    liveEventViewModel: LiveEventViewModel,
+    hostID: Int,
+    userID: Int
+){
+    val duration = remember { mutableStateOf(0L) }
+
+    song?.path?.let { path ->
+         liveEventViewModel.getDuration(path)?.let { durationTime ->
+             LaunchedEffect(key1 = isPlaying.value) {
+                 duration.value = durationTime
+
+                 val timer = object : CountDownTimer(duration.value, 100) {
+                     override fun onTick(millisUntilFinished: Long) {
+                         val finishedSeconds = duration.value - millisUntilFinished
+                         val total = finishedSeconds / duration.value.toFloat()
+                         progress.value = total
+
+                         if(currentlyPlaying.value !== song.id.toString()){
+                             this.cancel()
+                         }
+                     }
+
+                     override fun onFinish() {
+                         this.cancel()
+                         this.start()
+                     }
+                 }
+
+                 if (isPlaying.value) {
+                     timer.start()
+                 }
+             }
+         }
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
             .shadow(5.dp)
             .background(MaterialTheme.colors.secondary)
-            .padding(dimensionResource(id = R.dimen.padding_small)),
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_large))
+            .clickable {
+                if (hostID == userID) {
+                    popUpVisibility.value = true
+                }
+            }
+        ,
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
         Image(
-            painter = painterResource(id = R.drawable.recordily_dark_logo),
+            painter =
+            if(song?.picture !== null && song.picture != ""){
+                rememberAsyncImagePainter(song.picture)
+            }
+            else {
+                painterResource(R.drawable.recordily_dark_logo)
+            },
             contentDescription = "Song picture",
             modifier = Modifier
                 .size(50.dp)
@@ -382,13 +533,12 @@ private fun SongPlaying(){
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
                 .fillMaxHeight()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_medium)),
+                .padding(start = dimensionResource(id = R.dimen.padding_medium)),
             verticalArrangement = Arrangement.SpaceEvenly
         ){
             Text(
-                text = "Song name",
+                text = song?.name ?: "Song Name",
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White
@@ -396,23 +546,10 @@ private fun SongPlaying(){
 
             LinearProgressIndicator(
                 color = Color.White,
-                progress = 0.7f,
+                progress = progress.value,
                 modifier = Modifier
                     .fillMaxWidth()
-
             )
         }
-
-        Icon(
-            painter = painterResource(id = R.drawable.heart),
-            contentDescription = "like",
-            modifier = Modifier
-                .size(30.dp),
-            tint = Color.White
-        )
     }
-}
-
-fun convertDate(dateInMilliseconds: Long, dateFormat: String): String {
-    return DateFormat.format(dateFormat, dateInMilliseconds).toString()
 }

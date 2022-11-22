@@ -1,8 +1,10 @@
 package com.example.recordily_client.pages.artist
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,7 +20,8 @@ import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
+import com.example.recordily_client.view_models.SongViewModel
 import com.example.recordily_client.view_models.UnreleasedSongsViewModel
 import kotlinx.coroutines.launch
 
@@ -27,12 +30,11 @@ private const val limit = 40
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedSongsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val unreleasedSongsViewModel: UnreleasedSongsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     unreleasedSongsViewModel.getUnreleasedSongs(token, limit)
-
     val unreleasedSongs by unreleasedSongsViewModel.unreleasedSongsResultLiveData.observeAsState()
 
     Box(
@@ -72,13 +74,15 @@ private fun UnreleasedSongsContent(
     token: String
 ){
     val coroutinesScope = rememberCoroutineScope()
+    val songViewModel: SongViewModel = viewModel()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if(unreleasedSongs == null || unreleasedSongs.isEmpty()){
+        if(unreleasedSongs === null || unreleasedSongs.isEmpty()){
             EmptyState(message = stringResource(id = R.string.no_songs_found))
         }
         else {
@@ -86,6 +90,11 @@ private fun UnreleasedSongsContent(
                 UnreleasedSongCard(
                     song = song,
                     onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in unreleasedSongs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
                         navigateTo(
                             navController = navController,
                             destination = Screen.SongPage.route,

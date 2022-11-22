@@ -44,7 +44,9 @@ fun TextField(input: MutableState<String>, text: String, visibility: Boolean) {
             focusedIndicatorColor = MaterialTheme.colors.secondary,
             disabledLabelColor = MaterialTheme.colors.secondary
             ),
-        visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation()
+        visualTransformation =
+        if (visibility) VisualTransformation.None
+        else PasswordVisualTransformation()
     )
 
 }
