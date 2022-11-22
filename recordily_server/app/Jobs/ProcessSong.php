@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Storage;
 
 class ProcessSong implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public int $id;
     public array $metadata;
@@ -73,7 +76,8 @@ class ProcessSong implements ShouldQueue
 
             $albumID = array_key_exists("album_id", $this->metadata) ? $this->metadata['album_id'] : null;
 
-            $songSavedPath = '/uploads/' . $this->id . '/' . $this->metadata['song_id'] . '/' . $this->metadata['song_id'] . '.mp3';
+            $songSavedPath = '/uploads/' . $this->id . '/' . $this->metadata['song_id'] . '/'
+                . $this->metadata['song_id'] . '.mp3';
 
             Song::createSong($this->metadata['name'], $picturePath, $songSavedPath, $size, $this->id, $albumID);
         }
