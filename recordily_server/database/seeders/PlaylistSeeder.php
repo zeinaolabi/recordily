@@ -20,14 +20,14 @@ class PlaylistSeeder extends Seeder
             'id' => 1,
             'name' => 'Fav Pink Floyd Songs',
             'picture' => 'images/1/6377c4fa652a2.jpg',
-            'user_id' => 2
+            'user_id' => 1
         ]);
 
         Playlist::create([
             'id' => 2,
             'name' => 'Night Songs',
             'picture' => 'images/2/6377de6a73659.jpg',
-            'user_id' => 2
+            'user_id' => 1
         ]);
 
         PlaylistHasSong::addToPlaylist(1, 1);
@@ -37,6 +37,5 @@ class PlaylistSeeder extends Seeder
         PlaylistHasSong::addToPlaylist(1, 5);
         PlaylistHasSong::addToPlaylist(2, 5);
         PlaylistHasSong::addToPlaylist(2, 7);
-
     }
 }

@@ -27,17 +27,17 @@ class PlaysSeeder extends Seeder
 
         Play::create([
             'user_id' => 2,
-            'song_id' => 1
+            'song_id' => 10
         ]);
 
         Play::create([
             'user_id' => 2,
-            'song_id' => 1
+            'song_id' => 10
         ]);
 
         Play::create([
             'user_id' => 2,
-            'song_id' => 1
+            'song_id' => 10
         ]);
 
         Play::create([
@@ -52,7 +52,7 @@ class PlaysSeeder extends Seeder
 
         Play::create([
             'user_id' => 1,
-            'song_id' => 2
+            'song_id' => 12
         ]);
 
         Play::create([
@@ -62,7 +62,7 @@ class PlaysSeeder extends Seeder
 
         Play::create([
             'user_id' => 1,
-            'song_id' => 3
+            'song_id' => 13
         ]);
         Play::create([
             'user_id' => 1,

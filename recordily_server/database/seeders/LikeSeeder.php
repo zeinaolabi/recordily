@@ -16,53 +16,53 @@ class LikeSeeder extends Seeder
     public function run()
     {
         Like::create([
-            'user_id' => 2,
+            'user_id' => 1,
             'song_id' => 1
         ]);
 
         Like::create([
-            'user_id' => 2,
-            'song_id' => 2
+            'user_id' => 1,
+            'song_id' => 8
         ]);
 
         Like::create([
-            'user_id' => 2,
-            'song_id' => 3
+            'user_id' => 1,
+            'song_id' => 9
         ]);
 
         Like::create([
-            'user_id' => 2,
-            'song_id' => 4
+            'user_id' => 1,
+            'song_id' => 12
         ]);
 
         Like::create([
-            'user_id' => 2,
+            'user_id' => 1,
             'song_id' => 5
         ]);
 
         Like::create([
-            'user_id' => 2,
+            'user_id' => 1,
             'song_id' => 6
         ]);
 
         Like::create([
-            'user_id' => 2,
+            'user_id' => 1,
             'song_id' => 7
         ]);
 
         Like::create([
-            'user_id' => 1,
+            'user_id' => 2,
             'song_id' => 1
         ]);
 
         Like::create([
-            'user_id' => 1,
-            'song_id' => 2
+            'user_id' => 2,
+            'song_id' => 12
         ]);
 
         Like::create([
-            'user_id' => 1,
-            'song_id' => 3
+            'user_id' => 2,
+            'song_id' => 10
         ]);
     }
 }

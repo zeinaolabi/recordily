@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             'name' => "Guns N' Roses",
             'email' => 'gunsnroses@gmail.com',
             'password' => Hash::make('test123'),
-            'profile_picture' => 'images/1/6377cfc0afd2b.jpg',
+            'profile_picture' => 'images/2/6377cfc0afd2b.jpg',
             'user_type_id' => 0
         ]);
 
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             'name' => "Pink Floyd",
             'email' => 'pinkfloyd@gmail.com',
             'password' => Hash::make('test123'),
-            'profile_picture' => 'images/2/6377c289959bd.jpg',
+            'profile_picture' => 'images/1/6377c289959bd.jpg',
             'user_type_id' => 0
         ]);
 
