@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 
 class ArtistController extends Controller
 {

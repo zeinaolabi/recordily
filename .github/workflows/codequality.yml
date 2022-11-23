@@ -3,7 +3,18 @@ on: [push]
 
 jobs:
   run-code-quality-checks:
+    environment: testing
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: recordily_testing_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -14,13 +25,26 @@ jobs:
           php-version: '8.1'
           tools: composer:v2
 
-      - name: install composer dependencies
+      - name: Install composer dependencies
         run: |
           cd recordily_server/
           composer install
 
-      - name: run phpcs
+      - name: Run phpcs
         run: |
           cd recordily_server/
           ./vendor/bin/phpcs --standard=PSR12 app/
 
+      - name: Run unit tests
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: recordily_testing_db
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: root
+          DB_PORT: 3306
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          cd recordily_server/
+          php artisan migrate:fresh --env=testing --seed
+          php artisan test --env=testing

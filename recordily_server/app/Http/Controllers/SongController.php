@@ -8,7 +8,6 @@ use App\Models\Like;
 use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
-use Exception;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
@@ -16,8 +15,6 @@ use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class SongController extends Controller
 {
