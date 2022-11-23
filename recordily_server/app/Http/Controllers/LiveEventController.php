@@ -8,7 +8,6 @@ use App\Models\LiveEvent;
 use App\Models\Message;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 
 class LiveEventController extends Controller
 {

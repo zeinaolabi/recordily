@@ -8,13 +8,11 @@ use App\Http\Requests\PlaylistRequest;
 use App\Models\Playlist;
 use App\Models\PlaylistHasSong;
 use App\Models\Song;
-use Exception;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\File;
 
 class PlaylistController extends Controller
 {
@@ -46,11 +44,11 @@ class PlaylistController extends Controller
         return response()->json($playlists);
     }
 
+    /**
+     * @todo use relations
+     */
     public function getPlaylistSongs(int $playlistID): JsonResponse
     {
-        /**
-         * @todo use relations
-         */
         $songs = PlaylistHasSong::where('playlist_id', $playlistID)->pluck('song_id');
 
         $result = Song::FetchSongs($songs)

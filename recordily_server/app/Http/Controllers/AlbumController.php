@@ -6,14 +6,11 @@ use App\Http\Requests\AlbumRequest;
 use App\Http\Requests\createAlbumRequest;
 use App\Models\Album;
 use App\Models\Song;
-use Exception;
-use File;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class AlbumController extends Controller
 {

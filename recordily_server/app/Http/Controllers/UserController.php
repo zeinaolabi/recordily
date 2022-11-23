@@ -5,17 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Play;
 use App\Models\Song;
 use App\Models\User;
-use Exception;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\URL;
+
 
 class UserController extends Controller
 {
