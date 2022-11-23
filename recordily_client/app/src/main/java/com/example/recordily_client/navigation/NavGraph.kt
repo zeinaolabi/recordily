@@ -12,14 +12,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.recordily_client.pages.artist.*
 import com.example.recordily_client.pages.common.*
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 
 @RequiresApi(Build.VERSION_CODES.S)
 @ExperimentalAnimationApi
 @Composable
 fun SetupNavGraph(navController: NavHostController){
-    val loginViewModel: LoginViewModel = viewModel()
-    val destination = if(loginViewModel.sharedPreferences.getString("token", "") != ""){
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+
+    val destination = if(token != ""){
         Screen.LandingPage.route
     }
     else{
@@ -32,9 +34,6 @@ fun SetupNavGraph(navController: NavHostController){
     ){
         composable(
             route = Screen.LoginPage.route,
-//            exitTransition = {_,_ ->
-//                fadeOut(animationSpec = tween(300))
-//            }
         ){
             LoginPage(navController)
         }
@@ -144,9 +143,9 @@ fun SetupNavGraph(navController: NavHostController){
         }
 
         composable(
-            route = Screen.SongPage.route
-        ){
-            SongPage(navController)
+            route = Screen.SongPage.route + "/{song_id}"
+        ){ backStackEntry ->
+            backStackEntry.arguments?.getString("song_id")?.let { SongPage(navController, it) }
         }
 
         composable(
@@ -222,7 +221,7 @@ fun SetupNavGraph(navController: NavHostController){
         composable(
             route = Screen.ResetPasswordPage.route
         ){
-            ResetPasswordPage(navController)
+            ResetPasswordPage()
         }
 
         composable(
@@ -239,7 +238,7 @@ fun SetupNavGraph(navController: NavHostController){
             backStackEntry.arguments?.getString("live_event_id")?.let { live_event_id ->
                 backStackEntry.arguments?.getString("host_id")?.let { host_id ->
                     backStackEntry.arguments?.getString("live_name")?.let { live_name ->
-                        LiveEventPage(live_event_id, host_id, live_name)
+                        LiveEventPage(navController, live_event_id, host_id, live_name)
                     }
                 }
             }

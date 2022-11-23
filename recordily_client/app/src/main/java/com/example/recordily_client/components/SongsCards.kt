@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -21,15 +20,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
+import com.example.recordily_client.navigation.Screen
+import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.SongResponse
+import com.example.recordily_client.view_models.SongViewModel
 
 @Composable
 fun SongsCards(
-    title: String, songs: List<SongResponse>?,
+    title: String,
+    songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     onMoreClick: () -> (Unit),
     songID: MutableState<Int>
 ){
@@ -44,18 +49,20 @@ fun SongsCards(
             color = MaterialTheme.colors.onPrimary
         )
 
-        CardsContent(songs, destination, onSongClick ,onMoreClick, songID)
+        CardsContent(songs, navController, destination, onMoreClick, songID)
     }
 }
 
 @Composable
 private fun CardsContent(
     songs: List<SongResponse>?,
+    navController: NavController,
     destination: ()->(Unit),
-    onSongClick: ()->(Unit),
     onMoreClick: () -> (Unit),
     songID: MutableState<Int>
 ){
+    val songViewModel: SongViewModel = viewModel()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,7 +76,18 @@ private fun CardsContent(
             for(song in songs){
                 SongCard(
                     song = song,
-                    onSongClick = onSongClick,
+                    onSongClick = {
+                        songViewModel.clearQueue()
+                        for(queueSong in songs){
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route + '/' + song.id.toString(),
+                            popUpTo = Screen.ArtistProfilePage.route
+                        )
+                    },
                     onMoreClick = {
                         onMoreClick()
                         songID.value = song.id
@@ -104,7 +122,11 @@ fun SongCard(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Un
 }
 
 @Composable
-private fun SongCardContent(song: SongResponse, onSongClick: ()->(Unit), onMoreClick: () -> (Unit)){
+private fun SongCardContent(
+    song: SongResponse,
+    onSongClick: ()->(Unit),
+    onMoreClick: () -> (Unit)
+){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

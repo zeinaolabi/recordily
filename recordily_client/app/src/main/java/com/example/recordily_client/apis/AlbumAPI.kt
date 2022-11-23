@@ -9,13 +9,13 @@ interface AlbumAPI {
     @GET("auth/get_album_info/{album_id}")
     suspend fun getAlbumInfo(
         @Header("Authorization") token: String,
-        @Path("album_id") album_id: String
+        @Path("album_id") albumID: String
     ): AlbumResponse
 
     @GET("auth/get_album_songs/{album_id}")
     suspend fun getAlbumSongs(
         @Header("Authorization") token: String,
-        @Path("album_id") album_id: String
+        @Path("album_id") albumID: String
     ): List<SongResponse>
 
     @GET("auth/unreleased_albums/{limit}")
@@ -27,7 +27,7 @@ interface AlbumAPI {
     @GET("auth/publish_album/{album_id}")
     suspend fun publishAlbum(
         @Header("Authorization") token: String,
-        @Path("album_id") album_id: Int
+        @Path("album_id") albumID: Int
     )
 
     @Multipart

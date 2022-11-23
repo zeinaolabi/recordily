@@ -21,31 +21,27 @@ class Playlist extends Model
         return $this->hasMany(Song::class, 'song_id');
     }
 
-    public static function exists(int $playlist_id): bool
+    public static function createPlaylist(int $id, string $name, string $picture): Playlist
     {
-        return (bool)self::find($playlist_id);
-    }
-
-    public static function createPlaylist(int $id, string $name, string $picture): bool
-    {
-        $isCreated = Playlist::create(
+        return Playlist::create(
             [
             'user_id' => $id,
             'name' => $name,
             'picture' => $picture
             ]
         );
-
-        if (!$isCreated) {
-            return false;
-        }
-
-        return true;
     }
 
-    public static function searchPlaylist(int $user_id, string $input): Collection
+    public static function searchPlaylist(int $userID, string $input): Collection
     {
-        return self::where('user_id', '=', $user_id)
+        return self::where('user_id', $userID)
             ->where('name', 'like', '%' . $input . '%')->get();
+    }
+
+    public static function getPlaylists(int $id): Collection
+    {
+        return self::where('user_id', $id)
+            ->orderBy('created_at', 'DESC')
+            ->get();
     }
 }

@@ -17,46 +17,32 @@ class Follow extends Model
         'followed_id'
     ];
 
-    public static function getFollowedArtists(int $id): Collection
-    {
-        $artist_type_id = 0;
-
-        return User::whereIn(
-            'id',
-            function ($query) use ($artist_type_id, $id) {
-                $query
-                    ->select('followed_id')
-                    ->from(with(new self())->getTable())
-                    ->where('user_type_id', $artist_type_id)
-                    ->where('follower_id', $id);
-            }
-        )->get();
-    }
-
-    public static function checkIfFollowed(int $id, int $artist_id): bool
+    public static function artistIsFollowed(int $id, int $artistID): bool
     {
         $isFollowed = self::where('follower_id', $id)
-            ->where('followed_id', $artist_id)->get();
+            ->where('followed_id', $artistID)->count();
 
-        if ($isFollowed->isEmpty()) {
+        if ($isFollowed === 0) {
             return false;
         }
 
         return true;
     }
 
-    public static function followArtist(int $id, int $artist_id): self
+    public static function followArtist(int $id, int $artistID): self
     {
-        return self::create([
+        return self::create(
+            [
             'follower_id' => $id,
-            'followed_id' => $artist_id
-        ]);
+            'followed_id' => $artistID
+            ]
+        );
     }
 
-    public static function unfollowArtist(int $id, int $artist_id): int
+    public static function unfollowArtist(int $id, int $artistID): int
     {
         return self::where('follower_id', $id)
-            ->where('followed_id', $artist_id)
+            ->where('followed_id', $artistID)
             ->delete();
     }
 
@@ -64,12 +50,7 @@ class Follow extends Model
     {
         return User::whereIn(
             'id',
-            function ($query) use ($id) {
-                $query
-                    ->select('followed_id')
-                    ->from(with(new Follow())->getTable())
-                    ->where('follower_id', $id);
-            }
+            self::where('follower_id', $id)->pluck('followed_id')
         )->where('name', 'like', '%' . $input . '%')->get();
     }
 }

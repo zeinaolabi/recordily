@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -26,8 +26,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password'
     ];
 
     protected $casts = [
@@ -42,6 +41,33 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function follows()
+    {
+        return $this->HasMany(Follow::class, 'follower_id')->select('followed_id');
+    }
+
+    public function albums()
+    {
+        return $this->HasMany(Album::class, 'user_id');
+    }
+
+    public function songs()
+    {
+        return $this->HasMany(Song::class, 'user_id');
+    }
+
+    public static function getFollowedArtists(int $id): Collection
+    {
+        $artistTypeID = 0;
+
+        return self::whereIn(
+            'id',
+            self::find($id)->follows
+        )
+            ->where('user_type_id', $artistTypeID)
+            ->get();
     }
 
     public static function createUser($email, $password, $type): User
@@ -59,13 +85,36 @@ class User extends Authenticatable implements JWTSubject
 
     public static function isArtist(int $id): bool
     {
-        $artist_type_id = 0;
+        $artistTypeID = 0;
         $user = User::find($id);
 
-        if ($user->user_type_id = $artist_type_id) {
+        if ($user->user_type_id = $artistTypeID) {
             return false;
         }
 
         return true;
+    }
+
+    public static function searchForArtist(string $input): Collection
+    {
+        $artistTypeID = 0;
+
+        return self::where('name', 'like', '%' . $input . '%')
+            ->where('user_type_id', $artistTypeID)
+            ->get();
+    }
+
+    public static function getArtistAlbums(int $id, int $limit): Collection
+    {
+        return self::find($id)->albums
+            ->where('is_published', 1)->values()
+            ->slice(0, $limit);
+    }
+
+    public static function getArtistSongs(int $id, int $limit): Collection
+    {
+        return self::find($id)->songs
+            ->where('is_published', 1)
+            ->values()->slice(0, $limit);
     }
 }

@@ -9,7 +9,7 @@ import com.example.recordily_client.services.AlbumService
 import kotlinx.coroutines.launch
 
 class UnreleasedAlbumsViewModel: ViewModel() {
-    private val service = AlbumService()
+    private val albumService = AlbumService()
 
     private val unreleasedAlbumsResult = MutableLiveData<List<AlbumResponse>>()
     val unreleasedAlbumsResultLiveData : LiveData<List<AlbumResponse>>
@@ -17,13 +17,13 @@ class UnreleasedAlbumsViewModel: ViewModel() {
 
     fun getUnreleasedSongs(token: String, limit: Int){
         viewModelScope.launch {
-            unreleasedAlbumsResult.postValue(service.getUnreleasedAlbum(token, limit))
+            unreleasedAlbumsResult.postValue(albumService.getUnreleasedAlbum(token, limit))
         }
     }
 
-    suspend fun publishAlbum(token: String, album_id: Int): Boolean {
+    suspend fun publishAlbum(token: String, albumID: Int): Boolean {
         return try {
-            service.publishAlbum(token, album_id)
+            albumService.publishAlbum(token, albumID)
             true
         } catch (exception: Throwable) {
             false

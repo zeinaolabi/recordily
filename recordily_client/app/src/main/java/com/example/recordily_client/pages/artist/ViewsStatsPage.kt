@@ -1,5 +1,6 @@
 package com.example.recordily_client.pages.artist
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -22,21 +23,22 @@ import com.example.recordily_client.components.BottomNavigationBar
 import com.example.recordily_client.components.Header
 import com.example.recordily_client.components.TopNavBar
 import com.example.recordily_client.navigation.TopNavItem
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.ViewStatsViewModel
 import com.jaikeerthick.composable_graphs.color.BarGraphColors
 import com.jaikeerthick.composable_graphs.composables.BarGraph
 import com.jaikeerthick.composable_graphs.style.BarGraphStyle
 import com.jaikeerthick.composable_graphs.style.BarGraphVisibility
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ViewsStatsPage(navController: NavController){
     val pageOptions = listOf(
         TopNavItem.HomePage, TopNavItem.ViewsStatsPage, TopNavItem.SongsStatsPage
     )
-    val loginViewModel: LoginViewModel = viewModel()
     val viewStatsViewModel: ViewStatsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     viewStatsViewModel.getViewsPerMonth(token)
 

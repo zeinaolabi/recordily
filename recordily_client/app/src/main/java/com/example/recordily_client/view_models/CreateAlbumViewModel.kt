@@ -5,11 +5,11 @@ import com.example.recordily_client.services.AlbumService
 import okhttp3.MultipartBody
 
 class CreateAlbumViewModel: ViewModel() {
-    private val service = AlbumService()
+    private val albumService = AlbumService()
 
     suspend fun addAlbum(token: String, name: String, image: MultipartBody.Part): Boolean {
         return try {
-            service.addAlbum(token, name, image)
+            albumService.addAlbum(token, name, image)
             true
         } catch (exception: Throwable) {
             false

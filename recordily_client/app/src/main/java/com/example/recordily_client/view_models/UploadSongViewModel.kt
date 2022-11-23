@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.recordily_client.requests.UploadSongRequest
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.services.ArtistService
 import com.example.recordily_client.services.SongService
 import com.example.recordily_client.services.UserService
 import kotlinx.coroutines.launch

@@ -10,7 +10,7 @@ import com.example.recordily_client.services.AlbumService
 import kotlinx.coroutines.launch
 
 class AlbumViewModel: ViewModel() {
-    private val service = AlbumService()
+    private val albumService = AlbumService()
 
     private val albumInfoResult = MutableLiveData<AlbumResponse>()
     val albumInfoResultLiveData : LiveData<AlbumResponse>
@@ -20,15 +20,15 @@ class AlbumViewModel: ViewModel() {
     val albumSongsResultLiveData : LiveData<List<SongResponse>>
         get() = albumSongsResult
 
-    fun getAlbumInfo(token: String, artist_id: String){
+    fun getAlbumInfo(token: String, artistID: String){
         viewModelScope.launch {
-            albumInfoResult.postValue(service.getAlbumInfo(token, artist_id))
+            albumInfoResult.postValue(albumService.getAlbumInfo(token, artistID))
         }
     }
 
-    fun getAlbumSongs(token: String, artist_id: String){
+    fun getAlbumSongs(token: String, artistID: String){
         viewModelScope.launch {
-            albumSongsResult.postValue(service.getAlbumSongs(token, artist_id))
+            albumSongsResult.postValue(albumService.getAlbumSongs(token, artistID))
         }
     }
 }

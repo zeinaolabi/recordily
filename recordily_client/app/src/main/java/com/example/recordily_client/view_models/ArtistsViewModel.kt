@@ -9,7 +9,7 @@ import com.example.recordily_client.services.ArtistService
 import kotlinx.coroutines.launch
 
 class ArtistsViewModel: ViewModel() {
-    private val service = ArtistService()
+    private val artistService = ArtistService()
 
     private val followedArtistsResult = MutableLiveData<List<UserResponse>>()
     val followedArtistsResultLiveData : LiveData<List<UserResponse>>
@@ -21,13 +21,13 @@ class ArtistsViewModel: ViewModel() {
 
     fun getFollowedArtists(token: String){
         viewModelScope.launch {
-            followedArtistsResult.postValue(service.followedArtists(token))
+            followedArtistsResult.postValue(artistService.followedArtists(token))
         }
     }
 
     fun searchFollowedArtists(token: String, input: String){
         viewModelScope.launch {
-            searchArtistsResult.postValue(service.searchFollowedArtist(token, input))
+            searchArtistsResult.postValue(artistService.searchFollowedArtist(token, input))
         }
     }
 }

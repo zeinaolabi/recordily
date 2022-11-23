@@ -18,15 +18,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.UserResponse
 
 @Composable
-fun ArtistsBox(title: String, navController: NavController){
+fun ArtistsBox(title: String, navController: NavController, artists: List<UserResponse>?) {
     Column(
         modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_medium))
-    ){
+    ) {
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
@@ -45,13 +47,18 @@ fun ArtistsBox(title: String, navController: NavController){
                 .padding(dimensionResource(id = R.dimen.padding_medium))
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
-        ){
-            for (i in 1..5) {
-                ArtistsBoxContent{
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.ArtistProfilePage.route,
-                        popUpTo = Screen.ArtistsPage.route
+        ) {
+            if (artists != null) {
+                for (artist in artists) {
+                    ArtistsBoxContent(
+                        onClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.ArtistProfilePage.route + '/' + artist.id,
+                                popUpTo = Screen.ArtistsPage.route
+                            )
+                        },
+                        artist = artist
                     )
                 }
             }
@@ -59,8 +66,9 @@ fun ArtistsBox(title: String, navController: NavController){
     }
 }
 
+
 @Composable
-private fun ArtistsBoxContent(onClick: () -> (Unit)){
+private fun ArtistsBoxContent(onClick: () -> (Unit), artist: UserResponse){
     Column(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_small))
@@ -73,7 +81,13 @@ private fun ArtistsBoxContent(onClick: () -> (Unit)){
             }
     ){
         Image(
-            painter = painterResource(R.drawable.recordily_dark_logo),
+            painter =
+            if(artist.profile_picture !== null && artist.profile_picture != ""){
+                rememberAsyncImagePainter(artist.profile_picture)
+            }
+            else{
+                painterResource(id = R.drawable.profile_picture)
+            },
             contentDescription = "logo",
             modifier = Modifier
                 .size(115.dp)
@@ -82,7 +96,7 @@ private fun ArtistsBoxContent(onClick: () -> (Unit)){
         )
 
         Text(
-            text = "Artist name",
+            text = artist.name ?: "Artist Name",
             fontWeight = FontWeight.SemiBold,
             fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
             color = MaterialTheme.colors.onPrimary

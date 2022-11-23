@@ -22,27 +22,20 @@ class Album extends Model
         return $this->belongsTo(User::class, 'user_id')->select('name');
     }
 
-    public static function getAlbums(int $artist_id, int $limit): Collection
+    public function songs()
     {
-        $is_published = 1;
-
-        return self::where("user_id", $artist_id)
-            ->where('is_published', $is_published)
-            ->limit($limit)
-            ->get();
+        return $this->hasMany(Song::class, 'album_id');
     }
 
     public static function getArtistUnreleasedAlbums(int $id, int $limit): Collection
     {
-        $not_published = 0;
-
-        return self::where('is_published', $not_published)
+        return self::where('is_published', 0)
             ->where('user_id', $id)
             ->limit($limit)
             ->get();
     }
 
-    public static function createAlbum(int $id, string $name, string $picture): bool
+    public static function createAlbum(int $id, string $name, string $picture): self
     {
         return self::create(
             [
@@ -53,24 +46,18 @@ class Album extends Model
         );
     }
 
-    public static function publishAlbum(int $album_id): JsonResponse
+    public static function publishAlbum(int $albumID): JsonResponse
     {
-        $album = Album::find($album_id);
-
-        if ($album === null) {
-            return response()->json("Album not found");
-        }
-
-        $published = Album::where('id', $album_id)->update(['is_published' => 1]);
+        $published = Album::where('id', $albumID)->update(['is_published' => 1]);
 
         if ($published === null) {
             return response()->json("Unsuccessful publish attempt");
         }
 
-        $publish_songs = Song::where('album_id', $album_id)->update(['is_published' => 1]);
+        $publish_songs = Song::where('album_id', $albumID)->update(['is_published' => 1]);
 
         if ($publish_songs === null) {
-            Album::where('id', $album_id)->update(['is_published' => 0]);
+            Album::where('id', $albumID)->update(['is_published' => 0]);
             return response()->json("Unsuccessful publish attempt");
         }
 

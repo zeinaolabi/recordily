@@ -11,7 +11,7 @@ import com.example.recordily_client.services.SongService
 import kotlinx.coroutines.launch
 
 class UnreleasedAlbumViewModel: ViewModel() {
-    private val service = AlbumService()
+    private val albumService = AlbumService()
     private val songService = SongService()
 
     private val albumInfoResult = MutableLiveData<AlbumResponse>()
@@ -22,21 +22,21 @@ class UnreleasedAlbumViewModel: ViewModel() {
     val albumSongsResultLiveData : LiveData<List<SongResponse>>
         get() = albumSongsResult
 
-    fun getAlbumInfo(token: String, artist_id: String){
+    fun getAlbumInfo(token: String, artistID: String){
         viewModelScope.launch {
-            albumInfoResult.postValue(service.getAlbumInfo(token, artist_id))
+            albumInfoResult.postValue(albumService.getAlbumInfo(token, artistID))
         }
     }
 
-    fun getAlbumSongs(token: String, artist_id: String){
+    fun getAlbumSongs(token: String, artistID: String){
         viewModelScope.launch {
-            albumSongsResult.postValue(service.getAlbumSongs(token, artist_id))
+            albumSongsResult.postValue(albumService.getAlbumSongs(token, artistID))
         }
     }
 
-    suspend fun deleteFromAlbum(token: String, song_id: Int): Boolean {
+    suspend fun deleteFromAlbum(token: String, songID: Int): Boolean {
         return try {
-            songService.deleteFromAlbum(token, song_id)
+            songService.deleteFromAlbum(token, songID)
             true
         } catch (exception: Throwable) {
             false

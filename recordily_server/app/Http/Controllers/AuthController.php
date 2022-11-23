@@ -16,15 +16,12 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        //Check if the user is authenticated
         $isAuthorized = $this->auth->attempt($request->all(['email', 'password']));
 
-        //If authorization failed, display an error
         if (!$isAuthorized) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        //Send back a token
         return $this->createNewToken($isAuthorized);
     }
 
@@ -43,10 +40,12 @@ class AuthController extends Controller
 
     protected function createNewToken(string $token): JsonResponse
     {
-        return response()->json([
+        return response()->json(
+            [
                 "id" => $this->auth->user()->id,
                 "user_type_id" => $this->auth->user()->user_type_id,
                 "token" => $token
-            ]);
+            ]
+        );
     }
 }

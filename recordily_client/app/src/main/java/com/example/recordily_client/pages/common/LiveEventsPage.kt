@@ -1,7 +1,6 @@
 package com.example.recordily_client.pages.common
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
@@ -24,8 +23,8 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventsViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 
 private val liveEventName = mutableStateOf("")
@@ -34,15 +33,15 @@ private val openDialog = mutableStateOf(false)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun CommonLiveEventsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val liveEventsViewModel: LiveEventsViewModel = viewModel()
 
     liveEventsViewModel.getLiveEvents()
 
-    val id = loginViewModel.sharedPreferences.getInt("id", -1)
-    val userType = loginViewModel.sharedPreferences.getInt("user_type_id", -1)
-    val token = "Bearer" + loginViewModel.sharedPreferences.getString("token", "").toString()
-    val lives by liveEventsViewModel.liveEventsResultLiveData.observeAsState()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
+    val id = userCredentials.getID()
+    val userType = userCredentials.getType()
+    val lives = liveEventsViewModel.displayLives()
 
     Scaffold(
         topBar = { Header(navController) },
@@ -58,15 +57,14 @@ fun CommonLiveEventsPage(navController: NavController){
 
                 LiveEventsContent(userType)
 
-                if(lives != null){
-                    for(live in lives!!){
-
+                lives.values.let { lives ->
+                    for(live in lives){
                         liveEventsViewModel.getArtist(token, live.hostID.toString())
 
                         val artist = liveEventsViewModel.artistInfoResultLiveData.observeAsState().value
 
-                        artist?.name?.let { it ->
-                            LiveEventCard(live.name, artist.profile_picture, it){
+                        artist?.name?.let { artistName ->
+                            LiveEventCard(live.name, artist.profile_picture, artistName){
                                 navigateTo(
                                     navController,
                                     Screen.LiveEventPage.route + '/' + live.id + '/' + live.hostID + '/' + live.name,
@@ -155,19 +153,27 @@ fun StartLiveEventDialog(
                     text = stringResource(id = R.string.start),
                     onClick = {
                         coroutineScope.launch {
-                            val key = liveEventsViewModel.addLiveEvent(token, liveEventName.value, id)
+                            val key = liveEventsViewModel.addLiveEvent(
+                                token,
+                                liveEventName.value,
+                                id
+                            )
 
                             if(key !== null){
                                 navigateTo(
                                     navController = navController,
-                                    destination = Screen.LiveEventPage.route + '/' + key + '/' + id + '/' + liveEventName.value,
+                                    destination = Screen.LiveEventPage.route
+                                            + '/' + key + '/' + id + '/' + liveEventName.value,
                                     popUpTo = Screen.LiveEventsPage.route
                                 )
 
                                 liveEventName.value = ""
                                 isOpen.value = false
                             } else {
-                                Toast.makeText(liveEventsViewModel.context, "Failed to create live event", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    liveEventsViewModel.context,
+                                    "Failed to create live event",
+                                    Toast.LENGTH_SHORT).show()
                             }
                         }
                     }

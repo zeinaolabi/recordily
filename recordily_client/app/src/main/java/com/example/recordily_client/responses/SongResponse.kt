@@ -8,8 +8,6 @@ data class SongResponse(
     val path: String,
     val picture: String?,
     val size: Int,
-    val time_length: Int,
-    val type: String,
     val updated_at: String,
     val user_id: Int,
     val artist_name: String

@@ -1,7 +1,9 @@
 package com.example.recordily_client.pages.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Environment
@@ -21,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -35,8 +39,8 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.responses.PlaylistResponse
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.EditPlaylistViewModel
-import com.example.recordily_client.view_models.LoginViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -47,14 +51,16 @@ private val errorMessage = mutableStateOf("")
 private val visible = mutableStateOf(false)
 private var image: File? = null
 private var imgBitmap: MutableState<Bitmap?> = mutableStateOf(null)
+private var progressVisibility = mutableStateOf(false)
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun EditPlaylistPage(navController: NavController, playlist_id: String) {
+fun EditPlaylistPage(navController: NavController, playlistID: String) {
     val editPlaylistModel: EditPlaylistViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
-    editPlaylistModel.getPlaylist(token, playlist_id)
+    editPlaylistModel.getPlaylist(token, playlistID)
     val playlist = editPlaylistModel.playlistResultLiveData.observeAsState()
 
     Scaffold(
@@ -72,42 +78,60 @@ fun EditPlaylistPage(navController: NavController, playlist_id: String) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
                 ){
-                    playlist.value?.let { it -> CreatePlaylistContent(navController, it, token, editPlaylistModel) }
+                    playlist.value?.let { it ->
+                        CreatePlaylistContent(navController, it, token, editPlaylistModel)
+                    }
                 }
             }
         }
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            errorMessage.value = ""
+            visible.value = false
+            imgBitmap.value = null
+            progressVisibility.value = false
+        }
+    }
 }
 
 @Composable
-private fun CreatePlaylistContent(navController: NavController, playlist: PlaylistResponse, token: String, editPlaylistModel: EditPlaylistViewModel){
-    val startForResult = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
-            val intent = result.data
-            val dir = File(Environment.getExternalStorageDirectory().absolutePath)
+private fun CreatePlaylistContent(navController: NavController, playlist: PlaylistResponse, token: String, editPlaylistModel: EditPlaylistViewModel) {
+    val startForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+                val intent = result.data
+                val dir = File(Environment.getExternalStorageDirectory().absolutePath)
 
-            val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
-            val file = File(dir, fileName)
+                val fileName = intent?.data?.lastPathSegment?.replace("primary:", "").toString()
+                val file = File(dir, fileName)
 
-            image = file
+                image = file
 
-            imgBitmap.value = BitmapFactory.decodeFile(image!!.absolutePath)
+                imgBitmap.value = BitmapFactory.decodeFile(image!!.absolutePath)
+            }
         }
-    }
 
     val coroutineScope = rememberCoroutineScope()
     val playlistName = remember { mutableStateOf(playlist.name) }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){}
+    val context = LocalContext.current
 
     Image(
         painter =
-        if(imgBitmap.value != null) {
-            rememberImagePainter(data = imgBitmap.value)
-        }
-        else if(playlist.picture != null){
-            rememberAsyncImagePainter(playlist.picture)
-        }
-        else{
-            painterResource(id = R.drawable.profile_picture)
+        when {
+            imgBitmap.value != null -> {
+                rememberImagePainter(data = imgBitmap.value)
+            }
+            playlist.picture != null -> {
+                rememberAsyncImagePainter(playlist.picture)
+            }
+            else -> {
+                painterResource(id = R.drawable.profile_picture)
+            }
         },
         contentDescription = "logo",
         modifier = Modifier
@@ -115,9 +139,21 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
             .clip(CircleShape)
             .border(2.dp, MaterialTheme.colors.secondary, CircleShape)
             .clickable {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startForResult.launch(intent)
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) -> {
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.type = "image/*"
+                        startForResult.launch(intent)
+                    }
+                    else -> {
+                        permissionLauncher.launch(
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                        )
+                    }
+                }
             },
         contentScale = ContentScale.FillBounds
     )
@@ -128,38 +164,50 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
         visibility = true
     )
 
-    MediumRoundButton(
-        text = stringResource(id = R.string.save),
-        onClick = {
-            val multipart =
-                if(image != null){
-                    MultipartBody.Part.createFormData("profile_picture", "profile_picture",
-                        RequestBody.create("image/*".toMediaTypeOrNull(),
-                            image!!
+    if (!progressVisibility.value) {
+        MediumRoundButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                progressVisibility.value = true
+
+                val multipart =
+                    if (image != null) {
+                        MultipartBody.Part.createFormData(
+                            "picture", "picture",
+                            RequestBody.create(
+                                "image/*".toMediaTypeOrNull(),
+                                image!!
+                            )
                         )
+                    } else {
+                        null
+                    }
+
+                coroutineScope.launch {
+                    val isEdited = editPlaylistModel.editPlaylist(
+                        token,
+                        playlist.id.toString(),
+                        playlistName.value,
+                        multipart
                     )
-                } else{ null }
 
-            coroutineScope.launch{
-                val isEdited = editPlaylistModel.editPlaylist(
-                    token,
-                    playlist.id.toString(),
-                    playlistName.value,
-                    multipart
-                )
+                    if (!isEdited) {
+                        errorMessage.value = "Network Error"
+                        visible.value = true
+                        progressVisibility.value = false
+                        return@launch
+                    }
 
-                if(!isEdited){
-                    errorMessage.value = "Network Error"
+                    errorMessage.value = "Successfully Edited!"
                     visible.value = true
-                    return@launch
+                    progressVisibility.value = false
                 }
 
-                errorMessage.value = "Successfully Edited!"
-                visible.value = false
             }
-
-        }
-    )
+        )
+    } else {
+        CircularProgressBar()
+    }
 
     Text(
         text = stringResource(id = R.string.delete_playlist),
@@ -168,10 +216,10 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
         color = MaterialTheme.colors.secondaryVariant,
         modifier = Modifier.clickable
         {
-            coroutineScope.launch{
+            coroutineScope.launch {
                 val isDeleted = editPlaylistModel.deletePlaylist(token, playlist.id.toString())
 
-                if(!isDeleted){
+                if (!isDeleted) {
                     errorMessage.value = "Delete Failed"
                     visible.value = true
                     return@launch

@@ -1,8 +1,10 @@
 package com.example.recordily_client.pages.artist
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +18,7 @@ import androidx.navigation.NavController
 import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.responses.AlbumResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.UnreleasedAlbumsViewModel
 import kotlinx.coroutines.launch
 
@@ -25,9 +27,9 @@ private const val limit = 40
 @ExperimentalAnimationApi
 @Composable
 fun UnreleasedAlbumsPage(navController: NavController){
-    val loginViewModel: LoginViewModel = viewModel()
     val unreleasedAlbumsViewModel: UnreleasedAlbumsViewModel = viewModel()
-    val token = "Bearer " + loginViewModel.sharedPreferences.getString("token", "").toString()
+    val userCredentials: UserCredentials = viewModel()
+    val token = userCredentials.getToken()
 
     unreleasedAlbumsViewModel.getUnreleasedSongs(token, limit)
 
@@ -51,7 +53,12 @@ fun UnreleasedAlbumsPage(navController: NavController){
             ){
                 HorizontalLine()
 
-                UnreleasedAlbumsContent(navController, unreleasedAlbums, unreleasedAlbumsViewModel, token)
+                UnreleasedAlbumsContent(
+                    navController,
+                    unreleasedAlbums,
+                    unreleasedAlbumsViewModel,
+                    token
+                )
             }
         }
     }
@@ -69,7 +76,8 @@ private fun UnreleasedAlbumsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.padding_medium)),
+            .padding(dimensionResource(id = R.dimen.padding_medium))
+            .verticalScroll(ScrollState(0)),
     ){
         if(unreleasedAlbums == null || unreleasedAlbums.isEmpty()){
             EmptyState(message = stringResource(id = R.string.no_albums_found))

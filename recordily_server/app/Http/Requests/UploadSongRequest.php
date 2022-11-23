@@ -17,7 +17,7 @@ class UploadSongRequest extends FormRequest
             'name' => 'required|string',
             'image' => 'required',
             'file' => 'required'
-//            'album_id' => 'required|int'
+        //            'album_id' => 'required|int'
         ];
     }
 }

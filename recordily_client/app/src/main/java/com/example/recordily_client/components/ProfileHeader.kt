@@ -26,7 +26,7 @@ import com.example.recordily_client.R
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
 import com.example.recordily_client.responses.UserResponse
-import com.example.recordily_client.view_models.LoginViewModel
+import com.example.recordily_client.validation.UserCredentials
 
 @Composable
 fun ProfileHeader(navController: NavController, profile: UserResponse){
@@ -58,7 +58,7 @@ fun ProfileHeader(navController: NavController, profile: UserResponse){
 
 @Composable
 private fun ProfileInfo(navController: NavController, profile: UserResponse){
-    val loginViewModel : LoginViewModel = viewModel()
+    val userCredentials: UserCredentials = viewModel()
     
     Column(
         modifier = Modifier
@@ -110,7 +110,9 @@ private fun ProfileInfo(navController: NavController, profile: UserResponse){
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
-                        loginViewModel.logout()
+                        userCredentials.removeCredentials()
+
+                        navController.popBackStack(0, true)
                         navigateTo(
                             navController = navController,
                             destination = Screen.LoginPage.route,

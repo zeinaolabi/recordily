@@ -33,8 +33,7 @@ fun AlbumHeader(album: AlbumResponse){
             painter =
             if(album.picture !== null || album.picture != ""){
                 rememberAsyncImagePainter(album.picture)
-            }
-            else{
+            } else {
                 painterResource(id = R.drawable.recordily_dark_logo)
             },
             contentDescription = "album picture",

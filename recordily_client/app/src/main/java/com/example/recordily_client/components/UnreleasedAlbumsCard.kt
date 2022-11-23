@@ -99,7 +99,11 @@ private fun CardsContent(
 }
 
 @Composable
-fun UnreleasedAlbumCard(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
+fun UnreleasedAlbumCard(
+    album: AlbumResponse,
+    navController: NavController,
+    onUploadClick: () -> (Unit)
+){
     Row(
         modifier = Modifier
             .padding(vertical = dimensionResource(id = R.dimen.padding_small))
@@ -115,7 +119,11 @@ fun UnreleasedAlbumCard(album: AlbumResponse, navController: NavController, onUp
 }
 
 @Composable
-private fun AlbumCardContent(album: AlbumResponse, navController: NavController, onUploadClick: () -> (Unit)){
+private fun AlbumCardContent(
+    album: AlbumResponse,
+    navController: NavController,
+    onUploadClick: () -> (Unit)
+){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

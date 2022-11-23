@@ -6,12 +6,12 @@ import com.example.recordily_client.responses.SongResponse
 import okhttp3.MultipartBody
 
 class AlbumService {
-    suspend fun getAlbumInfo(token: String, album_id: String): AlbumResponse{
-        return RetrofitInstance.albumAPI.getAlbumInfo(token, album_id)
+    suspend fun getAlbumInfo(token: String, albumID: String): AlbumResponse{
+        return RetrofitInstance.albumAPI.getAlbumInfo(token, albumID)
     }
 
-    suspend fun getAlbumSongs(token: String, album_id: String): List<SongResponse>{
-        return RetrofitInstance.albumAPI.getAlbumSongs(token, album_id)
+    suspend fun getAlbumSongs(token: String, albumID: String): List<SongResponse>{
+        return RetrofitInstance.albumAPI.getAlbumSongs(token, albumID)
     }
 
     suspend fun getUnreleasedAlbum(token: String, limit: Int): List<AlbumResponse>{
@@ -22,7 +22,7 @@ class AlbumService {
         return RetrofitInstance.albumAPI.createAlbum(token, name, image)
     }
 
-    suspend fun publishAlbum(token: String, album_id: Int){
-        return RetrofitInstance.albumAPI.publishAlbum(token, album_id)
+    suspend fun publishAlbum(token: String, albumID: Int){
+        return RetrofitInstance.albumAPI.publishAlbum(token, albumID)
     }
 }

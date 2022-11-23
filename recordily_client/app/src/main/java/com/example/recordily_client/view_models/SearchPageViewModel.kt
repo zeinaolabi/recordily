@@ -14,19 +14,13 @@ class SearchPageViewModel: ViewModel(){
     val searchResultLiveData : LiveData<SearchResponse>
         get() = searchResult
 
-    private val suggestedResult = MutableLiveData<List<SongResponse>>()
-    val suggestedResultLiveData : LiveData<List<SongResponse>>
-        get() = suggestedResult
-
     fun getSearchResult(token: String, input: String) {
         viewModelScope.launch {
             searchResult.postValue(songService.getSearchResult(token, input))
         }
     }
 
-    fun getSuggestedResult(token: String, limit: Int) {
-        viewModelScope.launch {
-            suggestedResult.postValue(songService.getSuggested(token, limit))
-        }
+    suspend fun getSuggestedResult(token: String, limit: Int): List<SongResponse>{
+        return songService.getSuggested(token, limit)
     }
 }

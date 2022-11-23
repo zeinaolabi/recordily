@@ -1,6 +1,10 @@
 package com.example.recordily_client.pages.artist
 
+import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -21,22 +25,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.components.NoRippleInteractionSource
 import com.example.recordily_client.components.innerShadow
 import com.example.recordily_client.view_models.RecordViewModel
 import kotlinx.coroutines.delay
+import androidx.core.content.ContextCompat.startActivity
+import android.content.Intent
 
-val recordState = mutableStateOf(false)
-val buttonsVisibility = mutableStateOf(false)
-val currentTime = mutableStateOf(0L)
+private val recordState = mutableStateOf(false)
+private val buttonsVisibility = mutableStateOf(false)
+private val currentTime = mutableStateOf(0L)
 
 @ExperimentalAnimationApi
 @RequiresApi(Build.VERSION_CODES.S)
@@ -79,14 +88,14 @@ private fun ExitPage(navController: NavController, recordViewModel: RecordViewMo
             modifier = Modifier
                 .size(25.dp)
                 .clickable {
-                if(recordState.value){
-                    recordViewModel.stopRecording()
-                    recordViewModel.deleteRecording()
-                    currentTime.value = 0L
-                    recordState.value = false
+                    if (recordState.value) {
+                        recordViewModel.stopRecording()
+                        recordViewModel.deleteRecording()
+                        currentTime.value = 0L
+                        recordState.value = false
+                    }
+                    navController.popBackStack()
                 }
-                navController.popBackStack()
-            }
         )
 
         Text(
@@ -152,6 +161,11 @@ private fun RecordTimer(){
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 private fun RecordButton(recordViewModel: RecordViewModel){
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){}
+    val context = LocalContext.current
+
     Box(
         modifier = Modifier
             .size(200.dp)
@@ -166,10 +180,25 @@ private fun RecordButton(recordViewModel: RecordViewModel){
                 offsetY = (-15.5).dp
             )
             .clickable {
-                currentTime.value = 0L
-                recordViewModel.recordAudio()
-                recordState.value = true
-                buttonsVisibility.value = false
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.RECORD_AUDIO
+                    ) -> {
+                        currentTime.value = 0L
+                        recordViewModel.startRecording()
+                        recordState.value = true
+                        buttonsVisibility.value = false
+                    }
+                    else -> {
+                        permissionLauncher.launch(
+                            android.Manifest.permission.RECORD_AUDIO
+                        )
+
+                        val intent = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                        startActivity(context, intent, null)
+                    }
+                }
             },
         contentAlignment = Center
     ){
@@ -249,7 +278,10 @@ private fun WaveRecordAnimation(recordViewModel: RecordViewModel){
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .clickable {
+            .clickable(
+                interactionSource = remember { NoRippleInteractionSource() },
+                indication = null
+            ) {
                 recordViewModel.stopRecording()
                 recordState.value = false
                 buttonsVisibility.value = true
