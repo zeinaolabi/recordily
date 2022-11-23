@@ -29,10 +29,12 @@ jobs:
         run: |
           cd recordily_server/
           composer install
+
       - name: Run phpcs
         run: |
           cd recordily_server/
           ./vendor/bin/phpcs --standard=PSR12 app/
+
       - name: Run unit tests
         env:
           DB_CONNECTION: mysql
