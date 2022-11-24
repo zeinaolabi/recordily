@@ -1,0 +1,31 @@
+name: Build & Upload Project APK
+on: [push]
+
+jobs:
+  build-apk:
+    environment: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Make Gradle executable
+        run: |
+          cd recordily_client/
+          chmod +x ./gradlew
+
+      - name: Build APK
+        run: |
+          cd recordily_client
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: recordily-apk
+          path: ./recordily_client/app/build/outputs/apk/debug/app-debug.apk
