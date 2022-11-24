@@ -191,7 +191,7 @@ class SongSeeder extends Seeder
         Song::create([
             'id' => 16,
             'name' => 'Let It Be',
-            'picture' => 'images/1/6377d30243e7e.jpg',
+            'picture' => 'images/3/6377d30243e7e.jpg',
             'path' => 'uploads/test.mp3',
             'size' => $this->filesystem->size(public_path() . '/uploads/test.mp3'),
             'is_published' => 1,
