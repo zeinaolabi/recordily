@@ -96,27 +96,35 @@ private fun AlbumPageContent(navController: NavController, songs: List<SongRespo
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if (songs != null) {
-            for(song in songs){
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in songs){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+        when {
+            songs === null ->
+                Row(modifier = Modifier.fillMaxSize()){
+                    CircularProgressBar()
+                }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id.toString(),
-                            popUpTo = Screen.AlbumPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                        songID.value = song.id
-                    }
-                )
+            else -> {
+                for(song in songs){
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for(queueSong in songs){
+                                songViewModel.updateQueue(queueSong.id)
+                            }
+
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id.toString(),
+                                popUpTo = Screen.AlbumPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                            songID.value = song.id
+                        }
+                    )
+                }
             }
         }
     }

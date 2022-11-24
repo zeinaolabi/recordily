@@ -56,24 +56,29 @@ private fun PlaylistsCardContent(
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if(playlists === null || playlists.isEmpty()){
-            EmptyState(stringResource(id = R.string.no_playlists_found))
-        } else {
-            for(playlist in playlists){
-                PlaylistCard(
-                    playlist = playlist,
-                    onPlaylistClick = {
-                        onPlaylistClick()
+        when {
+            playlists === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            playlists.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (playlist in playlists) {
+                    PlaylistCard(
+                        playlist = playlist,
+                        onPlaylistClick = {
+                            onPlaylistClick()
+                        }
+                    )
+                }
+
+                SmallTealButton(
+                    text = stringResource(id = R.string.more),
+                    onClick = {
+                        destination()
                     }
                 )
             }
-
-            SmallTealButton(
-                text = stringResource(id = R.string.more),
-                onClick = {
-                    destination()
-                }
-            )
         }
     }
 }

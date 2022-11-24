@@ -59,12 +59,19 @@ private fun AlbumsPageContent(navController: NavController, albums: List<AlbumRe
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if (albums != null) {
-            for(album in albums){
-                AlbumCard(
-                    album = album,
-                    navController = navController
-                )
+        when {
+            albums === null ->
+                Row(modifier = Modifier.fillMaxSize()){
+                    CircularProgressBar()
+                }
+            albums.isEmpty() -> EmptyState(stringResource(id = R.string.no_albums_found))
+            else -> {
+                for (album in albums) {
+                    AlbumCard(
+                        album = album,
+                        navController = navController
+                    )
+                }
             }
         }
 

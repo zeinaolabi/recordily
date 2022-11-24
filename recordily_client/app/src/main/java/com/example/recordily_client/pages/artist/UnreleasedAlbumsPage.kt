@@ -78,22 +78,26 @@ private fun UnreleasedAlbumsContent(
             .fillMaxSize()
             .padding(dimensionResource(id = R.dimen.padding_medium))
             .verticalScroll(ScrollState(0)),
-    ){
-        if(unreleasedAlbums == null || unreleasedAlbums.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_albums_found))
-        }
-        else {
-            for (album in unreleasedAlbums) {
-                UnreleasedAlbumCard(
-                    album = album,
-                    navController = navController,
-                    onUploadClick = {
-                        coroutinesScope.launch {
-                            viewModel.publishAlbum(token, album.id)
-                            viewModel.getUnreleasedSongs(token, limit)
+    ) {
+        when {
+            unreleasedAlbums === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            unreleasedAlbums.isEmpty() -> EmptyState(stringResource(id = R.string.no_albums_found))
+            else -> {
+                for (album in unreleasedAlbums) {
+                    UnreleasedAlbumCard(
+                        album = album,
+                        navController = navController,
+                        onUploadClick = {
+                            coroutinesScope.launch {
+                                viewModel.publishAlbum(token, album.id)
+                                viewModel.getUnreleasedSongs(token, limit)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

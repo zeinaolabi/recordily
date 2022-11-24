@@ -112,27 +112,32 @@ private fun SuggestedSongsContent(navController: NavController, songs: List<Song
             .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        for(song in songs){
-            SongCard(
-                song = song,
-                onSongClick = {
-                    songViewModel.clearQueue()
-                    for(queueSong in songs){
-                        songViewModel.updateQueue(queueSong.id)
+        if(songs.isEmpty()){
+            Row(modifier = Modifier.fillMaxSize()){
+                CircularProgressBar()
+            }
+        } else {
+            for (song in songs) {
+                SongCard(
+                    song = song,
+                    onSongClick = {
+                        songViewModel.clearQueue()
+                        for (queueSong in songs) {
+                            songViewModel.updateQueue(queueSong.id)
+                        }
+
+                        navigateTo(
+                            navController = navController,
+                            destination = Screen.SongPage.route + '/' + song.id,
+                            popUpTo = Screen.SuggestedSongsPage.route
+                        )
+                    },
+                    onMoreClick = {
+                        popUpVisibility.value = true
+                        songID.value = song.id
                     }
-
-                    navigateTo(
-                        navController = navController,
-                        destination = Screen.SongPage.route + '/' + song.id,
-                        popUpTo = Screen.SuggestedSongsPage.route
-                    )
-                },
-                onMoreClick = {
-                    popUpVisibility.value = true
-                    songID.value = song.id
-                }
-            )
+                )
+            }
         }
-
     }
 }

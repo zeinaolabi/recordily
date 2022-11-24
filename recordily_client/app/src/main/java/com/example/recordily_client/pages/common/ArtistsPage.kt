@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,40 +110,26 @@ private fun Artists(navController: NavController, artists: List<UserResponse>?){
             .padding(horizontal =dimensionResource(id = R.dimen.padding_medium))
             .fillMaxHeight(.85f)
             .verticalScroll(ScrollState(0))
-    ){
-        if(artists == null || artists.isEmpty()){
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    text = "No Artists found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
-        }
-        else {
-            for(artist in artists){
-                ArtistCard(
-                    artist = artist,
-                    onClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
-                            popUpTo = Screen.ArtistsPage.route
-                        )
-                    }
-                )
+    ) {
+        when {
+            artists === null ->
+                Row(modifier = Modifier.fillMaxSize()){
+                    CircularProgressBar()
+                }
+            artists.isEmpty() -> EmptyState(stringResource(id = R.string.no_results))
+            else -> {
+                for (artist in artists) {
+                    ArtistCard(
+                        artist = artist,
+                        onClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
+                                popUpTo = Screen.ArtistsPage.route
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -161,20 +148,26 @@ private fun SearchResult(navController: NavController, artists: List<UserRespons
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        artists?.let{
-            for(artist in artists){
-                ArtistCard(
-                    artist = artist,
-                    onClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
-                            popUpTo = Screen.ArtistsPage.route
-                        )
-                    }
-                )
+        when {
+            artists === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            artists.isEmpty() -> EmptyState(stringResource(id = R.string.no_results))
+            else -> {
+                for (artist in artists) {
+                    ArtistCard(
+                        artist = artist,
+                        onClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.ArtistProfilePage.route + '/' + artist.id.toString(),
+                                popUpTo = Screen.ArtistsPage.route
+                            )
+                        }
+                    )
+                }
             }
         }
-
     }
 }

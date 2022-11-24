@@ -23,9 +23,11 @@ import com.example.recordily_client.R
 import com.example.recordily_client.components.*
 import com.example.recordily_client.navigation.Screen
 import com.example.recordily_client.navigation.navigateTo
+import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.validation.UserCredentials
 import com.example.recordily_client.view_models.LiveEventsViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private val liveEventName = mutableStateOf("")
 private val openDialog = mutableStateOf(false)
@@ -42,6 +44,7 @@ fun CommonLiveEventsPage(navController: NavController){
     val id = userCredentials.getID()
     val userType = userCredentials.getType()
     val lives = liveEventsViewModel.displayLives()
+    var artist: UserResponse?
 
     Scaffold(
         topBar = { Header(navController) },
@@ -59,17 +62,21 @@ fun CommonLiveEventsPage(navController: NavController){
 
                 lives.values.let { lives ->
                     for(live in lives){
-                        liveEventsViewModel.getArtist(token, live.hostID.toString())
 
-                        val artist = liveEventsViewModel.artistInfoResultLiveData.observeAsState().value
+                        runBlocking {
+                            artist = liveEventsViewModel.getArtist(token, live.hostID.toString())
+                        }
 
                         artist?.name?.let { artistName ->
-                            LiveEventCard(live.name, artist.profile_picture, artistName){
-                                navigateTo(
-                                    navController,
-                                    Screen.LiveEventPage.route + '/' + live.id + '/' + live.hostID + '/' + live.name,
-                                    Screen.LiveEventsPage.route
-                                )
+                            artist?.profile_picture?.let { picture ->
+                                LiveEventCard(live.name, picture, artistName) {
+                                    navigateTo(
+                                        navController,
+                                        Screen.LiveEventPage.route + '/' + live.id
+                                                + '/' + live.hostID + '/' + live.name,
+                                        Screen.LiveEventsPage.route
+                                    )
+                                }
                             }
                         }
                     }
@@ -77,7 +84,14 @@ fun CommonLiveEventsPage(navController: NavController){
             }
 
             if(openDialog.value){
-                StartLiveEventDialog(openDialog, liveEventName, navController, id, token, liveEventsViewModel)
+                StartLiveEventDialog(
+                    openDialog,
+                    liveEventName,
+                    navController,
+                    id,
+                    token,
+                    liveEventsViewModel
+                )
             }
         },
         bottomBar = { BottomNavigationBar(navController) }

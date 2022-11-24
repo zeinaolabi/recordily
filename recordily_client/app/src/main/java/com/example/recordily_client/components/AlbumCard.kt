@@ -50,19 +50,24 @@ private fun AlbumsCardContent(albums: List<AlbumResponse>?, navController: NavCo
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if(albums === null || albums.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_albums_found))
-        } else {
-            for (album in albums) {
-                AlbumCard(album, navController)
-            }
-
-            SmallTealButton(
-                text = stringResource(id = R.string.more),
-                onClick = {
-                    destination()
+        when {
+            albums === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
                 }
-            )
+            albums.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (album in albums) {
+                    AlbumCard(album, navController)
+                }
+
+                SmallTealButton(
+                    text = stringResource(id = R.string.more),
+                    onClick = {
+                        destination()
+                    }
+                )
+            }
         }
     }
 }

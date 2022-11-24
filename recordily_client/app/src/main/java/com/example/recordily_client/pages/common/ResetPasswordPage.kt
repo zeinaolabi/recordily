@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.recordily_client.R
 import com.example.recordily_client.components.CircularProgressBar
 import com.example.recordily_client.components.RoundButton
+import com.example.recordily_client.components.SimpleCircularProgressBar
 import com.example.recordily_client.validation.isValidEmail
 import kotlinx.coroutines.launch
 import com.example.recordily_client.components.TextField
@@ -170,7 +171,7 @@ private fun TextFieldColumn() {
 
             })
         } else {
-            CircularProgressBar()
+            SimpleCircularProgressBar()
         }
     }
 }

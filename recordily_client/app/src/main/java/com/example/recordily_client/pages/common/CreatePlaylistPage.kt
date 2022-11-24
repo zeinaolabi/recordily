@@ -188,7 +188,7 @@ private fun CreatePlaylistContent(){
             }
         )
     } else {
-        CircularProgressBar()
+        SimpleCircularProgressBar()
     }
 
     AnimatedVisibility(

@@ -236,7 +236,7 @@ private fun UploadSongContent(){
             progressVisibility.value = false
         })
     } else {
-        CircularProgressBar()
+        SimpleCircularProgressBar()
     }
 
     AnimatedVisibility(

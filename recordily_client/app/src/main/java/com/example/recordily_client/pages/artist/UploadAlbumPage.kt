@@ -204,7 +204,7 @@ private fun UploadAlbumContent(){
             }
         )
     } else {
-        CircularProgressBar()
+        SimpleCircularProgressBar()
     }
 }
 

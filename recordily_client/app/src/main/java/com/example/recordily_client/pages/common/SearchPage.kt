@@ -179,11 +179,11 @@ private fun SearchResultContent(navController: NavController, data: SearchRespon
     Column(
         modifier = Modifier.verticalScroll(ScrollState(0))
     ){
-        if(data == null || (data.artists.isEmpty() && data.songs.isEmpty())){
-            EmptyState(message = stringResource(id = R.string.no_results))
-        }
-        else {
-            ResultData(navController, data)
+        when{
+            data == null -> CircularProgressBar()
+            data.artists.isEmpty() && data.songs.isEmpty() ->
+                EmptyState(message = stringResource(id = R.string.no_results))
+            else -> ResultData(navController, data)
         }
     }
 }

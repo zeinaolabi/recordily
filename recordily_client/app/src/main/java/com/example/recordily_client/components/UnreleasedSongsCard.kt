@@ -75,40 +75,44 @@ private fun CardsContent(
             .height(270.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        if(songs == null || songs.isEmpty()){
-            EmptyState(stringResource(id = R.string.no_songs_found))
-        }
-        else {
-            for (song in songs) {
-                UnreleasedSongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in songs){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+        when {
+            songs === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songs) {
+                    UnreleasedSongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in songs) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id,
-                            popUpTo = Screen.UnreleasedSongsPage.route
-                        )
-                    },
-                    onUploadClick = {
-                        coroutinesScope.launch {
-                            viewModel.publishSong(token, song.id)
-                            onUploadClick()
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id,
+                                popUpTo = Screen.UnreleasedSongsPage.route
+                            )
+                        },
+                        onUploadClick = {
+                            coroutinesScope.launch {
+                                viewModel.publishSong(token, song.id)
+                                onUploadClick()
+                            }
                         }
+                    )
+                }
+
+                SmallTealButton(
+                    text = stringResource(id = R.string.more),
+                    onClick = {
+                        destination()
                     }
                 )
             }
-
-            SmallTealButton(
-                text = stringResource(id = R.string.more),
-                onClick = {
-                    destination()
-                }
-            )
         }
     }
 }

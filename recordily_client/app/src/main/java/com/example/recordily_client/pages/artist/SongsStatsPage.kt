@@ -50,7 +50,7 @@ fun SongsStatsPage(navController: NavController){
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ){
-        songs?.let { SongsStatsContent(navController, it,  songsStatsViewModel, token) }
+        SongsStatsContent(navController, songs,  songsStatsViewModel, token)
 
         Row(
             modifier = Modifier.fillMaxHeight(),
@@ -95,7 +95,7 @@ fun SongsStatsPage(navController: NavController){
 @Composable
 private fun SongsStatsContent(
     navController: NavController,
-    songs: List<SongResponse>,
+    songs: List<SongResponse>?,
     songsStatsViewModel: SongsStatsViewModel,
     token: String
 ){
@@ -136,28 +136,33 @@ private fun SongsStatsContent(
 }
 
 @Composable
-private fun SongsResult(navController: NavController, songs: List<SongResponse>) {
+private fun SongsResult(navController: NavController, songs: List<SongResponse>?) {
     Column(
         modifier = Modifier.verticalScroll(ScrollState(0))
     ) {
-        if (songs.isEmpty()) {
-            EmptyState(message = stringResource(id = R.string.no_songs_found))
-        } else {
-            for (song in songs) {
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongStatsPage.route + '/' + song.id,
-                            popUpTo = Screen.SongsStatsPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                        songID.value = song.id
-                    }
-                )
+        when {
+            songs === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songs) {
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongStatsPage.route + '/' + song.id,
+                                popUpTo = Screen.SongsStatsPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                            songID.value = song.id
+                        }
+                    )
+                }
             }
         }
     }

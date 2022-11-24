@@ -3,11 +3,8 @@ package com.example.recordily_client.view_models
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.recordily_client.requests.LiveEventRequest
-import com.example.recordily_client.responses.ChatMessage
 import com.example.recordily_client.responses.LiveEvent
 import com.example.recordily_client.responses.UserResponse
 import com.example.recordily_client.services.ArtistService
@@ -30,18 +27,8 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
     private val artistService = ArtistService()
     private val liveEventService = LiveEventService()
 
-    private val liveEventsResult = MutableLiveData<LiveEvent>()
-    val liveEventsResultLiveData: LiveData<LiveEvent>
-        get() = liveEventsResult
-
-    private val artistInfoResult = MutableLiveData<UserResponse>()
-    val artistInfoResultLiveData: LiveData<UserResponse>
-        get() = artistInfoResult
-
-    fun getArtist(token: String, artist_id: String){
-        viewModelScope.launch {
-            artistInfoResult.postValue(artistService.getArtist(token, artist_id))
-        }
+    suspend fun getArtist(token: String, artist_id: String): UserResponse{
+        return artistService.getArtist(token, artist_id)
     }
 
     fun getLiveEvents(){
@@ -52,7 +39,6 @@ class LiveEventsViewModel(application: Application): AndroidViewModel(applicatio
 
                 liveEvent?.let{
                     liveEvents[it.id] = it
-                    liveEventsResult.postValue(it)
                 }
             }
 

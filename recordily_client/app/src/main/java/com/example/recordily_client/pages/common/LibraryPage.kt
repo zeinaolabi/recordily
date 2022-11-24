@@ -136,33 +136,36 @@ private fun LikedSongs(navController: NavController, songsLiked: List<SongRespon
             .verticalScroll(ScrollState(0))
     ){
 
-        if(songsLiked == null || songsLiked.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_songs_found))
-        }
-        else{
-            for(song in songsLiked){
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in songsLiked){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+        when {
+            songsLiked === null ->
+                Row(modifier = Modifier.fillMaxSize()){
+                    CircularProgressBar()
+                }
+            songsLiked.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songsLiked) {
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in songsLiked) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id.toString(),
-                            popUpTo = Screen.LibraryPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                        songID.value = song.id
-                    }
-                )
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id.toString(),
+                                popUpTo = Screen.LibraryPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                            songID.value = song.id
+                        }
+                    )
+                }
             }
         }
-
     }
 
     Row(
@@ -179,22 +182,30 @@ private fun SearchResult(navController: NavController, songsLiked: List<SongResp
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        songsLiked?.let{
-            for(song in it){
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id.toString(),
-                            popUpTo = Screen.LibraryPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                        songID.value = song.id
-                    }
-                )
+
+        when {
+            songsLiked === null ->
+                Row(modifier = Modifier.fillMaxSize()){
+                    CircularProgressBar()
+                }
+            songsLiked.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songsLiked) {
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id.toString(),
+                                popUpTo = Screen.LibraryPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                            songID.value = song.id
+                        }
+                    )
+                }
             }
         }
     }

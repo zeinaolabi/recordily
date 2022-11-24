@@ -96,28 +96,34 @@ private fun PlaylistPageContent(navController: NavController, songs: List<SongRe
             .verticalScroll(ScrollState(0))
             .padding(bottom = dimensionResource(id = R.dimen.padding_very_large))
             .padding(horizontal = dimensionResource(id = R.dimen.padding_medium))
-    ){
-        songs?.let {
-            for(song in it){
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in it){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+    ) {
+        when {
+            songs === null -> Row(modifier = Modifier.fillMaxSize()) {
+                CircularProgressBar()
+            }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_playlists_found))
+            else -> {
+                for (song in songs) {
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in songs) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id,
-                            popUpTo = Screen.PlaylistPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        popUpVisibility.value = true
-                        songID.value = song.id
-                    }
-                )
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id,
+                                popUpTo = Screen.PlaylistPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            popUpVisibility.value = true
+                            songID.value = song.id
+                        }
+                    )
+                }
             }
         }
     }

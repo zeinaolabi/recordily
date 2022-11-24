@@ -94,11 +94,13 @@ private fun PopupContent(songID: Int){
             )
             .verticalScroll(ScrollState(0))
     ){
-        if(playlists.value === null || playlists.value!!.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_playlists_found))
-        }
-        else{
-            PlaylistContent(songID, playlists.value, popUpViewModel, token)
+        when {
+            playlists.value === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            playlists.value!!.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> PlaylistContent(songID, playlists.value, popUpViewModel, token)
         }
     }
 }

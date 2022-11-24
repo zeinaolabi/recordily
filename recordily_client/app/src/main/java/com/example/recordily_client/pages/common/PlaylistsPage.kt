@@ -72,7 +72,12 @@ fun PlaylistsPage(navController: NavController){
 }
 
 @Composable
-private fun PlaylistsPageContent(navController: NavController, playlists: List<PlaylistResponse>?, playlistsViewModel: PlaylistsViewModel, token: String){
+private fun PlaylistsPageContent(
+    navController: NavController,
+    playlists: List<PlaylistResponse>?,
+    playlistsViewModel: PlaylistsViewModel,
+    token: String
+){
     val searchResult by playlistsViewModel.searchForPlaylistResultLiveData.observeAsState()
 
     Column(
@@ -114,24 +119,27 @@ private fun Playlists(navController: NavController, playlists: List<PlaylistResp
             .verticalScroll(ScrollState(0))
     ){
 
-        if(playlists == null || playlists.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_playlists_found))
-        }
-        else {
-            for(playlist in playlists){
-                PlaylistCard(
-                    playlist = playlist,
-                    onPlaylistClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
-                            popUpTo = Screen.PlaylistsPage.route
-                        )
-                    }
-                )
+        when {
+            playlists === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            playlists.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (playlist in playlists) {
+                    PlaylistCard(
+                        playlist = playlist,
+                        onPlaylistClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
+                                popUpTo = Screen.PlaylistsPage.route
+                            )
+                        }
+                    )
+                }
             }
         }
-
     }
 
     Row(
@@ -148,21 +156,27 @@ private fun SearchResult(navController: NavController, playlists: List<PlaylistR
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding( dimensionResource(id = R.dimen.padding_medium))
     ){
-        playlists?.let {
-            for(playlist in it){
-                PlaylistCard(
-                    playlist = playlist,
-                    onPlaylistClick = {
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
-                            popUpTo = Screen.PlaylistsPage.route
-                        )
-                    }
-                )
+        when {
+            playlists === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            playlists.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (playlist in playlists) {
+                    PlaylistCard(
+                        playlist = playlist,
+                        onPlaylistClick = {
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.PlaylistPage.route + '/' + playlist.id.toString(),
+                                popUpTo = Screen.PlaylistsPage.route
+                            )
+                        }
+                    )
+                }
             }
         }
-
     }
 }
 

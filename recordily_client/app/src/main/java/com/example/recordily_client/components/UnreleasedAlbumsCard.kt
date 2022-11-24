@@ -71,29 +71,34 @@ private fun CardsContent(
             .height(260.dp)
             .verticalScroll(ScrollState(0)),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        if(albums == null || albums.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_albums_found))
-        } else {
-            for (album in albums) {
-                UnreleasedAlbumCard(
-                    album = album,
-                    navController = navController,
-                    onUploadClick = {
-                        coroutinesScope.launch {
-                            viewModel.publishAlbum(token, album.id)
-                            onUploadClick()
+    ) {
+        when {
+            albums === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            albums.isEmpty() -> EmptyState(stringResource(id = R.string.no_albums_found))
+            else -> {
+                for (album in albums) {
+                    UnreleasedAlbumCard(
+                        album = album,
+                        navController = navController,
+                        onUploadClick = {
+                            coroutinesScope.launch {
+                                viewModel.publishAlbum(token, album.id)
+                                onUploadClick()
+                            }
                         }
+                    )
+                }
+
+                SmallTealButton(
+                    text = stringResource(id = R.string.more),
+                    onClick = {
+                        destination()
                     }
                 )
             }
-
-            SmallTealButton(
-                text = stringResource(id = R.string.more),
-                onClick = {
-                    destination()
-                }
-            )
         }
     }
 }

@@ -52,23 +52,27 @@ fun SongsBox(title: String, navController: NavController, songs: List<SongRespon
                 .padding(dimensionResource(id = R.dimen.padding_medium))
                 .horizontalScroll(ScrollState(0)),
             verticalAlignment = Alignment.CenterVertically
-        ){
-            if(songs == null || songs.isEmpty()){
-                EmptyState(stringResource(id = R.string.no_songs_found))
-            }
-            else{
-                for (song in songs) {
-                    SongSquareCard(
-                        onClick = {
-                            songViewModel.clearQueue()
-                            for(queueSong in songs){
-                                songViewModel.updateQueue(queueSong.id)
-                            }
+        ) {
+            when {
+                songs === null ->
+                    Row(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressBar()
+                    }
+                songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+                else -> {
+                    for (song in songs) {
+                        SongSquareCard(
+                            onClick = {
+                                songViewModel.clearQueue()
+                                for (queueSong in songs) {
+                                    songViewModel.updateQueue(queueSong.id)
+                                }
 
-                            navController.navigate(Screen.SongPage.route + '/' + song.id)
-                        },
-                        song = song
-                    )
+                                navController.navigate(Screen.SongPage.route + '/' + song.id)
+                            },
+                            song = song
+                        )
+                    }
                 }
             }
         }

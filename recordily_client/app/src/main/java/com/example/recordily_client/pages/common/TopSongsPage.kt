@@ -108,49 +108,34 @@ private fun TopSongsContent(navController: NavController, songs: List<SongRespon
             .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if(songs == null || songs.isEmpty()){
-            Column(
-                modifier = Modifier
-                    .width(330.dp)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.nothing_found),
-                    contentDescription = "not found",
-                    modifier = Modifier.size(60.dp),
-                    tint = Color.Unspecified
-                )
+        when {
+            songs === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songs) {
+                    SongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in songs) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                Text(
-                    text = "No songs found",
-                    fontSize = dimensionResource(id = R.dimen.font_small).value.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            }
-        } else {
-            for (song in songs) {
-                SongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in songs){
-                            songViewModel.updateQueue(queueSong.id)
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route + '/' + song.id,
+                                popUpTo = Screen.SuggestedSongsPage.route
+                            )
+                        },
+                        onMoreClick = {
+                            songID.value = song.id
+                            popUpVisibility.value = true
                         }
-
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route + '/' + song.id,
-                            popUpTo = Screen.SuggestedSongsPage.route
-                        )
-                    },
-                    onMoreClick = {
-                        songID.value = song.id
-                        popUpVisibility.value = true
-                    }
-                )
+                    )
+                }
             }
         }
     }

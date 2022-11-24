@@ -82,32 +82,36 @@ private fun UnreleasedSongsContent(
             .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if(unreleasedSongs === null || unreleasedSongs.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_songs_found))
-        }
-        else {
-            for (song in unreleasedSongs) {
-                UnreleasedSongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in unreleasedSongs){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+        when {
+            unreleasedSongs === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            unreleasedSongs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in unreleasedSongs) {
+                    UnreleasedSongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in unreleasedSongs) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.UnreleasedSongsPage.route
-                        )
-                    },
-                    onUploadClick = {
-                        coroutinesScope.launch {
-                            unreleasedSongsViewModel.publishSong(token, song.id)
-                            unreleasedSongsViewModel.getUnreleasedSongs(token, limit)
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route,
+                                popUpTo = Screen.UnreleasedSongsPage.route
+                            )
+                        },
+                        onUploadClick = {
+                            coroutinesScope.launch {
+                                unreleasedSongsViewModel.publishSong(token, song.id)
+                                unreleasedSongsViewModel.getUnreleasedSongs(token, limit)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }

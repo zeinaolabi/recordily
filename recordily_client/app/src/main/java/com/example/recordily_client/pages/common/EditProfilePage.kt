@@ -221,7 +221,7 @@ private fun EditProfileContent(
             }
         )
     } else {
-        CircularProgressBar()
+        SimpleCircularProgressBar()
     }
 
     AnimatedVisibility(

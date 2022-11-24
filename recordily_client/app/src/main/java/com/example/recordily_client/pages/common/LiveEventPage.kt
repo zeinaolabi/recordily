@@ -538,7 +538,7 @@ private fun SongPlaying(
             verticalArrangement = Arrangement.SpaceEvenly
         ){
             Text(
-                text = song?.name ?: "Song Name",
+                text = song?.name ?: "No Song Playing",
                 fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color.White

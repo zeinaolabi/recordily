@@ -206,7 +206,7 @@ private fun CreatePlaylistContent(navController: NavController, playlist: Playli
             }
         )
     } else {
-        CircularProgressBar()
+        SimpleCircularProgressBar()
     }
 
     Text(

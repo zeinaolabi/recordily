@@ -78,31 +78,35 @@ private fun UnreleasedAlbumContent(
             .verticalScroll(ScrollState(0))
             .padding(dimensionResource(id = R.dimen.padding_medium)),
     ){
-        if(songs == null || songs.isEmpty()){
-            EmptyState(message = stringResource(id = R.string.no_songs_found))
-        }
-        else {
-            for (song in songs) {
-                UnreleasedAlbumSongCard(
-                    song = song,
-                    onSongClick = {
-                        songViewModel.clearQueue()
-                        for(queueSong in songs){
-                            songViewModel.updateQueue(queueSong.id)
-                        }
+        when {
+            songs === null ->
+                Row(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressBar()
+                }
+            songs.isEmpty() -> EmptyState(stringResource(id = R.string.no_songs_found))
+            else -> {
+                for (song in songs) {
+                    UnreleasedAlbumSongCard(
+                        song = song,
+                        onSongClick = {
+                            songViewModel.clearQueue()
+                            for (queueSong in songs) {
+                                songViewModel.updateQueue(queueSong.id)
+                            }
 
-                        navigateTo(
-                            navController = navController,
-                            destination = Screen.SongPage.route,
-                            popUpTo = Screen.UnreleasedAlbumsPage.route
-                        )
-                    },
-                    onDeleteClick = {
-                        coroutinesScope.launch {
-                            unreleasedAlbumViewModel.deleteFromAlbum(token, song.id)
+                            navigateTo(
+                                navController = navController,
+                                destination = Screen.SongPage.route,
+                                popUpTo = Screen.UnreleasedAlbumsPage.route
+                            )
+                        },
+                        onDeleteClick = {
+                            coroutinesScope.launch {
+                                unreleasedAlbumViewModel.deleteFromAlbum(token, song.id)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
