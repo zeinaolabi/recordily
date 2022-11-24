@@ -13,7 +13,7 @@
 
 <img src="./readme/title2.svg"/>
 
-> Recordily is an application where unknown artist can upload and stream their music. Recordily encourages artists to showcase their talent and show it to the word
+> Recordily is an application where undiscovered artist can upload and stream their music. Recordily encourages artists to showcase their talent and show it to the word
 by hosting live events for people to enjoy.
 > 
 
@@ -22,55 +22,58 @@ by hosting live events for people to enjoy.
 - As an artist, I want to host live events, to introduce people to my music
 - As an artist, I want to record my own songs, to upload them 
 - As an artist, I want check my songs statistics, to keep track of my progress 
-- As a listener, I want to save songs, so I can check them later
 
 ### User Stories
 - As a listener, I want to create playlists, so I can customize my music
 - As a listener, I want to follow artists, to keep up with the music industry
+- As a listener, I want to save songs, so I can check them later
 
 <br><br>
 
 <img src="./readme/title3.svg"/>
 
-> This design was firstly implememnted on Figma as wireframes, then moved to the mockups to finalize the details.
-A Jetpack Library was used for implementing the graphs
+> This design was firstly implemented on Figma as wireframes, then moved to the mockups to finalize the details.
 
-| Landing  | Home/Search  |
-| -----------------| -----|
-| ![Landing]<img src="./readme/landing_page.svg"/> | ![Home/Search]|
+| Sign in                                       | Landing                                            | Live Events                                        | Live Event                                            |
+|-----------------------------------------------|----------------------------------------------------|----------------------------------------------------|-------------------------------------------------------|
+| <img src="./readme/sign_in.svg" width="200"/> | <img src="./readme/landing_page.svg" width="200"/> | <img src="./readme/live_events.svg" width="200"/>  | <img src="./readme/live_event_chat.svg" width="200"/> |
 
-| Artists results  | Artist's Albums  |
-| -----------------| -----|
-| ![Artists results] | ![Artist's Albums]|
+| Song                                            | Record                                            | Artist                                            | Profile                                            |
+|-------------------------------------------------|---------------------------------------------------|---------------------------------------------------|----------------------------------------------------|
+| <img src="./readme/song_page.svg" width="200"/> | <img src="./readme/record_page.svg" width="200"/> | <img src="./readme/artist_page.svg" width="200"/> | <img src="./readme/profile_page.svg" width="200"/> |
 
 
 <br><br>
 
 <img src="./readme/title4.svg"/>
 
-Here's a brief high-level overview of the tech stack the Well app uses:
+Here's a brief high-level overview of the tech stack Recordily app uses:
 
 **Frontend**
-- Android Native application that uses Kotlin as a programming languague, following the MVVM architecture.
+- Android Native application that uses Kotlin as a programming language, following the MVVM architecture.
 - The application follows the latest components:
   - Jetpack Compose
   - Jetpack Navigation
   - Coroutines
   
 **Backend**
-- Uses Laravel, which is a PHP framework that follow MVC
-- The database is built on MySQL
-- Docker image provided
-- CI using Github Actions
+- Uses Laravel, which is a PHP framework that follow MVC.
+- The database is built on MySQL.
+- Docker image provided.
+- CI using GitHub Actions.
 
 <br><br>
 <img src="./readme/title5.svg"/>
 
-> Using the above mentioned tech stacks and the mockups built with Figma from the user stories we have, the implementation of the app is shown as below, these are screenshots from the real app.
+> Using the above-mentioned tech stacks and the mockups built with Figma from the user stories we have, the implementation of the app is shown as below, these are screenshots from the real app.
 
-| Landing  | Home/Search  |
-| -----------------| -----|
-| ![Landing]| ![Home/Search] |
+| Sign in                                      | Landing                                       | Search                                       | Live Event                                            |
+|----------------------------------------------|-----------------------------------------------|----------------------------------------------|-------------------------------------------------------|
+| <img src="./readme/record.gif" width="200"/> | <img src="./readme/landing.gif" width="200"/> | <img src="./readme/search.gif" width="200"/> | <img src="./readme/live_event_chat.svg" width="200"/> |
+
+| Song                                            | Record                                       | Artist                                            | Profile                                            |
+|-------------------------------------------------|----------------------------------------------|---------------------------------------------------|----------------------------------------------------|
+| <img src="./readme/song_page.svg" width="200"/> | <img src="./readme/record.gif" width="200"/> | <img src="./readme/artist_page.svg" width="200"/> | <img src="./readme/profile_page.svg" width="200"/> |
 
 
 <br><br>
