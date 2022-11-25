@@ -66,6 +66,7 @@ Here's a brief high-level overview of the tech stack Recordily app uses:
 <img src="./readme/title5.svg"/>
 
 > Using the above-mentioned tech stacks and the mockups built with Figma from the user stories we have, the implementation of the app is shown as below, these are screenshots from the real app.
+The application works on both Light and Dark theme
 
 | Landing                                       | Search                                       | Upload Song                                       | Live Event                                            |
 |-----------------------------------------------|----------------------------------------------|---------------------------------------------------|-------------------------------------------------------|
