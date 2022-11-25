@@ -67,28 +67,27 @@ Here's a brief high-level overview of the tech stack Recordily app uses:
 
 > Using the above-mentioned tech stacks and the mockups built with Figma from the user stories we have, the implementation of the app is shown as below, these are screenshots from the real app.
 
-| Sign in                                      | Landing                                       | Search                                       | Live Event                                            |
-|----------------------------------------------|-----------------------------------------------|----------------------------------------------|-------------------------------------------------------|
-| <img src="./readme/record.gif" width="200"/> | <img src="./readme/landing.gif" width="200"/> | <img src="./readme/search.gif" width="200"/> | <img src="./readme/live_event_chat.svg" width="200"/> |
+| Landing                                       | Search                                       | Upload Song                                       | Live Event                                            |
+|-----------------------------------------------|----------------------------------------------|---------------------------------------------------|-------------------------------------------------------|
+| <img src="./readme/landing.gif" width="200"/> | <img src="./readme/search.gif" width="200"/> | <img src="./readme/upload_song.gif" width="200"/> | <img src="./readme/live_event_chat.gif" width="200"/> |
 
-| Song                                            | Record                                       | Artist                                            | Profile                                            |
-|-------------------------------------------------|----------------------------------------------|---------------------------------------------------|----------------------------------------------------|
-| <img src="./readme/song_page.svg" width="200"/> | <img src="./readme/record.gif" width="200"/> | <img src="./readme/artist_page.svg" width="200"/> | <img src="./readme/profile_page.svg" width="200"/> |
+| Song                                       | Record                                       | Library&Artist                                | Profile                                       |
+|--------------------------------------------|----------------------------------------------|-----------------------------------------------|-----------------------------------------------|
+| <img src="./readme/song.gif" width="200"/> | <img src="./readme/record.gif" width="200"/> | <img src="./readme/library.gif" width="200"/> | <img src="./readme/profile.gif" width="200"/> |
 
 
 <br><br>
 <img src="./readme/title6.svg"/>
 
 
-> This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+>To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
 * Docker
   ```sh
-  install Docker from (https://www.docker.com/)
+  install Docker from https://www.docker.com/
   ```
 
 ### Installation
@@ -97,17 +96,17 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    git clone https://github.com/zeinaolabi/recordily_client.git
    ```
-2. Run Docker
-   ```sh
-   docker-compose up
-   ```
-3. Change .env
+2. Change .env
    ```sh
    update .env according to your variables
    ```
+3. Run Docker
+   ```sh
+   docker-compose up
+   ```
 4. Install APK
    ```sh
-   install the application apk from Github Actions
+   install the application apk from GitHub Actions
    ```
 
 
