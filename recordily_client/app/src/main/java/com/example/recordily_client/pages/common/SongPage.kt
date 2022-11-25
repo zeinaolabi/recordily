@@ -51,51 +51,52 @@ fun SongPage(navController: NavController, songID: String) {
 
     val song = songViewModel.songResultLiveData.observeAsState().value
 
-    Scaffold(
-        topBar = { ExitBar(navController, stringResource(id = R.string.playing)) },
-        content = {
-            Column(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+    ) {
+        ExitBar(navController, stringResource(id = R.string.playing))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_medium),
+                    vertical = dimensionResource(id = R.dimen.padding_large)
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Image(
+                painter =
+                if (song?.picture != null && song.picture != "") {
+                    rememberAsyncImagePainter(song.picture)
+                } else {
+                    painterResource(id = R.drawable.recordily_dark_logo)
+                },
+                contentDescription = "song picture",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.padding_medium),
-                        vertical = dimensionResource(id = R.dimen.padding_large)
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
-            ){
-                Image(
-                    painter =
-                    if(song?.picture != null && song.picture != ""){
-                        rememberAsyncImagePainter(song.picture)
-                    }
-                    else{
-                        painterResource(id = R.drawable.recordily_dark_logo)
-                    },
-                    contentDescription = "song picture",
-                    modifier = Modifier
-                        .size(330.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.FillBounds
-                )
+                    .size(330.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
+            )
 
-                if (song != null) {
-                    SongDetailsBox(navController, song, songViewModel, token, songID)
-                }
-            }
-
-            AnimatedVisibility(
-                visible = popUpVisibility.value,
-                enter = expandVertically(expandFrom = Alignment.CenterVertically),
-                exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
-            ) {
-                PlaylistPopup(
-                    songID = 6,
-                    popUpVisibility = popUpVisibility
-                )
+            if (song != null) {
+                SongDetailsBox(navController, song, songViewModel, token, songID)
             }
         }
-    )
+
+        AnimatedVisibility(
+            visible = popUpVisibility.value,
+            enter = expandVertically(expandFrom = Alignment.CenterVertically),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
+        ) {
+            PlaylistPopup(
+                songID = 6,
+                popUpVisibility = popUpVisibility
+            )
+        }
+    }
 
     DisposableEffect(Unit) {
         onDispose {
