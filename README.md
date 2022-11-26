@@ -15,7 +15,7 @@
 
 <img src="./readme/title2.svg"/>
 
-> Recordily is an application where undiscovered artist can upload and stream their music. Recordily encourages artists to showcase their talent and show it to the word
+> Recordily is an application where undiscovered artists can upload and stream their music. Recordily encourages artists to showcase their talent and show it to the world
 by hosting live events for people to enjoy.
 > 
 
@@ -110,7 +110,18 @@ This is an example of how to list things you need to use the software and how to
    ```
 3. Run Docker
    ```sh
+   cd recordily_server
+   cd .docker 
    docker-compose up
+   ```
+4. Access Docker Container
+   ```sh
+   cd recordily_server
+   docker compose exec -it web bash
+   ```
+5. In Docker Container, run migrations
+   ```sh
+   php artisan migrate:fresh --seed
    ```
 4. Install APK
    ```sh
