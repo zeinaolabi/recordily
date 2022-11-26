@@ -1,3 +1,5 @@
+[![Recordily Server Code Quality](https://github.com/zeinaolabi/recordily/actions/workflows/codequality.yml/badge.svg)](https://github.com/zeinaolabi/recordily/actions/workflows/codequality.yml)
+<hr/>
 <img src="./readme/title1.svg"/>
 
 <div align="center">
