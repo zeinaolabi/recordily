@@ -68,13 +68,18 @@ Here's a brief high-level overview of the tech stack Recordily app uses:
 > Using the above-mentioned tech stacks and the mockups built with Figma from the user stories we have, the implementation of the app is shown as below, these are screenshots from the real app.
 The application works on both Light and Dark theme
 
-| Landing                                       | Search                                       | Upload Song                                       | Live Event                                            |
-|-----------------------------------------------|----------------------------------------------|---------------------------------------------------|-------------------------------------------------------|
-| <img src="./readme/landing.gif" width="200"/> | <img src="./readme/search.gif" width="200"/> | <img src="./readme/upload_song.gif" width="200"/> | <img src="./readme/live_event_chat.gif" width="200"/> |
+| Landing                                       | Search                                       | Live Event                                            |
+|-----------------------------------------------|----------------------------------------------|-------------------------------------------------------|
+| <img src="./readme/landing.gif" width="300"/> | <img src="./readme/search.gif" width="300"/> | <img src="./readme/live_event_chat.gif" width="300"/> |
 
-| Song                                       | Record                                       | Library&Artist                                | Profile                                       |
-|--------------------------------------------|----------------------------------------------|-----------------------------------------------|-----------------------------------------------|
-| <img src="./readme/song.gif" width="200"/> | <img src="./readme/record.gif" width="200"/> | <img src="./readme/library.gif" width="200"/> | <img src="./readme/profile.gif" width="200"/> |
+| Song                                       | Record                                       | Upload Song                                       |
+|--------------------------------------------|----------------------------------------------|---------------------------------------------------|
+| <img src="./readme/song.gif" width="300"/> | <img src="./readme/record.gif" width="300"/> | <img src="./readme/upload_song.gif" width="300"/> |
+
+| Profile                                       | Library&Artist                                | Songs Statistics                                 | 
+|-----------------------------------------------|-----------------------------------------------|--------------------------------------------------|
+| <img src="./readme/profile.gif" width="300"/> | <img src="./readme/library.gif" width="300"/> | <img src="./readme/song_stats.gif" width="300"/> |
+
 
 
 <br><br>
