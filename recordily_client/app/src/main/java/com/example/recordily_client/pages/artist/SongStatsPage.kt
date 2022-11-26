@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.recordily_client.R
+import com.example.recordily_client.components.CircularProgressBar
 import com.example.recordily_client.components.ExitBar
 import com.example.recordily_client.responses.SongResponse
 import com.example.recordily_client.validation.UserCredentials
@@ -94,14 +95,14 @@ private fun SongStatsContent(viewsPerMonth: Array<Int>?, views: Int?, likes: Int
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
         Text(
-            text = "Likes: $likes",
+            text = if(likes != null) "Likes: $likes" else "Likes: 0",
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary
         )
 
         Text(
-            text = "Plays: $views",
+            text = if(views != null) "Plays: $views" else "Plays: 0",
             fontSize = dimensionResource(id = R.dimen.font_medium).value.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary
@@ -118,6 +119,8 @@ private fun SongStatsContent(viewsPerMonth: Array<Int>?, views: Int?, likes: Int
             yAxisData = viewsPerMonth.toList(),
             style = graphStyle
         )
+    } else {
+        CircularProgressBar()
     }
 }
 
