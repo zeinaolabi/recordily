@@ -70,15 +70,15 @@ The application works on both Light and Dark theme
 
 | Landing                                       | Search                                       | Live Event                                            |
 |-----------------------------------------------|----------------------------------------------|-------------------------------------------------------|
-| <img src="./readme/landing.gif" width="300"/> | <img src="./readme/search.gif" width="300"/> | <img src="./readme/live_event_chat.gif" width="300"/> |
+| <img src="./readme/landing.gif" width="250"/> | <img src="./readme/search.gif" width="250"/> | <img src="./readme/live_event_chat.gif" width="250"/> |
 
 | Song                                       | Record                                       | Upload Song                                       |
 |--------------------------------------------|----------------------------------------------|---------------------------------------------------|
-| <img src="./readme/song.gif" width="300"/> | <img src="./readme/record.gif" width="300"/> | <img src="./readme/upload_song.gif" width="300"/> |
+| <img src="./readme/song.gif" width="250"/> | <img src="./readme/record.gif" width="250"/> | <img src="./readme/upload_song.gif" width="250"/> |
 
 | Profile                                       | Library&Artist                                | Songs Statistics                                 | 
 |-----------------------------------------------|-----------------------------------------------|--------------------------------------------------|
-| <img src="./readme/profile.gif" width="300"/> | <img src="./readme/library.gif" width="300"/> | <img src="./readme/song_stats.gif" width="300"/> |
+| <img src="./readme/profile.gif" width="250"/> | <img src="./readme/library.gif" width="250"/> | <img src="./readme/song_stats.gif" width="250"/> |
 
 
 
